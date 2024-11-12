@@ -1,5 +1,5 @@
-import { useState } from "react";
-import Mypage from "./Mypage/Mypage";
+import React from 'react';
+import Mypage from './Mypage/Mypage';
 function App() {
   // const [count, setCount] = useState(0);
 

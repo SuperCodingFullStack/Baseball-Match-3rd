@@ -1,11 +1,11 @@
-import SwiperComponent from "../Body/Swiper/SwiperComponent";
+import Body from "../Body/Body";
 import Header from "./Header/Header";
 
 const MainPageTemplate = () => {
   return (
     <>
       <Header />
-      <SwiperComponent />
+      <Body />
     </>
   );
 };

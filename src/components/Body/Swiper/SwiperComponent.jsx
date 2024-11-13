@@ -6,6 +6,8 @@ import "swiper/css/pagination";
 import "./styles.css";
 
 import { Navigation, Pagination, Mousewheel, Keyboard } from "swiper/modules";
+import SlideContent1 from "./SlideContent1";
+import SlideContent2 from "./SlideContent2";
 
 export default function SwiperComponent() {
   return (
@@ -20,12 +22,24 @@ export default function SwiperComponent() {
         modules={[Navigation, Pagination, Mousewheel, Keyboard]}
         className="mainSwiper"
       >
-        <SwiperSlide>Slide 1</SwiperSlide>
-        <SwiperSlide>Slide 2</SwiperSlide>
-        <SwiperSlide>Slide 3</SwiperSlide>
-        <SwiperSlide>Slide 4</SwiperSlide>
-        <SwiperSlide>Slide 5</SwiperSlide>
-        <SwiperSlide>Slide 6</SwiperSlide>
+        <SwiperSlide>
+          <SlideContent1 />
+        </SwiperSlide>
+        <SwiperSlide>
+          <SlideContent2 />
+        </SwiperSlide>
+        <SwiperSlide>
+          <SlideContent2 />
+        </SwiperSlide>
+        <SwiperSlide>
+          <SlideContent2 />
+        </SwiperSlide>
+        <SwiperSlide>
+          <SlideContent2 />
+        </SwiperSlide>
+        <SwiperSlide>
+          <SlideContent2 />
+        </SwiperSlide>
       </Swiper>
     </>
   );

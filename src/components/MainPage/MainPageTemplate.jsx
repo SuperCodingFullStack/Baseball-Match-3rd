@@ -1,4 +1,4 @@
-import Body from "../Body/Body";
+import Body from "./Body/Body";
 import Header from "./Header/Header";
 
 const MainPageTemplate = () => {

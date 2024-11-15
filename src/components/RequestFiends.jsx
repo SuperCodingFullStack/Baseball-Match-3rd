@@ -3,7 +3,7 @@ import React from "react";
 function SendFriendRequestButton({ friendId }) {
   const sendFriendRequest = async () => {
     try {
-      const response = await fetch(`/api/friends/${friendId}/request`, {
+      const response = await fetch(`/api/friend/${user_id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

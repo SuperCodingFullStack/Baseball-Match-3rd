@@ -10,8 +10,8 @@ const FriendRequest = ({ userId }) => {
 
   const sendFriendRequest = async () => {
     try {
-      const response = await fetch(`/api/friend/${userId}`, {
-        method: "POST",
+      const response = await fetch(`/api/friend/${user_id}?type=`, {
+        method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
@@ -31,7 +31,7 @@ const FriendRequest = ({ userId }) => {
 
   return (
     <div>
-      <h2>Send Friend Request</h2>
+      <h2>내 친구 목록</h2>
       <input
         type="number"
         value={toUserId}

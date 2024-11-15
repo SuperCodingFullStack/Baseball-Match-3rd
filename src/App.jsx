@@ -1,11 +1,13 @@
-import React from "react";
-import PartyPostLists from "./pages/partyPost/PartyPostLists";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import MainPage from "./pages/MainPage";
 
 function App() {
   return (
-    <>
-      <PartyPostLists />
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<MainPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

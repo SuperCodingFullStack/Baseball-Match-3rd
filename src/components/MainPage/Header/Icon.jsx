@@ -1,11 +1,11 @@
 import styled, { keyframes } from "styled-components";
 import { SlBell } from "react-icons/sl";
 import { IoChatbubbleOutline } from "react-icons/io5";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { SlUser } from "react-icons/sl";
+import { LuLogIn } from "react-icons/lu";
 import { LuLogOut } from "react-icons/lu";
-import { useRef } from "react";
-import { useEffect } from "react";
+import { IoSettingsOutline } from "react-icons/io5";
 
 const Icon = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -13,7 +13,7 @@ const Icon = () => {
   const profileRef = useRef(null);
 
   const handleProfileClick = (event) => {
-    setIsDropdownOpen((prev) => !prev); // 드롭다운 토글
+    setIsDropdownOpen((prev) => !prev); // 드롭다운 토글(상태 반전)
     event.stopPropagation(); // 클릭 이벤트 전파 차단
   };
 
@@ -21,9 +21,9 @@ const Icon = () => {
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target) &&
-        !profileRef.current.contains(event.target)
+        dropdownRef.current && // 드롭다운이 존재하는지
+        !dropdownRef.current.contains(event.target) && // 클릭한 곳이 드롭다운 내부가 아니라면
+        !profileRef.current.contains(event.target) // 클릭한 곳이 프로필 내부가 아니라면
       ) {
         setIsDropdownOpen(false);
       }
@@ -49,6 +49,12 @@ const Icon = () => {
         <DropdownMenu ref={dropdownRef}>
           <DropdownItem>
             <SlUser /> 마이페이지
+          </DropdownItem>
+          <DropdownItem>
+            <IoSettingsOutline /> 설정
+          </DropdownItem>
+          <DropdownItem>
+            <LuLogIn /> 로그인
           </DropdownItem>
           <DropdownItem>
             <LuLogOut /> 로그아웃
@@ -84,19 +90,6 @@ const Profile = styled.img`
   padding: 0.8rem;
 `;
 
-const DropdownMenu = styled.div`
-  position: absolute;
-  top: 100%;
-  right: 0;
-  background-color: white;
-  border: 1px solid #ddd;
-  border-radius: 0.3rem;
-  display: flex;
-  flex-direction: column;
-  padding: 0.3rem;
-  // animation: ${dropdownAnimation} 0.8s ease forwards;
-`;
-
 const dropdownAnimation = keyframes`
   from {
     opacity: 0;
@@ -108,7 +101,21 @@ const dropdownAnimation = keyframes`
   }
 `;
 
+const DropdownMenu = styled.div`
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 0.3rem;
+  display: flex;
+  flex-direction: column;
+  padding: 0.3rem;
+  animation: ${dropdownAnimation} 0.5s ease forwards;
+`;
+
 const DropdownItem = styled.div`
+  z-index: 10;
   font-size: 0.85rem;
   cursor: pointer;
   display: flex;

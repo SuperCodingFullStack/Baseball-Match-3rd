@@ -1,12 +1,13 @@
-import { useState } from "react";
-import Mypage from "./Mypage/Mypage";
-function App() {
-  // const [count, setCount] = useState(0);
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import MainPage from "./pages/MainPage";
 
+function App() {
   return (
-    <div>
-      <Mypage />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<MainPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

@@ -38,7 +38,6 @@ const Navbar = () => {
         >
           친구
         </NavItem>
-        {/* <NavLink to="/mypage">마이 페이지</NavLink> */}
       </NavbarContainer>
 
       {activeDropdown === "teamInfo" && (
@@ -95,8 +94,8 @@ const NavItem = styled.div`
   width: 9rem;
   height: 5.5rem;
   &:hover {
-    color: #799d40;
-    border-bottom: 5px solid #799d40;
+    color: #40cf66;
+    border-bottom: 5px solid #40cf66;
     transition: border-bottom 0.3s ease;
   }
 `;
@@ -127,17 +126,5 @@ const DropdownItem = styled.div`
   text-align: center;
   padding: 0.4rem 0.2rem;
 `;
-
-// const NavLink = styled(Link)`
-//   display: inline-block;
-//   text-align: center;
-//   font-weight: 400;
-//   color: black;
-//   padding: 10px;
-//   border-radius: 0.2rem;
-//   &:hover {
-//     color: #799d40;
-//   }
-// `;
 
 export default Navbar;

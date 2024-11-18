@@ -1,9 +1,9 @@
 import styled from "styled-components";
 
-const SlideContent1 = () => {
+const SlideContent = () => {
   return (
     <SlideContainer>
-      <Title>팀 순위</Title>
+      <Title>경기 결과</Title>
       <Team></Team>
     </SlideContainer>
   );
@@ -15,4 +15,4 @@ const Title = styled.h2``;
 
 const Team = styled.p``;
 
-export default SlideContent1;
+export default SlideContent;

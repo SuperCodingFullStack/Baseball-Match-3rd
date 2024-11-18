@@ -76,7 +76,7 @@ const StyledIcon = styled.div`
   padding: 0.8rem;
   text-align: center;
   &:hover {
-    color: #40cf66;
+    color: #acfe49;
   }
 `;
 
@@ -118,7 +118,6 @@ const DropdownItem = styled.div`
   font-size: 0.85rem;
   cursor: pointer;
   display: flex;
-  // justify-content: start;
   align-items: center;
   padding: 0.4rem 0.2rem;
   gap: 0.625rem;

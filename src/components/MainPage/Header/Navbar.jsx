@@ -94,8 +94,7 @@ const NavItem = styled.div`
   width: 9rem;
   height: 5.5rem;
   &:hover {
-    color: #40cf66;
-    border-bottom: 5px solid #40cf66;
+    border-bottom: 5px solid #acfe49;
     transition: border-bottom 0.3s ease;
   }
 `;

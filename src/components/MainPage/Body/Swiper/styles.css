@@ -16,7 +16,7 @@
 
 .swiper-button-next,
 .swiper-button-prev {
-  color: #40cf66;
+  color: #acfe49;
 }
 
 .swiper-button-next:hover,
@@ -30,5 +30,5 @@
 }
 
 .swiper-pagination-bullet-active {
-  background-color: #40cf66;
+  background-color: #acfe49;
 }

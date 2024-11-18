@@ -1,17 +1,10 @@
 import styled from "styled-components";
-import SwiperComponent from "./Swiper/SwiperComponent";
 
 const Body = () => {
-  return (
-    <BodyContainer>
-      <SwiperComponent />
-    </BodyContainer>
-  );
+  return <BodyContainer></BodyContainer>;
 };
 
 const BodyContainer = styled.div`
-  display: flex;
-  flex-direction: column;
   width: 100%;
 `;
 

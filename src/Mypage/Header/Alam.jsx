@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
-const AlamBtn = styled.button``;
+const Button = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.5rem;
+  color: #333;
+`;
 
-function NotificationButton() {
+function Alam() {
   const [notificationCount, setNotificationCount] = useState(0);
 
   // 백엔드에서 알림 갯수를 가져오는 함수
@@ -24,9 +30,9 @@ function NotificationButton() {
 
   return (
     <div>
-      <button>알림 ({notificationCount})</button>
+      <Button>🔔 ({notificationCount})</Button>
     </div>
   );
 }
 
-export default NotificationButton;
+export default Alam;

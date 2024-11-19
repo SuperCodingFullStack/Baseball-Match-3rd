@@ -1,17 +1,28 @@
 import React from "react";
-import styled from "styled-components";
 import Header from "../components/Mypage/Header/Header";
+import UserProfileSection from "../components/Mypage/Header/UserProfileSection";
+import Body from "../components/Mypage/Body/Body";
+import styled from "styled-components";
 
-const Wrapper = styled.div`
-  width: 1336px;
+const MypageContainer = styled.div`
+  width: 100%;
+  min-height: 100vh;
+  background-color: #f7f9fc;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  box-sizing: border-box;
 `;
 
-const Mypage = () => {
+const App = () => {
   return (
-    <Wrapper>
+    <MypageContainer>
       <Header />
-    </Wrapper>
+      <UserProfileSection />
+      <Body />
+    </MypageContainer>
   );
 };
 
-export default Mypage;
+export default App;

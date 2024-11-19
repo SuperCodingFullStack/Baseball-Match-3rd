@@ -42,8 +42,9 @@ const IconInfo = styled.div`
   padding: 0.5rem;
   cursor: pointer;
   margin: 0 1rem;
+  color: gray;
   &:hover {
-    color: #799d40;
+    color: black;
     text-decoration: underline;
     text-decoration-style: solid;
   }

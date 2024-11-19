@@ -39,7 +39,6 @@ const Icon = () => {
     <Container>
       <StyledIcon as={IoChatbubbleOutline} />
       <StyledIcon as={SlBell} />
-      {/* <LoginBtn>Signup/Login</LoginBtn> */}
       <Profile
         ref={profileRef}
         src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
@@ -77,7 +76,7 @@ const StyledIcon = styled.div`
   padding: 0.8rem;
   text-align: center;
   &:hover {
-    color: #799d40;
+    color: #acfe49;
   }
 `;
 
@@ -119,7 +118,6 @@ const DropdownItem = styled.div`
   font-size: 0.85rem;
   cursor: pointer;
   display: flex;
-  // justify-content: start;
   align-items: center;
   padding: 0.4rem 0.2rem;
   gap: 0.625rem;
@@ -130,18 +128,5 @@ const DropdownItem = styled.div`
     border-radius: 0.3rem;
   }
 `;
-
-// const LoginBtn = styled.button`
-//   border: none;
-//   border-radius: 0.2rem;
-//   cursor: pointer;
-//   background-color: #799d40;
-//   color: white;
-//   margin-right: 0.8rem;
-//   margin-left: 0.8rem;
-//   &:hover {
-//     color: black;
-//   }
-// `;
 
 export default Icon;

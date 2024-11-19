@@ -1,7 +1,12 @@
 import styled from "styled-components";
+import WeeklyCalendar from "./WeeklyCalendar";
 
 const Body = () => {
-  return <BodyContainer></BodyContainer>;
+  return (
+    <BodyContainer>
+      <WeeklyCalendar />
+    </BodyContainer>
+  );
 };
 
 const BodyContainer = styled.div`

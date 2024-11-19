@@ -10,7 +10,7 @@ import SlideContent from "./SlideContent";
 
 export default function SwiperComponent() {
   return (
-    <>
+    <div>
       <Swiper
         loop={true}
         cssMode={true}
@@ -36,6 +36,6 @@ export default function SwiperComponent() {
           <SlideContent />
         </SwiperSlide>
       </Swiper>
-    </>
+    </div>
   );
 }

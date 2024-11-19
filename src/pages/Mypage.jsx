@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import Header from "./Header/Header";
+import Header from "../components/Mypage/Header/Header";
 
 const Wrapper = styled.div`
   width: 1336px;

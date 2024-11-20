@@ -21,9 +21,10 @@ const Header = () => {
 
 const Container = styled.div`
   z-index: 10;
-  position: fixed;
+  position: absolute;
   top: 0;
   width: 100%;
+  height: 90px;
   background-color: white;
   display: flex;
   justify-content: space-between;

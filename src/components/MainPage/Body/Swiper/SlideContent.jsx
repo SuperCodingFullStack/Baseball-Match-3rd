@@ -26,7 +26,7 @@ const SlideContent = () => {
 
 const SlideContainer = styled.div`
   max-width: 600px;
-  margin: 4rem;
+  margin: 1rem;
   text-align: center;
   width: 100%;
 `;

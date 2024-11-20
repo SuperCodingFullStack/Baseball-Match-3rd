@@ -7,11 +7,10 @@ import "./styles.css";
 
 import { Navigation, Pagination, Mousewheel, Keyboard } from "swiper/modules";
 import SlideContent from "./SlideContent";
-import styled from "styled-components";
 
 export default function SwiperComponent() {
   return (
-    <Container>
+    <div>
       <Swiper
         loop={true}
         cssMode={true}
@@ -37,10 +36,6 @@ export default function SwiperComponent() {
           <SlideContent />
         </SwiperSlide>
       </Swiper>
-    </Container>
+    </div>
   );
 }
-
-const Container = styled.div`
-  margin-top: 90px;
-`;

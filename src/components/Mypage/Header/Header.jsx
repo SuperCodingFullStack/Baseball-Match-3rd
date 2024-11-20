@@ -1,19 +1,20 @@
 import React from "react";
 import styled from "styled-components";
-import AlarmButton from "./Alam";
-import SettingsButton from "./Option";
-import FriendsListButton from "./FriendsListButton";
-import ProfileImageButton from "./ProfileImage";
-import UserNickname from "./UserNickname";
-import FriendCountButton from "./FriendsCounter";
+import AlarmButton from "./AlarmButton";
+import Option from "./Option"; // Renamed from SettingsButton
+import FriendAddButton from "./FriendAddButton";
 
 const HeaderContainer = styled.header`
+  width: 100%;
+  max-width: 1200px;
+  background-color: #40cf66;
+  color: #fff;
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   padding: 1rem;
-  background-color: #ffffff;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 `;
 
 const LeftSection = styled.div`
@@ -33,13 +34,10 @@ const Header = () => {
     <HeaderContainer>
       <LeftSection>
         <AlarmButton />
-        <SettingsButton />
-        <FriendsListButton />
+        <Option />
       </LeftSection>
       <RightSection>
-        <ProfileImageButton src="https://via.placeholder.com/40" />
-        <UserNickname name="John Doe" />
-        <FriendCountButton count={42} />
+        <FriendAddButton />
       </RightSection>
     </HeaderContainer>
   );

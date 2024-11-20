@@ -4,7 +4,7 @@ import { useState } from "react";
 import { LOTTE, NC } from "../../../constants";
 import { BsArrowLeftCircle } from "react-icons/bs";
 import { BsArrowRightCircle } from "react-icons/bs";
-// import Weather from "../../../hooks/Weather";
+import Weather from "./Weather";
 
 const WeeklyCalendar = () => {
   const [currentWeek, setCurrentWeek] = useState(dayjs().startOf("week"));
@@ -67,7 +67,7 @@ const WeeklyCalendar = () => {
             <p>NC</p>
           </div>
           <p className="stadium">사직 야구장</p>
-          {/* <Weather /> */}
+          <Weather className="weather" />
         </Game>
       </Content>
     </CalendarContainer>
@@ -183,6 +183,9 @@ const Game = styled.li`
 
   .stadium {
     margin-top: 1.5rem;
+  }
+
+  .weather {
   }
 `;
 

@@ -5,6 +5,7 @@ import PartyPost from "./pages/partyPost/PartyPost";
 import PartyPostWrite from "./pages/partyPost/PartyPostWrite";
 import { Reset } from "styled-reset";
 import Mypage from "./components/Mypage/Mypage";
+import Signup from "./pages/Signup";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/partyPost" element={<PartyPost />} />
           <Route path="/postWrite" element={<PartyPostWrite />} />
           <Route path="/mypage" element={<Mypage />} />
+          <Route path="/signup" element={<Signup />} />
         </Routes>
       </BrowserRouter>
     </>

@@ -6,8 +6,14 @@ import { SlUser } from "react-icons/sl";
 import { LuLogIn } from "react-icons/lu";
 import { LuLogOut } from "react-icons/lu";
 import { IoSettingsOutline } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
 
 const Icon = () => {
+  const navigate = useNavigate();
+  const handleMypageBtnClick = () => {
+    navigate("/mypage");
+  };
+
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const profileRef = useRef(null);
@@ -46,7 +52,7 @@ const Icon = () => {
       />
       {isDropdownOpen && (
         <DropdownMenu ref={dropdownRef}>
-          <DropdownItem>
+          <DropdownItem onClick={handleMypageBtnClick}>
             <SlUser /> 마이페이지
           </DropdownItem>
           <DropdownItem>

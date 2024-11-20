@@ -3,7 +3,7 @@ import styled from "styled-components";
 import AlarmButton from "./Alam";
 import SettingsButton from "./Option";
 import FriendsListButton from "./FriendsListButton";
-import ProfileImageButton from "./ProfileImage";
+import ProfileImageButton from "./ProfileImageButton";
 import UserNickname from "./UserNickname";
 import FriendCountButton from "./FriendsCounter";
 

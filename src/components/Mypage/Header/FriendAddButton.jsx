@@ -17,7 +17,7 @@ const AddButton = styled.button`
 `;
 
 const FriendAddButton = () => {
-  return <AddButton>Add Friend</AddButton>;
+  return <AddButton>친구 추가</AddButton>;
 };
 
 export default FriendAddButton;

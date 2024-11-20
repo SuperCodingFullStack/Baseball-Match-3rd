@@ -1,0 +1,34 @@
+.swiper {
+  width: 100vw;
+  height: 100%;
+}
+
+.swiper-slide {
+  text-align: center;
+  font-size: 18px;
+  background: #f4f4f4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  color: #acfe49;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+  color: gray;
+}
+
+/* 기본 색상 */
+.swiper-pagination-bullet {
+  background-color: gray;
+}
+
+.swiper-pagination-bullet-active {
+  background-color: #acfe49;
+}

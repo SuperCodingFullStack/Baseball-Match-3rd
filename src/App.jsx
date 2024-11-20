@@ -4,7 +4,7 @@ import PartyPost from "./pages/partyPost/PartyPost";
 import PartyPostLists from "./pages/partyPost/partyPostLists";
 import PartyPostWrite from "./pages/partyPost/PartyPostWrite";
 import { Reset } from "styled-reset";
-import Mypage from "./components/pages/Mypage";
+import Mypage from "./pages/Mypage";
 import Signup from "./pages/Signup";
 
 function App() {

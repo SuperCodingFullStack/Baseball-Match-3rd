@@ -2,6 +2,9 @@ import styled from "styled-components";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { LOTTE, NC } from "../../../constants";
+import { BsArrowLeftCircle } from "react-icons/bs";
+import { BsArrowRightCircle } from "react-icons/bs";
+// import Weather from "../../../hooks/Weather";
 
 const WeeklyCalendar = () => {
   const [currentWeek, setCurrentWeek] = useState(dayjs().startOf("week"));
@@ -28,12 +31,16 @@ const WeeklyCalendar = () => {
     <CalendarContainer>
       <TodayButton onClick={handleToday}>Today</TodayButton>
       <Header>
-        <button onClick={handlePrevWeek}>{"<"}</button>
+        <button onClick={handlePrevWeek}>
+          <BsArrowLeftCircle />
+        </button>
         <span>
           {currentWeek.format("MM월 DD일")} -{" "}
           {currentWeek.add(6, "day").format("MM월 DD일")}
         </span>
-        <button onClick={handleNextWeek}>{">"}</button>
+        <button onClick={handleNextWeek}>
+          <BsArrowRightCircle />
+        </button>
       </Header>
       <Days>
         {weekDays.map((day) => (
@@ -49,7 +56,7 @@ const WeeklyCalendar = () => {
         ))}
       </Days>
       <Content>
-        <Game1>
+        <Game>
           <div>
             <img src={LOTTE} />
             <p>롯데</p>
@@ -59,7 +66,9 @@ const WeeklyCalendar = () => {
             <img src={NC} />
             <p>NC</p>
           </div>
-        </Game1>
+          <p className="stadium">사직 야구장</p>
+          {/* <Weather /> */}
+        </Game>
       </Content>
     </CalendarContainer>
   );
@@ -79,15 +88,16 @@ const CalendarContainer = styled.div`
 const Header = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin-top: 2rem;
   margin-bottom: 1rem;
   button {
-    background: #ddd;
+    font-size: 1.5rem;
     border: none;
-    padding: 0.5rem 1rem;
     cursor: pointer;
     &:hover {
-      background: #bbb;
+      border: none;
+      // background: #bbb;
     }
   }
   span {
@@ -99,13 +109,13 @@ const Header = styled.div`
 const TodayButton = styled.button`
   display: flex;
   justify-self: end;
-  background: #acfe49;
+  background: #f4f4f4;
   color: black;
   border: none;
   padding: 0.5rem 1rem;
   cursor: pointer;
   &:hover {
-    color: white;
+    background: #eaeaea;
     border: none;
   }
 `;
@@ -122,7 +132,7 @@ const Day = styled.div`
   align-items: center;
   font-size: 1rem;
   cursor: pointer;
-  width: 80px;
+  width: 60px;
   height: 80px;
   box-sizing: border-box;
   border-radius: 8px;
@@ -137,7 +147,8 @@ const Day = styled.div`
   }
 
   &.today {
-    border: 1px solid #acfe49;
+    background: #acfe49;
+    color: black;
     border-radius: 8px;
     padding: 0.1rem;
   }
@@ -148,13 +159,30 @@ const Content = styled.ul`
   text-align: center;
 `;
 
-const Game1 = styled.li`
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  img {
-    weight: 40px;
-    height: 40px;
+const Game = styled.li`
+  div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+
+    img {
+      weight: 40px;
+      height: 40px;
+    }
+  }
+
+  span {
+    font-weight: 800;
+  }
+
+  p {
+    font-weight: 600; /* 모든 p 태그에 적용 */
+    text-align: center; /* 필요 시 중앙 정렬 */
+  }
+
+  .stadium {
+    margin-top: 1.5rem;
   }
 `;
 

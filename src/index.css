@@ -46,7 +46,7 @@ button {
   transition: border-color 0.25s;
 }
 button:hover {
-  border-color: #646cff;
+  border-color: none;
 }
 button:focus,
 button:focus-visible {
@@ -64,4 +64,16 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+.mainSwiper {
+  margin: 0 auto;
+  width: 100%;
+}
+
+header {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 80px;
 }

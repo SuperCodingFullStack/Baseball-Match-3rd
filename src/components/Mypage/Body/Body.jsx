@@ -4,6 +4,7 @@ import styled from "styled-components";
 const BodyWrapper = styled.div`
   min-height: auto; /* Full height of the viewport */
   width: 100%; /* Full width of the viewport */
+  z-index: 10;
   max-width: 1920px; /* Limit to 1920px for large screens */
   margin: 0 auto; /* Center the content */
   padding: 2rem;

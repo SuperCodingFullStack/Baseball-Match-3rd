@@ -10,6 +10,7 @@ const MypageContainer = styled.div`
   background-color: #f7f9fc;
   display: flex;
   flex-direction: column;
+  z-index: 10;
   align-items: center;
   padding: 1rem;
   box-sizing: border-box;

@@ -1,49 +1,43 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
-import { WiDaySunny } from "react-icons/wi";
-import { WiDayCloudy } from "react-icons/wi";
-import { WiCloud } from "react-icons/wi";
-import { WiCloudy } from "react-icons/wi";
-import { WiShowers } from "react-icons/wi";
-import { WiDayRain } from "react-icons/wi";
-import { WiDayStormShowers } from "react-icons/wi";
-import { WiSnowflakeCold } from "react-icons/wi";
-import { WiWindy } from "react-icons/wi";
-import { WiNa } from "react-icons/wi";
 import PropTypes from "prop-types";
+import {
+  WiDaySunny,
+  WiDayCloudy,
+  WiCloud,
+  WiCloudy,
+  WiShowers,
+  WiDayRain,
+  WiDayStormShowers,
+  WiSnowflakeCold,
+  WiWindy,
+  WiNa,
+} from "react-icons/wi";
 
-const WeatherSVG = ({ icon, size = "2rem" }) => {
-  switch (icon) {
-    case "01d":
-    case "01n":
-      return <WiDaySunny style={{ fontSize: size }} />;
-    case "02d":
-    case "02n":
-      return <WiDayCloudy style={{ fontSize: size }} />;
-    case "03d":
-    case "03n":
-      return <WiCloud style={{ fontSize: size }} />;
-    case "04d":
-    case "04n":
-      return <WiCloudy style={{ fontSize: size }} />;
-    case "09d":
-    case "09n":
-      return <WiShowers style={{ fontSize: size }} />;
-    case "10d":
-    case "10n":
-      return <WiDayRain style={{ fontSize: size }} />;
-    case "11d":
-    case "11n":
-      return <WiDayStormShowers style={{ fontSize: size }} />;
-    case "13d":
-    case "13n":
-      return <WiSnowflakeCold style={{ fontSize: size }} />;
-    case "50d":
-    case "50n":
-      return <WiWindy style={{ fontSize: size }} />;
-    default:
-      return <WiNa style={{ fontSize: size }} />;
-  }
+const iconMap = {
+  "01d": WiDaySunny,
+  "01n": WiDaySunny,
+  "02d": WiDayCloudy,
+  "02n": WiDayCloudy,
+  "03d": WiCloud,
+  "03n": WiCloud,
+  "04d": WiCloudy,
+  "04n": WiCloudy,
+  "09d": WiShowers,
+  "09n": WiShowers,
+  "10d": WiDayRain,
+  "10n": WiDayRain,
+  "11d": WiDayStormShowers,
+  "11n": WiDayStormShowers,
+  "13d": WiSnowflakeCold,
+  "13n": WiSnowflakeCold,
+  "50d": WiWindy,
+  "50n": WiWindy,
+};
+
+const WeatherSVG = ({ icon, size = "1.7rem" }) => {
+  const IconComponent = iconMap[icon] || WiNa;
+  return <IconComponent style={{ fontSize: size }} />;
 };
 
 WeatherSVG.propTypes = {
@@ -91,15 +85,20 @@ const Weather = () => {
   return (
     <WeatherDescription>
       <WeatherSVG icon={weatherIcon} />
-      <span>{roundedTemp}°C</span>
+      <p>{roundedTemp}°C</p>
     </WeatherDescription>
   );
 };
 
 const WeatherDescription = styled.div`
   display: flex;
-  text-align: center;
   align-items: center;
+  justify-content: center;
+
+  p {
+    font-size: 1.1rem;
+    line-height: 1.2;
+  }
 `;
 
 export default Weather;

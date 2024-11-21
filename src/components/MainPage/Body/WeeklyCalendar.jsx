@@ -57,18 +57,18 @@ const WeeklyCalendar = () => {
       </Days>
       <Content>
         <Game>
+          <img src={LOTTE} />
+          <p>롯데</p>
           <div>
-            <img src={LOTTE} />
-            <p>롯데</p>
-            <div>
-              <span>VS</span>
-            </div>
-            <img src={NC} />
-            <p>NC</p>
+            <span>VS</span>
           </div>
-          <p className="stadium">사직 야구장</p>
-          <Weather className="weather" />
+          <img src={NC} />
+          <p>NC</p>
         </Game>
+        <GameInfo>
+          <p className="stadium">사직 야구장</p>
+          <Weather />
+        </GameInfo>
       </Content>
     </CalendarContainer>
   );
@@ -160,32 +160,38 @@ const Content = styled.ul`
 `;
 
 const Game = styled.li`
-  div {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
 
-    img {
-      weight: 40px;
-      height: 40px;
-    }
+  img {
+    weight: 40px;
+    height: 40px;
   }
 
   span {
     font-weight: 800;
+    font-size: 1.5em;
   }
 
   p {
-    font-weight: 600; /* 모든 p 태그에 적용 */
-    text-align: center; /* 필요 시 중앙 정렬 */
+    font-weight: 600;
+    text-align: center;
   }
+`;
 
-  .stadium {
-    margin-top: 1.5rem;
-  }
+const GameInfo = styled.div`
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.3rem;
 
-  .weather {
+  p {
+    text-align: center;
+    line-height: 1.1;
+    font-size: 1.1rem;
   }
 `;
 

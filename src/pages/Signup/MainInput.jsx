@@ -10,6 +10,9 @@ const Inputs = styled.div`
   display: inline-block;
   padding: 50px;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+`;
+
+const TitleWrapper = styled.div`
   > h2 {
     font-size: 18px;
     font-weight: 600;
@@ -79,10 +82,12 @@ const MainInput = ({
 
   return (
     <Inputs>
-      <h2>
-        {title}
-        {isRequired ? <b>*</b> : null}
-      </h2>
+      <TitleWrapper>
+        <h2>
+          {title}
+          {isRequired ? <b>*</b> : null}
+        </h2>
+      </TitleWrapper>
       <RealInput>
         <input
           type={types}

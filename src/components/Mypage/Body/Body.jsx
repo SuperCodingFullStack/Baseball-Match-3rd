@@ -9,7 +9,7 @@ const BodyWrapper = styled.div`
   margin: 0 auto; /* Center the content */
   padding: 2rem;
   background-color: #f4f4f4;
-  display: grid;
+  /* display: grid; */
   gap: 2rem;
   grid-template-columns: repeat(
     auto-fit,
@@ -25,6 +25,7 @@ const SectionContainer = styled.div`
   padding: 2rem;
   width: 90%;
   max-width: 600px;
+  margin: 1rem;
 `;
 
 const SectionTitle = styled.h2`

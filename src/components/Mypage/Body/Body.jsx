@@ -1,31 +1,43 @@
 import React from "react";
 import styled from "styled-components";
 
-const BodyWrapper = styled.div`
-  min-height: auto; /* Full height of the viewport */
-  width: 100%; /* Full width of the viewport */
-  z-index: 10;
-  max-width: 1920px; /* Limit to 1920px for large screens */
-  margin: 0 auto; /* Center the content */
+
+const BodyWrapper = styled.main`
+  display: flex;
+  flex-direction: column; /* Stack children vertically */
+  gap: 2rem; /* Add space between items */
   padding: 2rem;
   background-color: #f4f4f4;
-  /* display: grid; */
-  gap: 2rem;
-  grid-template-columns: repeat(
-    auto-fit,
-    minmax(300px, 1fr)
-  ); /* Auto adjust columns */
-  justify-items: center;
+  border-radius: 10px;
+  width: auto; /* Full width of the container */
+  max-width: 1920px; /* Ensure consistent width */
+  margin: 0 auto; /* Center on the page */
 `;
+
+// const BodyWrapper = styled.div`
+//   min-height: auto; /* Full height of the viewport */
+//   width: 100%; /* Full width of the viewport */
+//   z-index: 10;
+//   max-width: 1920px; /* Limit to 1920px for large screens */
+//   margin: 0 auto; /* Center the content */
+//   padding: 2rem;
+//   background-color: #f4f4f4;
+//   /* display: grid; */
+//   gap: 2rem;
+//   grid-template-columns: repeat(
+//     auto-fit,
+//     minmax(300px, 1fr)
+//   ); /* Auto adjust columns */
+//   justify-items: center;
+// `;
 
 const SectionContainer = styled.div`
   background-color: #ffffff;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   padding: 2rem;
-  width: 90%;
-  max-width: 600px;
-  margin: 1rem;
+  width: auto; /* Set a fixed width for each section */
+  text-align: center;
 `;
 
 const SectionTitle = styled.h2`

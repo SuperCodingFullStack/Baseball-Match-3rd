@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import {
   DOOSAN,
-  HANHWA,
+  HANWHA,
   KIA,
   KIWOOM,
   KT,
@@ -32,7 +32,7 @@ const DropdownTeam = () => {
         Kt wiz
       </KtWiz>
       <HanhwaEagles>
-        <HanhwaImg src={HANHWA} />
+        <HanhwaImg src={HANWHA} />
         한화 이글스
       </HanhwaEagles>
       <KiwoomHeros>

@@ -1,14 +1,12 @@
 .swiper {
   width: 100vw;
   height: 100%;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .swiper-slide {
   text-align: center;
   font-size: 18px;
-  background: #dbdbdb;
+  background: #f4f4f4;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -16,19 +14,21 @@
 
 .swiper-button-next,
 .swiper-button-prev {
-  color: #799d40;
+  color: #acfe49;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .swiper-button-next:hover,
 .swiper-button-prev:hover {
-  color: #373d4c;
+  color: gray;
 }
 
 /* 기본 색상 */
 .swiper-pagination-bullet {
-  background-color: #373d4c;
+  background-color: gray;
 }
 
 .swiper-pagination-bullet-active {
-  background-color: #799d40;
+  background-color: #acfe49;
 }

@@ -1,17 +1,15 @@
 import styled from "styled-components";
-import SwiperComponent from "./Swiper/SwiperComponent";
+import WeeklyCalendar from "./WeeklyCalendar";
 
 const Body = () => {
   return (
     <BodyContainer>
-      <SwiperComponent />
+      <WeeklyCalendar />
     </BodyContainer>
   );
 };
 
 const BodyContainer = styled.div`
-  display: flex;
-  flex-direction: column;
   width: 100%;
 `;
 

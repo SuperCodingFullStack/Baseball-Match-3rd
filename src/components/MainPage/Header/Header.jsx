@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import Navbar from "./Navbar";
-import { FaBaseballBatBall } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import Icon from "./icon";
 
@@ -10,8 +9,7 @@ const Header = () => {
       <LeftSection>
         <Link to="/">
           <Logo>
-            <FaBaseballBatBall />
-            Ball Mate
+            <LogoImg src="../../../../public/assets/logo.png" />
           </Logo>
         </Link>
         <Navbar />
@@ -23,14 +21,14 @@ const Header = () => {
 
 const Container = styled.div`
   z-index: 10;
-  position: fixed;
+  position: absolute;
   top: 0;
   width: 100%;
+  height: 90px;
   background-color: white;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #dbdbdb;
 `;
 
 const LeftSection = styled.div`
@@ -41,11 +39,13 @@ const LeftSection = styled.div`
 
 const Logo = styled.div`
   display: flex;
-  text-align: center;
-  font-size: 3rem;
-  cursor: pointer;
-  color: #799d40;
   align-items: center;
+`;
+
+const LogoImg = styled.img`
+  width: 90px;
+  height: 90px;
+  cursor: pointer;
 `;
 
 export default Header;

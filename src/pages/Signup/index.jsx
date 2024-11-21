@@ -21,12 +21,15 @@ const Signup = () => {
 
   useEffect(() => {
     const observer = new IntersectionObserver(handleIntersection, {
-      threshold: 0.1,
+      threshold: 1,
     });
 
     linkSection.forEach((section) => {
       const element = document.getElementById(section.id);
-      if (element) observer.observe(element);
+      if (element) {
+        observer.observe(element);
+        element.scrollIntoView({ behavior: "smooth" });
+      }
     });
 
     return () => {

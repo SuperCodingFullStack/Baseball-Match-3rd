@@ -1,11 +1,18 @@
 import React from "react";
+import { useDispatch } from "react-redux";
 import styled from "styled-components";
+import { signUpActions } from "../../Store/slice/signUpSlice";
+import { useSelector } from "react-redux";
+import { passwordCheck } from "../../utils/passwordCheck";
 
 const Inputs = styled.div`
   font-family: "Pretendard", sans-serif;
   display: inline-block;
   padding: 50px;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+`;
+
+const TitleWrapper = styled.div`
   > h2 {
     font-size: 18px;
     font-weight: 600;
@@ -50,19 +57,48 @@ const Condition = styled.div`
   }
 `;
 
-const MainInput = () => {
+const MainInput = ({
+  title,
+  isRequired,
+  types,
+  placeholder,
+  isNested,
+  conditionText,
+  maxLength,
+}) => {
+  const dispatch = useDispatch();
+  const originPasswd = useSelector((state) => state.signUp.passwd);
+
+  const onChangeHandler = (e) => {
+    switch (title) {
+      case "아이디":
+        dispatch(signUpActions.setEmail(e.target.value));
+      case "비밀번호":
+        dispatch(signUpActions.setPasswd(e.target.value));
+      case "비밀번호 확인":
+        const isConfirm = passwordCheck(originPasswd, e.target.value);
+    }
+  };
+
   return (
     <Inputs>
-      <h2>
-        아이디<b>*</b>
-      </h2>
+      <TitleWrapper>
+        <h2>
+          {title}
+          {isRequired ? <b>*</b> : null}
+        </h2>
+      </TitleWrapper>
       <RealInput>
-        <input type="text" placeholder="아이디를 입력해주세요." />
-        <button>중복확인</button>
+        <input
+          type={types}
+          placeholder={placeholder}
+          onChange={onChangeHandler}
+        />
+        {isNested ? <button>중복확인</button> : null}
       </RealInput>
       <Condition>
-        <p>한글,영문,특수문자 사용 가능</p>
-        <span>0/50</span>
+        {conditionText}
+        <span>0/{maxLength}</span>
       </Condition>
     </Inputs>
   );

@@ -6,7 +6,7 @@ export const SAMSUNG = "/assets/samsung.svg";
 
 export const KT = "/assets/kt.svg";
 
-export const HANWHA = "/assets/hanwha.svg";
+export const HANHWA = "/assets/hanwha.svg";
 
 export const KIWOOM = "/assets/kiwoom.svg";
 

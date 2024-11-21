@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import {
   DOOSAN,
-  HANWHA,
+  HANHWA,
   KIA,
   KIWOOM,
   KT,
@@ -14,10 +14,6 @@ import {
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 
-DropdownTeam.propTypes = {
-  onSelectTeam: PropTypes.func,
-};
-
 const DropdownTeam = ({ onSelectTeam }) => {
   const navigate = useNavigate();
 
@@ -27,6 +23,10 @@ const DropdownTeam = ({ onSelectTeam }) => {
     }
     // 선택된 팀을 URL 파라미터로 전달하여 TeamInfo 페이지로 이동
     navigate(`/api/teamInfo/${team}`);
+  };
+
+  DropdownTeam.propTypes = {
+    onSelectTeam: PropTypes.func,
   };
 
   return (
@@ -48,7 +48,7 @@ const DropdownTeam = ({ onSelectTeam }) => {
         Kt wiz
       </KtWiz>
       <HanhwaEagles onClick={() => handleTeamClick("HANHWA")}>
-        <HanhwaImg src={HANWHA} />
+        <HanhwaImg src={HANHWA} />
         한화 이글스
       </HanhwaEagles>
       <KiwoomHeros onClick={() => handleTeamClick("KIWOOM")}>

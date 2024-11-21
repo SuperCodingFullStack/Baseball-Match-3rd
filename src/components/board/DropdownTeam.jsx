@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import {
   DOOSAN,
-  HANWHA,
+  HANHWA,
   KIA,
   KIWOOM,
   KT,
@@ -10,64 +10,48 @@ import {
   NC,
   SAMSUNG,
   SSG,
-} from "../../../constants";
-import { useNavigate } from "react-router-dom";
-import PropTypes from "prop-types";
+} from "../../constants";
 
-DropdownTeam.propTypes = {
-  onSelectTeam: PropTypes.func,
-};
-
-const DropdownTeam = ({ onSelectTeam }) => {
-  const navigate = useNavigate();
-
-  const handleTeamClick = (team) => {
-    if (onSelectTeam) {
-      onSelectTeam(team);
-    }
-    // 선택된 팀을 URL 파라미터로 전달하여 TeamInfo 페이지로 이동
-    navigate(`/api/teamInfo/${team}`);
-  };
-
+const DropdownTeam = () => {
   return (
     <TeamContainer>
-      <LotteGiants onClick={() => handleTeamClick("LOTTE")}>
+      <LotteGiants>
         <LotteImg src={LOTTE} />
         롯데 자이언츠
       </LotteGiants>
-      <KiaTigers onClick={() => handleTeamClick("KIA")}>
+      <KiaTigers>
         <KiaImg src={KIA} />
         KIA 타이거즈
       </KiaTigers>
-      <SamsungLions onClick={() => handleTeamClick("SAMSUNG")}>
+      <SamsungLions>
         <SamsungImg src={SAMSUNG} />
         삼성 라이온즈
       </SamsungLions>
-      <KtWiz onClick={() => handleTeamClick("KT")}>
+      <KtWiz>
         <KtImg src={KT} />
         Kt wiz
       </KtWiz>
-      <HanhwaEagles onClick={() => handleTeamClick("HANHWA")}>
-        <HanhwaImg src={HANWHA} />
+      <HanhwaEagles>
+        <HanhwaImg src={HANHWA} />
         한화 이글스
       </HanhwaEagles>
-      <KiwoomHeros onClick={() => handleTeamClick("KIWOOM")}>
+      <KiwoomHeros>
         <KiwoomImg src={KIWOOM} />
         키움 히어로즈
       </KiwoomHeros>
-      <LgTwins onClick={() => handleTeamClick("LG")}>
+      <LgTwins>
         <LgImg src={LG} />
         LG 트윈스
       </LgTwins>
-      <NcDinos onClick={() => handleTeamClick("NC")}>
+      <NcDinos>
         <NcImg src={NC} />
         NC 다이노스
       </NcDinos>
-      <DoosanBears onClick={() => handleTeamClick("DOOSAN")}>
+      <DoosanBears>
         <DoosanImg src={DOOSAN} />
         두산 베어스
       </DoosanBears>
-      <SsgLanders onClick={() => handleTeamClick("SSG")}>
+      <SsgLanders>
         <SsgImg src={SSG} />
         SSG 랜더스
       </SsgLanders>

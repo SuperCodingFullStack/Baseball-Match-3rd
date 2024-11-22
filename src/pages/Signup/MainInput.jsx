@@ -7,6 +7,7 @@ import { signUpErrorActions } from "../../Store/slice/signUpErrorSlice";
 import { useSelector } from "react-redux";
 import { emailCheck } from "../../utils/emailCheck";
 import ConfirmModal from "./ConfirmModal";
+import { passwdCheck } from "../../utils/passwdCheck";
 
 const Inputs = styled.div`
   font-family: "Pretendard", sans-serif;
@@ -26,6 +27,10 @@ const Inputs = styled.div`
     font-size: 14px;
     font-weight: 400;
     grid-column: 4 / 5;
+    &:disabled {
+      background-color: rgb(209, 213, 219);
+      color: #fff;
+    }
   }
 `;
 
@@ -98,6 +103,8 @@ const MainInput = ({
   const dispatch = useDispatch();
 
   const email = useSelector((state) => state.signUp.email);
+  const passwd = useSelector((state) => state.signUp.passwd);
+  const passwdError = useSelector((state) => state.signUpError.password);
 
   const onFocusHandler = () => {
     setIsTouched(true);
@@ -107,6 +114,12 @@ const MainInput = ({
     switch (title) {
       case "아이디":
         dispatch(signUpActions.setEmail(e.target.value));
+        if (e.target.value.length > maxLength) {
+          dispatch(signUpActions.setEmail(e.target.value.slice(0, maxLength)));
+        }
+        break;
+      case "비밀번호":
+        dispatch(signUpActions.setPasswd(e.target.value));
     }
   };
 
@@ -117,13 +130,23 @@ const MainInput = ({
   };
 
   useEffect(() => {
-    if (email) {
+    if (email && title === "아이디") {
       const emailResponse = emailCheck(email);
       if (emailResponse.error) {
         dispatch(signUpErrorActions.setEmailError(emailResponse.msg));
+      } else {
+        dispatch(signUpErrorActions.setEmailOk(emailResponse.msg));
       }
     }
-  }, [email]);
+    if (passwd && title === "비밀번호") {
+      const passwdResponse = passwdCheck(passwd);
+      if (passwdResponse.isError) {
+        dispatch(signUpErrorActions.setPasswordError(passwdResponse.msg));
+      } else {
+        dispatch(signUpErrorActions.setPasswordOk(passwdResponse.msg));
+      }
+    }
+  }, [email, passwd]);
 
   return (
     <Inputs>
@@ -132,6 +155,11 @@ const MainInput = ({
           {title}
           {isRequired ? <b>*</b> : null}
         </h2>
+        {title !== "아이디" && isTouched && (
+          <p className={`${passwdError.isError ? "error" : "ok"}`}>
+            {passwdError.errorMsg}
+          </p>
+        )}
       </TitleWrapper>
       <RealInput>
         <input
@@ -139,6 +167,10 @@ const MainInput = ({
           placeholder={placeholder}
           onFocus={onFocusHandler}
           onChange={onChangeHandler}
+          value={
+            (title === "아이디" && isTouched ? email : "") ||
+            (title === "비밀번호" && isTouched ? passwd : "")
+          }
         />
         {isModal &&
           ReactDOM.createPortal(
@@ -151,10 +183,21 @@ const MainInput = ({
             document.getElementById("root")
           )}
       </RealInput>
-      {isNested ? <button onClick={isNestHandler}>중복확인</button> : null}
+      {isNested ? (
+        <button
+          onClick={isNestHandler}
+          disabled={!isTouched || email.trim() == ""}
+        >
+          중복확인
+        </button>
+      ) : null}
       <Condition className={`${isReverse ? "reverse" : ""}`}>
         <p>{conditionText}</p>
-        <span>0/{maxLength}</span>
+        <span>
+          {(title === "아이디" && isTouched ? email.length : "0") ||
+            (title === "비밀번호" && passwd.length)}
+          /{maxLength}
+        </span>
       </Condition>
     </Inputs>
   );

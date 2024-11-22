@@ -17,6 +17,10 @@ const signUpErrorSlice = createSlice({
       state.email.isError = true;
       state.email.errorMsg = action.payload;
     },
+    setEmailOk(state, action) {
+      state.email.isError = false;
+      state.email.errorMsg = action.payload;
+    },
     setPasswordError(state, action) {
       state.password.isError = true;
       state.password.errorMsg = action.payload;

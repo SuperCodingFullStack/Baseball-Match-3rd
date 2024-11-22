@@ -92,14 +92,14 @@ const ConfirmModal = ({ type, isModal, setIsModal, isTouched }) => {
         <ModalMsgs>
           <p>{message}</p>
           <strong>
-            {isError | !isTouched
+            {isError
               ? "돌아가서 다시 아이디를 입력해주세요."
               : "이것으로 선택하시겠습니까?"}
           </strong>
         </ModalMsgs>
       </ModalMessage>
       <ModalButtons>
-        {!isError && isTouched ? (
+        {!isError ? (
           <>
             <button onClick={onClose}>아니오, 취소합니다.</button>
             <button onClick={onOk}>예, 선택할래요.</button>

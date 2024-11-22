@@ -12,6 +12,7 @@ import {
   SSG,
 } from "../../../constants";
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 
 const DropdownTeam = ({ onSelectTeam }) => {
   const navigate = useNavigate();
@@ -22,6 +23,10 @@ const DropdownTeam = ({ onSelectTeam }) => {
     }
     // 선택된 팀을 URL 파라미터로 전달하여 TeamInfo 페이지로 이동
     navigate(`/api/teamInfo/${team}`);
+  };
+
+  DropdownTeam.propTypes = {
+    onSelectTeam: PropTypes.func,
   };
 
   return (
@@ -80,6 +85,7 @@ const TeamContainer = styled.div`
   align-items: center;
   justify-content: center;
   padding: 1rem;
+  overflow-x: auto;
 `;
 
 const TeamItem = styled.div`

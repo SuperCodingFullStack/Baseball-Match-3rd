@@ -1,17 +1,19 @@
 import styled, { keyframes } from "styled-components";
 import { SlBell } from "react-icons/sl";
-import { IoChatbubbleOutline } from "react-icons/io5";
 import { useState, useEffect, useRef } from "react";
 import { SlUser } from "react-icons/sl";
-import { LuLogIn } from "react-icons/lu";
-import { LuLogOut } from "react-icons/lu";
-import { IoSettingsOutline } from "react-icons/io5";
+import { LuLogIn, LuLogOut } from "react-icons/lu";
+import { IoSettingsOutline, IoChatbubbleOutline } from "react-icons/io5";
+import { PiUserListBold } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
 
 const Icon = () => {
   const navigate = useNavigate();
   const handleMypageBtnClick = () => {
     navigate("/mypage");
+  };
+  const handleSignupBtnClick = () => {
+    navigate("/signup");
   };
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -60,6 +62,9 @@ const Icon = () => {
           </DropdownItem>
           <DropdownItem>
             <LuLogIn /> 로그인
+          </DropdownItem>
+          <DropdownItem onClick={handleSignupBtnClick}>
+            <PiUserListBold /> 회원가입
           </DropdownItem>
           <DropdownItem>
             <LuLogOut /> 로그아웃

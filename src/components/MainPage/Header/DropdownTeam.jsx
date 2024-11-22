@@ -85,6 +85,7 @@ const TeamContainer = styled.div`
   align-items: center;
   justify-content: center;
   padding: 1rem;
+  overflow-x: auto;
 `;
 
 const TeamItem = styled.div`

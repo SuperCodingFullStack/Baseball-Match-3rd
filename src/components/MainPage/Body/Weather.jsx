@@ -40,6 +40,19 @@ const WeatherSVG = ({ icon, size = "1.7rem" }) => {
   return <IconComponent style={{ fontSize: size }} />;
 };
 
+// const WeatherSVG = ({ icon, size = "1.7rem" }) => {
+//   const iconUrl = iconMap[icon] || WiNa;
+//   return typeof iconUrl === "string" ? (
+//     <img
+//       src={iconUrl}
+//       alt="weather-icon"
+//       style={{ width: size, height: size }}
+//     />
+//   ) : (
+//     <IconComponent style={{ fontSize: size }} />
+//   );
+// };
+
 WeatherSVG.propTypes = {
   icon: PropTypes.string.isRequired,
   size: PropTypes.string,
@@ -93,7 +106,10 @@ const Weather = () => {
 const WeatherDescription = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: end;
+  position: absolute;
+  top: 20px;
+  right: 20px;
 
   p {
     font-size: 1.1rem;

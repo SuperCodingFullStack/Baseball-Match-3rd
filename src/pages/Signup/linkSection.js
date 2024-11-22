@@ -7,4 +7,8 @@ export const linkSection = [
     section: "이름과 닉네임 입력",
     id: "nameAndNicks",
   },
+  {
+    section: "핸드폰 인증",
+    id: "phoneAuth",
+  },
 ];

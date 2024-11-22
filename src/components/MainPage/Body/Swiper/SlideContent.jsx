@@ -1,27 +1,53 @@
 import styled from "styled-components";
-import { LOTTE, NC } from "../../../../constants";
+import PropTypes from "prop-types";
+import { getTeamLogo } from "../../../../utils/getTeamLogo";
 
-const SlideContent = () => {
+const SlideContent = ({ date, games }) => {
   return (
     <SlideContainer>
       <Title>경기 결과</Title>
-      <Date>10.01 화</Date>
-      <Result>
-        <Team>
-          <HomeTeamImg src={LOTTE} />
-          <HomeTeam>롯데</HomeTeam>
-        </Team>
-        <Score>
-          <HomeScore>5</HomeScore>:<AwayScore>1</AwayScore>
-        </Score>
-        <Team>
-          <AwayTeamImg src={NC} />
-          <AwayTeam>NC</AwayTeam>
-        </Team>
-      </Result>
-      <Stadium>사직 야구장</Stadium>
+      <Date>{date}</Date>
+      {games.map((game, index) => (
+        <Result key={index}>
+          <Team>
+            <HomeTeamImg src={getTeamLogo(game.homeTeam)} alt={game.HomeTeam} />
+            <HomeTeam>{game.homeTeam}</HomeTeam>
+          </Team>
+          <Score>
+            <DynamicScore isWinnig={game.homeTeamScore > game.awayTeamScore}>
+              {game.homeTeamScore}
+            </DynamicScore>
+            :
+            <DynamicScore isWinnig={game.awayTeamScore > game.homeTeamScore}>
+              {game.awayTeamScore}
+            </DynamicScore>
+          </Score>
+          <Team>
+            <AwayTeamImg src={getTeamLogo(game.awayTeam)} alt={game.awayTeam} />
+            <AwayTeam>{game.awayTeam}</AwayTeam>
+          </Team>
+          <Stadium>{game.stadium}</Stadium>
+        </Result>
+      ))}
     </SlideContainer>
   );
+};
+
+SlideContent.propTypes = {
+  date: PropTypes.string.isRequired,
+  games: PropTypes.arrayOf(
+    PropTypes.shape({
+      matchDate: PropTypes.string.isRequired,
+      matchTime: PropTypes.string.isRequired,
+      homeTeam: PropTypes.isRequired,
+      homeTeamScore: PropTypes.string.isRequired,
+      awayTeam: PropTypes.string.isRequired,
+      awayTeamScore: PropTypes.string.isRequired,
+      stadium: PropTypes.string.isRequired,
+      gameSort: PropTypes.string,
+      tv: PropTypes.string,
+    })
+  ).isRequired,
 };
 
 const SlideContainer = styled.div`
@@ -78,11 +104,9 @@ const Score = styled.div`
   gap: 1rem;
 `;
 
-const HomeScore = styled.p`
-  color: red;
+const DynamicScore = styled.p`
+  color: $((props) => (props.isWinning ? "red": "black"));
 `;
-
-const AwayScore = styled.p``;
 
 const Stadium = styled.p`
   margin-bottom: 2rem;

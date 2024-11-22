@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import ReactDOM from "react-dom";
+import { useDispatch } from "react-redux";
 import styled from "styled-components";
+import { signUpActions } from "../../Store/slice/signUpSlice";
+import { signUpErrorActions } from "../../Store/slice/signUpErrorSlice";
+import { useSelector } from "react-redux";
+import { emailCheck } from "../../utils/emailCheck";
+import ConfirmModal from "./ConfirmModal";
 
 const Inputs = styled.div`
   font-family: "Pretendard", sans-serif;
@@ -87,6 +93,38 @@ const MainInput = ({
   maxLength,
   isReverse,
 }) => {
+  const [isTouched, setIsTouched] = useState(false);
+  const [isModal, setIsModal] = useState(false);
+  const dispatch = useDispatch();
+
+  const email = useSelector((state) => state.signUp.email);
+
+  const onFocusHandler = () => {
+    setIsTouched(true);
+  };
+
+  const onChangeHandler = (e) => {
+    switch (title) {
+      case "아이디":
+        dispatch(signUpActions.setEmail(e.target.value));
+    }
+  };
+
+  const isNestHandler = (e) => {
+    e.preventDefault();
+    setIsModal(true);
+    document.getElementById("root").classList.add("dim");
+  };
+
+  useEffect(() => {
+    if (email) {
+      const emailResponse = emailCheck(email);
+      if (emailResponse.error) {
+        dispatch(signUpErrorActions.setEmailError(emailResponse.msg));
+      }
+    }
+  }, [email]);
+
   return (
     <Inputs>
       <TitleWrapper>
@@ -96,9 +134,24 @@ const MainInput = ({
         </h2>
       </TitleWrapper>
       <RealInput>
-        <input type={types} placeholder={placeholder} />
+        <input
+          type={types}
+          placeholder={placeholder}
+          onFocus={onFocusHandler}
+          onChange={onChangeHandler}
+        />
+        {isModal &&
+          ReactDOM.createPortal(
+            <ConfirmModal
+              isModal={isModal}
+              setIsModal={setIsModal}
+              isTouched={isTouched}
+              type="id"
+            />,
+            document.getElementById("root")
+          )}
       </RealInput>
-      {isNested ? <button>중복확인</button> : null}
+      {isNested ? <button onClick={isNestHandler}>중복확인</button> : null}
       <Condition className={`${isReverse ? "reverse" : ""}`}>
         <p>{conditionText}</p>
         <span>0/{maxLength}</span>

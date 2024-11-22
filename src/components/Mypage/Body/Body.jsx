@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-
+import RequestFriendsList from "./RequestFriendsList";
 
 const BodyWrapper = styled.main`
   display: flex;
@@ -30,6 +30,30 @@ const BodyWrapper = styled.main`
 //   ); /* Auto adjust columns */
 //   justify-items: center;
 // `;
+const sendFriendRequest = async () => {
+  try {
+    const yourAuthToken = localStorage.getItem("jwtToken"); // 인증 토큰 예시
+    const response = await fetch(`/api/post/${post_id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        // Authorization: `Bearer ${yourAuthToken}`, // 필요 시 인증 토큰 추가
+      },
+    });
+
+    if (response.ok) {
+      alert("친구 요청이 성공적으로 보내졌습니다.");
+    } else {
+      alert("친구 요청에 실패했습니다. 다시 시도해 주세요.");
+    }
+  } catch (error) {
+    console.error("Error sending friend request:", error);
+    alert("오류가 발생했습니다. 다시 시도해 주세요.");
+  }
+};
+
+const data = response.data;
+const title = data.title;
 
 const SectionContainer = styled.div`
   background-color: #ffffff;
@@ -70,25 +94,25 @@ const BulletinBoard = ({ title, items }) => (
   </SectionContainer>
 );
 
-const Body = () => (
-  <BodyWrapper>
-    <BulletinBoard
-      title="나의 작성글 목록"
-      items={["Post 1", "Post 2", "Post 3"]}
-    />
-    <BulletinBoard
-      title="나의 즐겨찾기"
-      items={["Favorite 1", "Favorite 2", "Favorite 3"]}
-    />
-    <BulletinBoard
-      title="파티 요청"
-      items={["Request 1", "Request 2", "Request 3"]}
-    />
-    <BulletinBoard
-      title="참여파티 목록"
-      items={["Party 1", "Party 2", "Party 3"]}
-    />
-  </BodyWrapper>
-);
+const Body = () => {
+  return (
+    <BodyWrapper>
+      <BulletinBoard title="나의 작성글" items={[title, title, title]} />
+      <BulletinBoard
+        title="나의 즐겨찾기"
+        items={["Favorite 1", "Favorite 2", "Favorite 3"]}
+      />
+      <BulletinBoard
+        title="파티 요청"
+        items={["Request 1", "Request 2", "Request 3"]}
+      />
+      <BulletinBoard
+        title="참여파티 목록"
+        items={["Party 1", "Party 2", "Party 3"]}
+      />
+      <RequestFriendsList />
+    </BodyWrapper>
+  );
+};
 
 export default Body;

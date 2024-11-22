@@ -3,7 +3,8 @@ import React from "react";
 function SendFriendRequestButton({ friendId }) {
   const sendFriendRequest = async () => {
     try {
-      const response = await fetch(`/api/friend/${user_id}`, {
+      const yourAuthToken = localStorage.getItem("jwtToken"); // 인증 토큰 예시
+      const response = await fetch(`/api/friend/${friendId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

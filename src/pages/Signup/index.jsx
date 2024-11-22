@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
 import SignHeader from "./SignHeader";
 import SignBody from "./SignBody";
@@ -11,10 +11,15 @@ const SignWrapper = styled.div``;
 const Signup = () => {
   const dispatch = useDispatch();
 
+  const signBodyRef = useRef(null);
+
   const handleIntersection = (entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
         dispatch(activeIdActions.changeActive(entry.target.id));
+        if (signBodyRef.current) {
+          signBodyRef.current.style.marginLeft = "210px";
+        }
       }
     });
   };
@@ -40,7 +45,7 @@ const Signup = () => {
   return (
     <SignWrapper>
       <SignHeader />
-      <SignBody />
+      <SignBody ref={signBodyRef} />
     </SignWrapper>
   );
 };

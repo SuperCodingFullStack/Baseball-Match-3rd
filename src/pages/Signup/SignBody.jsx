@@ -1,20 +1,18 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import styled from "styled-components";
 import MainContent from "./MainContent";
 
-const Body = styled.main`
-  position: relative;
-  left: 210px;
-  padding-top: 25px;
+const Body = styled.div`
   padding-left: 25px;
+  padding-top: 25px;
 `;
 
-const SignBody = () => {
+const SignBody = forwardRef((props, ref) => {
   return (
-    <Body>
+    <Body ref={ref} {...props}>
       <MainContent />
     </Body>
   );
-};
+});
 
 export default SignBody;

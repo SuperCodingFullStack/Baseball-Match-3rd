@@ -6,6 +6,7 @@ const signUpSlice = createSlice({
     email: "",
     passwd: "",
     passwdConfirm: "",
+    userName: "",
   },
   reducers: {
     setEmail(state, action) {
@@ -16,6 +17,9 @@ const signUpSlice = createSlice({
     },
     setPasswdConfirm(state, action) {
       state.passwdConfirm = action.payload;
+    },
+    setUserName(state, action) {
+      state.userName = action.payload;
     },
   },
 });

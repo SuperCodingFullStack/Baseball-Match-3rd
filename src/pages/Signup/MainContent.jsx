@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import MainInput from "./MainInput";
 import { linkSection } from "./LinkSection";
+import PhoneInput from "./PhoneInput";
 
 const SectionAll = styled.div``;
 
@@ -11,13 +12,17 @@ const IdAndPassword = styled.section`
   display: flex;
   flex-direction: column;
   gap: 20px;
+  margin-bottom: 20px;
 `;
 
 const NameAndNicks = styled.section`
   display: flex;
   flex-direction: column;
   gap: 20px;
+  margin-bottom: 20px;
 `;
+
+const PhoneAuth = styled.section``;
 
 const MainContent = () => {
   return (
@@ -61,8 +66,14 @@ const MainContent = () => {
             types="text"
             placeholder="자신의 닉네임을 입력하세요.(필수는 아닙니다)"
             maxLength="30"
+            isNested
+            isReverse
+            conditionText="입력하지 않을 경우 랜덤된 닉네임으로 설정됩니다. "
           />
         </NameAndNicks>
+        <PhoneAuth id={linkSection[2].id}>
+          <PhoneInput />
+        </PhoneAuth>
       </SectionForm>
     </SectionAll>
   );

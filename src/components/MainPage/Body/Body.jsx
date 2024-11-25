@@ -1,10 +1,12 @@
 import styled from "styled-components";
-import WeeklyCalendar from "./WeeklyCalendar";
+// import WeeklyCalendar from "./WeeklyCalendar";
+import MonthlyCalendar from "./MonthlyCalendar";
 
 const Body = () => {
   return (
     <BodyContainer>
-      <WeeklyCalendar />
+      {/* <WeeklyCalendar /> */}
+      <MonthlyCalendar />
     </BodyContainer>
   );
 };

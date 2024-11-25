@@ -3,21 +3,27 @@ import { GoPencil } from "react-icons/go";
 import { IoHeartOutline } from "react-icons/io5";
 import { IoClipboardOutline } from "react-icons/io5";
 import { LuClipboardEdit } from "react-icons/lu";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const DropdownPost = () => {
+  const navigate = useNavigate();
+  const handleBoardBtnClick = () => {
+    navigate("/partyPosts");
+  };
+  const handlePostWriteBtnClick = () => {
+    navigate("/postWrite");
+  };
+
   return (
     <PostContainer>
-      <Link to="/postWrite">
-        <WritePost>
-          <StyledIcon as={GoPencil} />글 작성하기
-        </WritePost>
-      </Link>
-      <Link to="/partyPosts">
-        <Board>
-          <StyledIcon as={IoClipboardOutline} /> 게시판
-        </Board>
-      </Link>
+      <WritePost>
+        <StyledIcon as={GoPencil} onClick={handlePostWriteBtnClick} />글
+        작성하기
+      </WritePost>
+      <Board>
+        <StyledIcon as={IoClipboardOutline} onClick={handleBoardBtnClick} />{" "}
+        게시판
+      </Board>
       <MyPost>
         <StyledIcon as={LuClipboardEdit} /> 내가 쓴 게시물
       </MyPost>

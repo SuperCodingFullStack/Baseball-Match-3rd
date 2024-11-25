@@ -8,6 +8,17 @@ body {
   min-height: 100vh;
 }
 
+#root.dim:after {
+  content: "";
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.45);
+  z-index: 1;
+}
+
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
@@ -22,14 +33,6 @@ button {
   font-family: inherit;
   background-color: #1a1a1a;
   cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: none;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
 }
 
 @media (prefers-color-scheme: light) {

@@ -6,6 +6,8 @@ import { LuLogIn, LuLogOut } from "react-icons/lu";
 import { IoSettingsOutline, IoChatbubbleOutline } from "react-icons/io5";
 import { PiUserListBold } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
+import NotificationModal from "./NotificationModal";
+import useNotifications from "../../../hooks/useNotifications";
 
 const Icon = () => {
   const navigate = useNavigate();
@@ -43,10 +45,26 @@ const Icon = () => {
     };
   }, []);
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { notifications } = useNotifications();
+
+  const handleBellClick = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <Container>
       <StyledIcon as={IoChatbubbleOutline} />
-      <StyledIcon as={SlBell} />
+      <StyledIcon as={SlBell} onClick={handleBellClick} />
+      <NotificationModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        notifications={notifications}
+      />
       <Profile
         ref={profileRef}
         src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"

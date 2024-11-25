@@ -1,66 +1,23 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import RequestFriendsList from "./RequestFriendsList";
 
 const BodyWrapper = styled.main`
   display: flex;
-  flex-direction: column; /* Stack children vertically */
-  gap: 2rem; /* Add space between items */
+  flex-direction: column;
+  gap: 2rem;
   padding: 2rem;
   background-color: #f4f4f4;
   border-radius: 10px;
-  width: auto; /* Full width of the container */
-  max-width: 1920px; /* Ensure consistent width */
-  margin: 0 auto; /* Center on the page */
+  max-width: 1920px;
+  margin: 0 auto;
 `;
-
-// const BodyWrapper = styled.div`
-//   min-height: auto; /* Full height of the viewport */
-//   width: 100%; /* Full width of the viewport */
-//   z-index: 10;
-//   max-width: 1920px; /* Limit to 1920px for large screens */
-//   margin: 0 auto; /* Center the content */
-//   padding: 2rem;
-//   background-color: #f4f4f4;
-//   /* display: grid; */
-//   gap: 2rem;
-//   grid-template-columns: repeat(
-//     auto-fit,
-//     minmax(300px, 1fr)
-//   ); /* Auto adjust columns */
-//   justify-items: center;
-// `;
-const sendFriendRequest = async () => {
-  try {
-    const yourAuthToken = localStorage.getItem("jwtToken"); // 인증 토큰 예시
-    const response = await fetch(`/api/post/${post_id}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        // Authorization: `Bearer ${yourAuthToken}`, // 필요 시 인증 토큰 추가
-      },
-    });
-
-    if (response.ok) {
-      alert("친구 요청이 성공적으로 보내졌습니다.");
-    } else {
-      alert("친구 요청에 실패했습니다. 다시 시도해 주세요.");
-    }
-  } catch (error) {
-    console.error("Error sending friend request:", error);
-    alert("오류가 발생했습니다. 다시 시도해 주세요.");
-  }
-};
-
-const data = response.data;
-const title = data.title;
 
 const SectionContainer = styled.div`
   background-color: #ffffff;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   padding: 2rem;
-  width: auto; /* Set a fixed width for each section */
   text-align: center;
 `;
 
@@ -86,18 +43,40 @@ const LinkButton = styled.button`
 
 const BulletinBoard = ({ title, items }) => (
   <SectionContainer>
-    <LinkButton>더보기</LinkButton>
     <SectionTitle>{title}</SectionTitle>
     {items.map((item, index) => (
       <p key={index}>{item}</p>
     ))}
+    <LinkButton>더보기</LinkButton>
   </SectionContainer>
 );
 
 const Body = () => {
+  const [data, setData] = useState({ title: "", items: [] }); // title과 items 상태 관리
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          `"http://localhost:8080/api/post/${post_id}`
+        ); // API 호출
+        if (!response.ok) {
+          throw new Error("API 호출 실패");
+        }
+        const result = await response.json(); // JSON 형식으로 데이터 파싱
+        const { title, items } = result; // API 응답에서 title과 items 추출
+        setData({ title, items }); // 상태에 저장
+      } catch (error) {
+        console.error("데이터 로드 실패:", error);
+      }
+    };
+
+    fetchData(); // 컴포넌트가 마운트되면 API 호출
+  }, []);
+
   return (
     <BodyWrapper>
-      <BulletinBoard title="나의 작성글" items={[title, title, title]} />
+      <BulletinBoard title={data.title} items={data.items} />
       <BulletinBoard
         title="나의 즐겨찾기"
         items={["Favorite 1", "Favorite 2", "Favorite 3"]}

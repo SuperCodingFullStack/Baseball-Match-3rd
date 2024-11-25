@@ -184,7 +184,6 @@ border-radius:0;
   border-bottom: ${(props) => (props.isActive ? "5px solid #acfe49" : "none")};
   font-weight: ${(props) => (props.isActive ? "bold" : "normal")};
   cursor: pointer;
-  }
 `;
 
 const NotificationList = styled.ul`

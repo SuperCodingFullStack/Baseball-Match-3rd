@@ -3,6 +3,7 @@ import styled from "styled-components";
 import MainInput from "./MainInput";
 import { linkSection } from "./LinkSection";
 import PhoneInput from "./PhoneInput";
+import useEmail from "../../hooks/useEmail";
 
 const SectionAll = styled.div``;
 
@@ -25,6 +26,9 @@ const NameAndNicks = styled.section`
 const PhoneAuth = styled.section``;
 
 const MainContent = () => {
+  const { email, setEmail, setFocus, isTouched, validateEmail, error, msg } =
+    useEmail();
+
   return (
     <SectionAll>
       <SectionForm>
@@ -37,6 +41,13 @@ const MainContent = () => {
             isNested
             conditionText="한글,영문,특수문자 사용가능"
             maxLength="50"
+            onChangeHandler={setEmail}
+            onFocusHandler={setFocus}
+            isTouched={isTouched}
+            valueData={email}
+            errorMsg={msg}
+            isError={error}
+            validate={validateEmail}
           />
           <MainInput
             title="비밀번호"

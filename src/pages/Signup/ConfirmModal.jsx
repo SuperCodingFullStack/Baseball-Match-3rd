@@ -1,10 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import { FaCheckCircle } from "react-icons/fa";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-import { signUpActions } from "../../Store/slice/signUpSlice";
-import { signUpNestActions } from "../../Store/slice/signUpNestSlice";
 
 const Modals = styled.div`
   padding: 40px;
@@ -61,26 +57,25 @@ const ModalButtons = styled.div`
   }
 `;
 
-const ConfirmModal = ({ type, isModal, setIsModal, isTouched }) => {
-  const message = useSelector((state) => state.signUpError.email.errorMsg);
-  const isError = useSelector((state) => state.signUpError.email.isError);
-  const dispatch = useDispatch();
+const ConfirmModal = ({ isTouched, errorMsg, isError, setModal }) => {
+  const { isNest, setIsNest } = useNest();
 
-  const onOk = () => {
-    setIsModal(false);
+  const onCancel = () => {
+    setModal(false);
     document.getElementById("root").classList.remove("dim");
-    dispatch(signUpNestActions.setEmailNest());
+    setIsNest(true);
+  };
+
+  const onSelect = () => {
+    setModal(false);
+    document.getElementById("root").classList.remove("dim");
+    setIsNest(false);
   };
 
   const onClose = () => {
-    setIsModal(false);
+    setModal(false);
     document.getElementById("root").classList.remove("dim");
-    dispatch(signUpActions.setEmail(""));
-  };
-
-  const onJustClose = () => {
-    setIsModal(false);
-    document.getElementById("root").classList.remove("dim");
+    setIsNest(false);
   };
 
   return (
@@ -90,22 +85,20 @@ const ConfirmModal = ({ type, isModal, setIsModal, isTouched }) => {
           <FaCheckCircle />
         </ModalIcon>
         <ModalMsgs>
-          <p>{message}</p>
+          <p>{isTouched && errorMsg}</p>
           <strong>
-            {isError
-              ? "돌아가서 다시 아이디를 입력해주세요."
-              : "이것으로 선택하시겠습니까?"}
+            {isError ? "다시 돌아가 선택하세요." : "이것으로 고르실 건가요?"}
           </strong>
         </ModalMsgs>
       </ModalMessage>
       <ModalButtons>
         {!isError ? (
           <>
-            <button onClick={onClose}>아니오, 취소합니다.</button>
-            <button onClick={onOk}>예, 선택할래요.</button>
+            <button onClick={onCancel}>아니오, 취소합니다.</button>
+            <button onClick={onSelect}>예, 선택할래요.</button>
           </>
         ) : (
-          <button onClick={onJustClose}>닫기</button>
+          <button onClick={onClose}>닫기</button>
         )}
       </ModalButtons>
     </Modals>

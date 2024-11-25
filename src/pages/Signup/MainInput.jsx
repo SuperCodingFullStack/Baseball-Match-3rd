@@ -1,14 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom";
-import { useDispatch } from "react-redux";
 import styled from "styled-components";
-import { signUpActions } from "../../Store/slice/signUpSlice";
-import { signUpErrorActions } from "../../Store/slice/signUpErrorSlice";
-import { useSelector } from "react-redux";
-import { emailCheck } from "../../utils/emailCheck";
 import ConfirmModal from "./ConfirmModal";
-import { passwdCheck } from "../../utils/passwdCheck";
-import { passwordCheck } from "../../utils/passwordCheck";
 
 const Inputs = styled.div`
   font-family: "Pretendard", sans-serif;
@@ -102,79 +95,15 @@ const MainInput = ({
   conditionText,
   maxLength,
   isReverse,
+  onChangeHandler,
+  onFocusHandler,
+  isTouched,
+  valueData,
+  errorMsg,
+  isError,
+  validate,
 }) => {
-  const [isTouched, setIsTouched] = useState(false);
   const [isModal, setIsModal] = useState(false);
-  const dispatch = useDispatch();
-
-  const email = useSelector((state) => state.signUp.email);
-  const passwd = useSelector((state) => state.signUp.passwd);
-  const passwdError = useSelector((state) => state.signUpError.password);
-  const passwdConfirm = useSelector((state) => state.signUp.passwdConfirm);
-
-  const onFocusHandler = () => {
-    setIsTouched(true);
-  };
-
-  const onChangeHandler = (e) => {
-    switch (title) {
-      case "아이디":
-        dispatch(signUpActions.setEmail(e.target.value));
-        if (e.target.value.length > maxLength) {
-          dispatch(signUpActions.setEmail(e.target.value.slice(0, maxLength)));
-        }
-        break;
-      case "비밀번호":
-        dispatch(signUpActions.setPasswd(e.target.value));
-        if (e.target.value.length > maxLength) {
-          dispatch(signUpActions.setPasswd(e.target.value.slice(0, maxLength)));
-        }
-      case "비밀번호 확인":
-        dispatch(signUpActions.setPasswdConfirm(e.target.value));
-        if (e.target.value.length > maxLength) {
-          dispatch(
-            signUpActions.setPasswdConfirm(e.target.value.slice(0, maxLength))
-          );
-        }
-      case "이름":
-        dispatch(signUpActions.setUserName(e.target.value));
-    }
-  };
-
-  const isNestHandler = (e) => {
-    e.preventDefault();
-    setIsModal(true);
-    document.getElementById("root").classList.add("dim");
-  };
-
-  useEffect(() => {
-    if (email && title === "아이디") {
-      const emailResponse = emailCheck(email);
-      if (emailResponse.error) {
-        dispatch(signUpErrorActions.setEmailError(emailResponse.msg));
-      } else {
-        dispatch(signUpErrorActions.setEmailOk(emailResponse.msg));
-      }
-    }
-    if (passwd && title === "비밀번호") {
-      const passwdResponse = passwdCheck(passwd);
-      if (passwdResponse.isError) {
-        dispatch(signUpErrorActions.setPasswordError(passwdResponse.msg));
-      } else {
-        dispatch(signUpErrorActions.setPasswordOk(passwdResponse.msg));
-      }
-    }
-    if (passwdConfirm && title === "비밀번호 확인") {
-      const passwdConfirmResponse = passwordCheck(passwd, passwdConfirm);
-      if (passwdConfirmResponse) {
-        dispatch(
-          signUpErrorActions.setPasswordConfirmError(
-            "비밀번호가 일치하지 않습니다."
-          )
-        );
-      }
-    }
-  }, [email, passwd, passwdConfirm]);
 
   return (
     <Inputs>
@@ -183,52 +112,49 @@ const MainInput = ({
           {title}
           {isRequired ? <b>*</b> : null}
         </h2>
-        {title === "비밀번호" && isTouched && (
-          <p className={`${passwdError.isError ? "error" : "ok"}`}>
-            {passwdError.errorMsg}
-          </p>
+        {!isNested && isTouched && (
+          <p className={`${isError ? "error" : "ok"}`}>{msg}</p>
         )}
       </TitleWrapper>
       <RealInput>
         <input
           type={types}
           placeholder={placeholder}
+          onChange={(e) => {
+            onChangeHandler(e.target.value);
+          }}
           onFocus={onFocusHandler}
-          onChange={onChangeHandler}
-          className={`${
-            title === "비밀번호" && passwdError.isError && "error"
-          }`}
-          value={
-            (title === "아이디" && isTouched ? email : "") ||
-            (title === "비밀번호" && isTouched ? passwd : "")
-          }
+          value={valueData}
         />
-        {isModal &&
-          ReactDOM.createPortal(
-            <ConfirmModal
-              isModal={isModal}
-              setIsModal={setIsModal}
-              isTouched={isTouched}
-              type="id"
-            />,
-            document.getElementById("root")
-          )}
       </RealInput>
       {isNested ? (
         <button
-          onClick={isNestHandler}
-          disabled={!isTouched || email.trim() == ""}
+          onClick={(e) => {
+            e.preventDefault();
+            validate();
+            setIsModal(true);
+            document.getElementById("root").classList.add("dim");
+          }}
+          disabled={!isTouched && !valueData}
         >
           중복확인
         </button>
       ) : null}
+      {isNested &&
+        isModal &&
+        ReactDOM.createPortal(
+          <ConfirmModal
+            isTouched={isTouched}
+            errorMsg={errorMsg}
+            isError={isError}
+            setModal={setIsModal}
+          />,
+          document.getElementById("root")
+        )}
       <Condition className={`${isReverse ? "reverse" : ""}`}>
         <p>{conditionText}</p>
         <span>
-          {(title === "아이디" && isTouched ? email.length : "0") ||
-            (title === "아이디" && isTouched && !email && "0") ||
-            (title === "비밀번호" && passwd.length)}
-          /{maxLength}
+          {isTouched ? valueData.length : 0} / {maxLength}
         </span>
       </Condition>
     </Inputs>

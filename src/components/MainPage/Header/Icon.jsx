@@ -46,7 +46,7 @@ const Icon = () => {
   }, []);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { notifications } = useNotifications();
+  const { notifications, markAsRead } = useNotifications();
 
   const handleBellClick = () => {
     setIsModalOpen(true);
@@ -56,14 +56,19 @@ const Icon = () => {
     setIsModalOpen(false);
   };
 
+  // 읽지 않은 알림 개수
+  const unreadCount = notifications.filter((n) => !n.isRead).length;
+
   return (
     <Container>
       <StyledIcon as={IoChatbubbleOutline} />
       <StyledIcon as={SlBell} onClick={handleBellClick} />
+      {unreadCount > 0 && <UnreadBadge>{unreadCount}</UnreadBadge>}
       <NotificationModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         notifications={notifications}
+        markAsRead={markAsRead}
       />
       <Profile
         ref={profileRef}
@@ -107,6 +112,22 @@ const StyledIcon = styled.div`
   &:hover {
     color: #acfe49;
   }
+`;
+
+const UnreadBadge = styled.div`
+  position: absolute;
+  top: 25px;
+  right: 77px;
+  background-color: red;
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+  border-radius: 50%;
+  width: 15px;
+  height: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const Profile = styled.img`

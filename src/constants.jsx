@@ -11,7 +11,7 @@ export const SSG = "/assets/ssg.svg";
 
 export const TEAM_LOGO_MAP = {
   롯데: LOTTE,
-  기아: KIA,
+  KIA: KIA,
   삼성: SAMSUNG,
   KT: KT,
   한화: HANHWA,

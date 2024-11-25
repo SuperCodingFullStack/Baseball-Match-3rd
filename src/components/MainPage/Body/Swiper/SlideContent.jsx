@@ -9,23 +9,39 @@ const SlideContent = ({ date, games }) => {
       <Date>{date}</Date>
       {games.map((game, index) => (
         <Result key={index}>
-          <Team>
-            <HomeTeamImg src={getTeamLogo(game.homeTeam)} alt={game.HomeTeam} />
-            <HomeTeam>{game.homeTeam}</HomeTeam>
-          </Team>
-          <Score>
-            <DynamicScore isWinnig={game.homeTeamScore > game.awayTeamScore}>
-              {game.homeTeamScore}
-            </DynamicScore>
-            :
-            <DynamicScore isWinnig={game.awayTeamScore > game.homeTeamScore}>
-              {game.awayTeamScore}
-            </DynamicScore>
-          </Score>
-          <Team>
-            <AwayTeamImg src={getTeamLogo(game.awayTeam)} alt={game.awayTeam} />
-            <AwayTeam>{game.awayTeam}</AwayTeam>
-          </Team>
+          <MatchDetails>
+            <Team>
+              <HomeTeamImg
+                src={getTeamLogo(game.homeTeam)}
+                alt={game.HomeTeam}
+              />
+              <HomeTeam>{game.homeTeam}</HomeTeam>
+            </Team>
+            <Score>
+              <DynamicScore
+                $isWinning={
+                  parseInt(game.homeTeamScore) > parseInt(game.awayTeamScore)
+                }
+              >
+                {game.homeTeamScore}
+              </DynamicScore>
+              :
+              <DynamicScore
+                $isWinning={
+                  parseInt(game.awayTeamScore) > parseInt(game.homeTeamScore)
+                }
+              >
+                {game.awayTeamScore}
+              </DynamicScore>
+            </Score>
+            <Team>
+              <AwayTeamImg
+                src={getTeamLogo(game.awayTeam)}
+                alt={game.awayTeam}
+              />
+              <AwayTeam>{game.awayTeam}</AwayTeam>
+            </Team>
+          </MatchDetails>
           <Stadium>{game.stadium}</Stadium>
         </Result>
       ))}
@@ -68,10 +84,13 @@ const Date = styled.h3`
   margin-bottom: 1.5rem;
 `;
 
-const Result = styled.div`
+const Result = styled.div``;
+
+const MatchDetails = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 2rem;
 `;
 
 const Team = styled.p`
@@ -105,12 +124,13 @@ const Score = styled.div`
 `;
 
 const DynamicScore = styled.p`
-  color: $((props) => (props.isWinning ? "red": "black"));
+  color: ${(props) => (props.$isWinning ? "red" : "black")};
 `;
 
 const Stadium = styled.p`
   margin-bottom: 2rem;
   font-weight: bold;
+  font-size: 1.3rem;
 `;
 
 export default SlideContent;

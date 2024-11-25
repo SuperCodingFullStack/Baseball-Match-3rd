@@ -17,8 +17,13 @@ export default function SwiperComponent() {
   useEffect(() => {
     const fetchGameData = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/api/gameInfo");
-        setGameData(response.data);
+        const response = await axios.get(
+          "http://localhost:8080/api/gameInfo/10"
+        );
+        console.log("API 응답 데이터:", response.data);
+
+        const limitedData = response.data.data.slice(0, 5);
+        setGameData(limitedData);
       } catch (error) {
         console.error("Error fetching game data:", error);
       } finally {
@@ -29,13 +34,15 @@ export default function SwiperComponent() {
   }, []);
 
   // 날짜별로 데이터를 그룹화
-  const groupedGames = gameData.reduce((acc, game) => {
-    if (!acc[game.matchDate]) {
-      acc[game.matchDate] = [];
-    }
-    acc[game.matchDate].push(game);
-    return acc;
-  }, {});
+  const groupedGames = Array.isArray(gameData)
+    ? gameData.reduce((acc, game) => {
+        if (!acc[game.matchDate]) {
+          acc[game.matchDate] = [];
+        }
+        acc[game.matchDate].push(game);
+        return acc;
+      }, {})
+    : {};
 
   if (loading) {
     return <p>Loading...</p>;

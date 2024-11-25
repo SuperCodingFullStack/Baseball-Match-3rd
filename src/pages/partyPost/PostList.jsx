@@ -6,7 +6,8 @@ const PostList = ({
   myTeamImg,
   opposingTeamImg,
   title,
-  matchTime,
+  latitude,
+  longitude,
   matchDate,
   max,
   current,
@@ -26,10 +27,7 @@ const PostList = ({
         <Post_list__details>
           <div className="post-list__title">{title}</div>
           <div className="post-list__location">경기장소 사직야구장</div>
-          <div className="post-list__match-date">
-            {matchDate}
-            {matchTime}
-          </div>
+          <div className="post-list__match-date">{matchDate}</div>
           <div className="post-list__participants">
             {current}/{max}
           </div>

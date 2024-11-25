@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import Map from "../../components/board/Map";
-import Header from "../../components/MainPage/Header/Header";
 
 const partyPost = () => {
   const { id } = useParams();
@@ -44,7 +43,7 @@ const partyPost = () => {
 
   return (
     <>
-      <Header />
+      <div> 상단고정네비</div>
       <Post>
         <PostContent>
           <Post__Images>
@@ -60,8 +59,8 @@ const partyPost = () => {
           <Post__body>{post.content}</Post__body>
 
           <Post__Map>
-            {/* <Map latitude={post.latitude} longitude={post.longitude} /> */}
-            <div>지도 대용</div>
+            <Map latitude={post.latitude} longitude={post.longitude} />
+            {/* <div>지도 대용</div> */}
           </Post__Map>
           <Post__stats>
             <Post__like_container>
@@ -111,7 +110,6 @@ export default partyPost;
 
 //전체
 const Post = styled.div`
-  margin-top: 90px;
   display: flex;
   flex-direction: column;
   max-width: 1500px;

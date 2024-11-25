@@ -1,10 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { linkSection } from "../../pages/Signup/linkSection";
 
 const activeIdSlice = createSlice({
   name: "activeId",
   initialState: {
-    activeId: linkSection[0].id,
+    activeId: null,
   },
   reducers: {
     changeActive(state, action) {

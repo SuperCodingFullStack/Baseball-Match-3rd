@@ -20,6 +20,7 @@ const Header = () => {
 };
 
 const Container = styled.div`
+  z-index: 10;
   position: absolute;
   top: 0;
   width: 100%;

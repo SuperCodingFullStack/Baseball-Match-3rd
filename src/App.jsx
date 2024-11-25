@@ -4,9 +4,8 @@ import PartyPost from "./pages/partyPost/PartyPost";
 import PartyPostLists from "./pages/partyPost/partyPostLists";
 import PartyPostWrite from "./pages/partyPost/PartyPostWrite";
 import { Reset } from "styled-reset";
-import Mypage from "./pages/Mypage";
+import Mypage from "./components/pages/Mypage";
 import Signup from "./pages/Signup";
-import TeamInfo from "./components/CrawlingPage/TeamInfo";
 
 function App() {
   return (
@@ -20,7 +19,6 @@ function App() {
           <Route path="/postWrite" element={<PartyPostWrite />} />
           <Route path="/mypage" element={<Mypage />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/api/teamInfo/:teamName" element={<TeamInfo />} />
         </Routes>
       </BrowserRouter>
     </>

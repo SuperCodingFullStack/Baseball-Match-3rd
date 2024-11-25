@@ -3,7 +3,7 @@ import styled from "styled-components";
 import FriendsListButton from "./FriendsListButton";
 import ProfileImageButton from "./ProfileImageButton";
 import UserNickname from "./UserNickname";
-// import FriendCountButton from "./FriendCountButton";
+import FriendCountButton from "./FriendCountButton";
 
 const ProfileSectionContainer = styled.div`
   background-color: #f0f0f0; /* Gray color similar to body background */
@@ -36,6 +36,7 @@ const UserProfileSection = () => {
       </LeftSection>
       <RightSection>
         <FriendsListButton />
+        <FriendCountButton count={42} />
       </RightSection>
     </ProfileSectionContainer>
   );

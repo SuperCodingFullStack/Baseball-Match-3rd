@@ -42,10 +42,12 @@ const PartyPostLists = () => {
         userNickname: "bin",
         userImg: "프로필 사진 주소",
         title: "롯데 경기 보러 가실분",
+        content: "야구장 첨가봐요 혼자가기 무서운데 같이 가실분",
         myTeamImg: "롯데 구단 이미지 주소",
         opposingTeam: " NC 구단 이미지",
-        matchDate: "2024-12-31",
-        matchTime: "18:00",
+        latitude: 35.19,
+        longitude: 129.06,
+        matchDate: "2024-12-31 18:00",
         maxPeopleNum: 2,
         currentPeopleNum: 1,
         likeCount: 0,
@@ -57,13 +59,15 @@ const PartyPostLists = () => {
         userNickname: "bin",
         userImg: "프로필 사진 주소",
         title: "롯데 경기 보러 가실분",
-        myTeamImg: "롯데 구단 이미지 주소",
-        opposingTeam: " NC 구단 이미지",
-        matchDate: "2024-12-11",
-        matchTime: "20:00",
-        maxPeopleNum: 2,
-        currentPeopleNum: 1,
-        likeCount: 0,
+        content: "야구장 첨가봐요 혼자가기 무서운데 같이 가실분",
+        myTeamImg: "../../../public/assets/logo.png",
+        opposingTeam: "../../../public/assets/logo.png",
+        latitude: 35.19,
+        longitude: 129.06,
+        matchDate: "2024-12-31 18:00",
+        maxPeopleNum: 4,
+        currentPeopleNum: 2,
+        likeCount: 50,
         hitCount: 10,
         createAt: "2024-11-02 12:00",
       },
@@ -109,8 +113,9 @@ const PartyPostLists = () => {
                     myTeamImg={data.myTeamImg}
                     opposingTeamImg={data.opposingTeam}
                     title={data.title}
+                    latitude={data.latitude}
+                    longitude={data.longitude}
                     matchDate={data.matchDate}
-                    matchTime={data.matchTime}
                     max={data.maxPeopleNum}
                     current={data.currentPeopleNum}
                     like={data.likeCount}

@@ -58,24 +58,19 @@ const ModalButtons = styled.div`
 `;
 
 const ConfirmModal = ({ isTouched, errorMsg, isError, setModal }) => {
-  const { isNest, setIsNest } = useNest();
-
   const onCancel = () => {
     setModal(false);
     document.getElementById("root").classList.remove("dim");
-    setIsNest(true);
   };
 
   const onSelect = () => {
     setModal(false);
     document.getElementById("root").classList.remove("dim");
-    setIsNest(false);
   };
 
   const onClose = () => {
     setModal(false);
     document.getElementById("root").classList.remove("dim");
-    setIsNest(false);
   };
 
   return (

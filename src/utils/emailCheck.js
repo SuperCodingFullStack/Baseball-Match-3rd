@@ -15,7 +15,7 @@ export const emailCheck = async (email) => {
           msg: "올바른 이메일입니다.",
         };
       }
-      if (email.trim() == "") {
+      if (email.trim() === "") {
         return {
           error: true,
           msg: "이메일을 입력하십시오.",

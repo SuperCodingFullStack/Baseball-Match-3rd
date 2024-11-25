@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import MainInput from "./MainInput";
 import { linkSection } from "./LinkSection";
 import PhoneInput from "./PhoneInput";
 import useEmail from "../../hooks/useEmail";
+import usePassword from "../../hooks/usePassword";
 
 const SectionAll = styled.div``;
 
@@ -26,8 +27,12 @@ const NameAndNicks = styled.section`
 const PhoneAuth = styled.section``;
 
 const MainContent = () => {
-  const { email, setEmail, setFocus, isTouched, validateEmail, error, msg } =
-    useEmail();
+  const [isTouched, setIsTouched] = useState(false);
+
+  const { email, setEmail, validateEmail, error, msg } = useEmail();
+
+  const { password, validatePw, passwordChange, pwError, pwMsg } =
+    usePassword(isTouched);
 
   return (
     <SectionAll>
@@ -40,28 +45,35 @@ const MainContent = () => {
             placeholder="아이디를 입력해주세요."
             isNested
             conditionText="한글,영문,특수문자 사용가능"
-            maxLength="50"
+            maxLength={50}
             onChangeHandler={setEmail}
-            onFocusHandler={setFocus}
-            isTouched={isTouched}
             valueData={email}
             errorMsg={msg}
             isError={error}
             validate={validateEmail}
+            isTouched={isTouched}
+            setIsTouched={setIsTouched}
           />
           <MainInput
             title="비밀번호"
             isRequired
             types="password"
             placeholder="비밀번호를 입력해주세요."
-            maxLength="30"
+            maxLength={30}
+            onChangeHandler={passwordChange}
+            valueData={password}
+            errorMsg={pwMsg}
+            isError={pwError}
+            validate={validatePw}
+            isTouched={isTouched}
+            setIsTouched={setIsTouched}
           />
           <MainInput
             title="비밀번호 확인"
             isRequired
             types="password"
             placeholder="비밀번호를 한번더 입력해주세요."
-            maxLength="30"
+            maxLength={30}
           />
         </IdAndPassword>
         <NameAndNicks id={linkSection[1].id}>

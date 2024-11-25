@@ -67,6 +67,9 @@ const RealInput = styled.div`
     &.error {
       border: 1px solid rgb(239, 68, 68);
     }
+    &.selected {
+      border: 1px solid #1d4ed8;
+    }
   }
 `;
 
@@ -96,12 +99,12 @@ const MainInput = ({
   maxLength,
   isReverse,
   onChangeHandler,
-  onFocusHandler,
-  isTouched,
   valueData,
   errorMsg,
   isError,
   validate,
+  isTouched,
+  setIsTouched,
 }) => {
   const [isModal, setIsModal] = useState(false);
 
@@ -113,7 +116,7 @@ const MainInput = ({
           {isRequired ? <b>*</b> : null}
         </h2>
         {!isNested && isTouched && (
-          <p className={`${isError ? "error" : "ok"}`}>{msg}</p>
+          <p className={`${isError ? "error" : "ok"}`}>{errorMsg}</p>
         )}
       </TitleWrapper>
       <RealInput>
@@ -121,9 +124,11 @@ const MainInput = ({
           type={types}
           placeholder={placeholder}
           onChange={(e) => {
-            onChangeHandler(e.target.value);
+            onChangeHandler(e.target.value, maxLength);
           }}
-          onFocus={onFocusHandler}
+          onFocus={() => {
+            setIsTouched(true);
+          }}
           value={valueData}
         />
       </RealInput>
@@ -135,7 +140,7 @@ const MainInput = ({
             setIsModal(true);
             document.getElementById("root").classList.add("dim");
           }}
-          disabled={!isTouched && !valueData}
+          disabled={(!isTouched && !valueData) || valueData.trim() === ""}
         >
           중복확인
         </button>

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { emailCheck } from "../utils/emailCheck";
 
 const useEmail = () => {
-  const [isTouched, setIsTouched] = useState(false);
   const [email, setEmail] = useState("");
   const [error, setError] = useState(false);
   const [msg, setMsg] = useState("");
@@ -21,19 +20,16 @@ const useEmail = () => {
     }
   };
 
-  const onChangeHandler = (value) => {
+  const onChangeHandler = (value, maxLength) => {
     setEmail(value);
-  };
-
-  const onFocusHandler = () => {
-    setIsTouched(true);
+    if (value.length >= maxLength) {
+      setEmail(value.slice(0, maxLength));
+    }
   };
 
   return {
     email,
     setEmail: onChangeHandler,
-    setFocus: onFocusHandler,
-    isTouched,
     validateEmail,
     error,
     msg,

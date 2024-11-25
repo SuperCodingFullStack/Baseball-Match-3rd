@@ -11,6 +11,10 @@ const signUpErrorSlice = createSlice({
       isError: false,
       errorMsg: "",
     },
+    passwordConfirm: {
+      isError: false,
+      errorMsg: "",
+    },
   },
   reducers: {
     setEmailError(state, action) {
@@ -28,6 +32,10 @@ const signUpErrorSlice = createSlice({
     setPasswordOk(state) {
       state.password.isError = false;
       state.password.errorMsg = null;
+    },
+    setPasswordConfirmError(state, action) {
+      state.passwordConfirm.isError = true;
+      state.passwordConfirm.errorMsg = action.payload;
     },
   },
 });

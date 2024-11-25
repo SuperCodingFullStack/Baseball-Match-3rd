@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import { emailCheck } from "../../utils/emailCheck";
 import ConfirmModal from "./ConfirmModal";
 import { passwdCheck } from "../../utils/passwdCheck";
+import { passwordCheck } from "../../utils/passwordCheck";
 
 const Inputs = styled.div`
   font-family: "Pretendard", sans-serif;
@@ -36,6 +37,7 @@ const Inputs = styled.div`
 
 const TitleWrapper = styled.div`
   display: flex;
+  align-items: center;
   grid-column: 1 / 5;
   grid-row: 1 / 2;
   > h2 {
@@ -48,7 +50,7 @@ const TitleWrapper = styled.div`
   }
   > p {
     margin-left: 40px;
-    font-size: 14px;
+    font-size: 12px;
     &.error {
       color: rgb(239, 68, 68);
     }
@@ -69,6 +71,9 @@ const RealInput = styled.div`
     outline: none;
     border: 1px solid rgb(229, 231, 235);
     background-color: rgb(249, 250, 251);
+    &.error {
+      border: 1px solid rgb(239, 68, 68);
+    }
   }
 `;
 
@@ -105,6 +110,7 @@ const MainInput = ({
   const email = useSelector((state) => state.signUp.email);
   const passwd = useSelector((state) => state.signUp.passwd);
   const passwdError = useSelector((state) => state.signUpError.password);
+  const passwdConfirm = useSelector((state) => state.signUp.passwdConfirm);
 
   const onFocusHandler = () => {
     setIsTouched(true);
@@ -120,6 +126,16 @@ const MainInput = ({
         break;
       case "비밀번호":
         dispatch(signUpActions.setPasswd(e.target.value));
+        if (e.target.value.length > maxLength) {
+          dispatch(signUpActions.setPasswd(e.target.value.slice(0, maxLength)));
+        }
+      case "비밀번호 확인":
+        dispatch(signUpActions.setPasswdConfirm(e.target.value));
+        if (e.target.value.length > maxLength) {
+          dispatch(
+            signUpActions.setPasswdConfirm(e.target.value.slice(0, maxLength))
+          );
+        }
     }
   };
 
@@ -146,7 +162,17 @@ const MainInput = ({
         dispatch(signUpErrorActions.setPasswordOk(passwdResponse.msg));
       }
     }
-  }, [email, passwd]);
+    if (passwdConfirm && title === "비밀번호 확인") {
+      const passwdConfirmResponse = passwordCheck(passwd, passwdConfirm);
+      if (passwdConfirmResponse) {
+        dispatch(
+          signUpErrorActions.setPasswordConfirmError(
+            "비밀번호가 일치하지 않습니다."
+          )
+        );
+      }
+    }
+  }, [email, passwd, passwdConfirm]);
 
   return (
     <Inputs>
@@ -155,7 +181,7 @@ const MainInput = ({
           {title}
           {isRequired ? <b>*</b> : null}
         </h2>
-        {title !== "아이디" && isTouched && (
+        {title === "비밀번호" && isTouched && (
           <p className={`${passwdError.isError ? "error" : "ok"}`}>
             {passwdError.errorMsg}
           </p>
@@ -167,6 +193,9 @@ const MainInput = ({
           placeholder={placeholder}
           onFocus={onFocusHandler}
           onChange={onChangeHandler}
+          className={`${
+            title === "비밀번호" && passwdError.isError && "error"
+          }`}
           value={
             (title === "아이디" && isTouched ? email : "") ||
             (title === "비밀번호" && isTouched ? passwd : "")
@@ -195,6 +224,7 @@ const MainInput = ({
         <p>{conditionText}</p>
         <span>
           {(title === "아이디" && isTouched ? email.length : "0") ||
+            (title === "아이디" && isTouched && !email && "0") ||
             (title === "비밀번호" && passwd.length)}
           /{maxLength}
         </span>

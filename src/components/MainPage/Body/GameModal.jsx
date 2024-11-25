@@ -12,7 +12,7 @@ const GameModal = ({ date, onClose }) => {
     {
       matchDate: dayjs("2024-11-02").format("YYYY-MM-DD"),
       homeTeam: "롯데",
-      awayTeam: "기아",
+      awayTeam: "KIA",
       stadium: "사직 야구장",
       time: "14:00",
     },

@@ -11,47 +11,63 @@ import {
   SAMSUNG,
   SSG,
 } from "../../../constants";
+import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 
-const DropdownTeam = () => {
+const DropdownTeam = ({ onSelectTeam }) => {
+  const navigate = useNavigate();
+
+  const handleTeamClick = (team) => {
+    if (onSelectTeam) {
+      onSelectTeam(team);
+    }
+    // 선택된 팀을 URL 파라미터로 전달하여 TeamInfo 페이지로 이동
+    navigate(`/api/teamInfo/${team}`);
+  };
+
+  DropdownTeam.propTypes = {
+    onSelectTeam: PropTypes.func,
+  };
+
   return (
     <TeamContainer>
-      <LotteGiants>
+      <LotteGiants onClick={() => handleTeamClick("LOTTE")}>
         <LotteImg src={LOTTE} />
         롯데 자이언츠
       </LotteGiants>
-      <KiaTigers>
+      <KiaTigers onClick={() => handleTeamClick("KIA")}>
         <KiaImg src={KIA} />
         KIA 타이거즈
       </KiaTigers>
-      <SamsungLions>
+      <SamsungLions onClick={() => handleTeamClick("SAMSUNG")}>
         <SamsungImg src={SAMSUNG} />
         삼성 라이온즈
       </SamsungLions>
-      <KtWiz>
+      <KtWiz onClick={() => handleTeamClick("KT")}>
         <KtImg src={KT} />
         Kt wiz
       </KtWiz>
-      <HanhwaEagles>
+      <HanhwaEagles onClick={() => handleTeamClick("HANHWA")}>
         <HanhwaImg src={HANHWA} />
         한화 이글스
       </HanhwaEagles>
-      <KiwoomHeros>
+      <KiwoomHeros onClick={() => handleTeamClick("KIWOOM")}>
         <KiwoomImg src={KIWOOM} />
         키움 히어로즈
       </KiwoomHeros>
-      <LgTwins>
+      <LgTwins onClick={() => handleTeamClick("LG")}>
         <LgImg src={LG} />
         LG 트윈스
       </LgTwins>
-      <NcDinos>
+      <NcDinos onClick={() => handleTeamClick("NC")}>
         <NcImg src={NC} />
         NC 다이노스
       </NcDinos>
-      <DoosanBears>
+      <DoosanBears onClick={() => handleTeamClick("DOOSAN")}>
         <DoosanImg src={DOOSAN} />
         두산 베어스
       </DoosanBears>
-      <SsgLanders>
+      <SsgLanders onClick={() => handleTeamClick("SSG")}>
         <SsgImg src={SSG} />
         SSG 랜더스
       </SsgLanders>
@@ -69,6 +85,7 @@ const TeamContainer = styled.div`
   align-items: center;
   justify-content: center;
   padding: 1rem;
+  overflow-x: auto;
 `;
 
 const TeamItem = styled.div`

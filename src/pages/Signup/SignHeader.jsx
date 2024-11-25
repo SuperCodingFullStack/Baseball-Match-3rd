@@ -51,6 +51,8 @@ const SignHeader = () => {
   const activeId = useSelector((state) => state.activeIds.activeId);
   const dispatch = useDispatch();
 
+  console.log(activeId);
+
   return (
     <Headering>
       <h1>회원가입하기</h1>

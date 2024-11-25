@@ -3,6 +3,7 @@ import partyPostReducer from "./slice/partyPostSlice";
 import activeIdSlice from "./Slice/ActiveIdSlice";
 import signUpSlice from "./slice/signUpSlice";
 import signUpErrorSlice from "./slice/signUpErrorSlice";
+import signUpNestSlice from "./slice/signUpNestSlice";
 
 const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ const store = configureStore({
     activeIds: activeIdSlice.reducer,
     signUp: signUpSlice.reducer,
     signUpError: signUpErrorSlice.reducer,
+    emailNest: signUpNestSlice.reducer,
   },
 });
 

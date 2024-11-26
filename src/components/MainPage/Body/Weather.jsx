@@ -1,64 +1,49 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import {
-  WiDaySunny,
-  WiDayCloudy,
-  WiCloud,
-  WiCloudy,
-  WiShowers,
-  WiDayRain,
-  WiDayStormShowers,
-  WiSnowflakeCold,
-  WiWindy,
-  WiNa,
-} from "react-icons/wi";
+// import { stadiumCityMap } from "../../../constants";
 
 const iconMap = {
-  "01d": WiDaySunny,
-  "01n": WiDaySunny,
-  "02d": WiDayCloudy,
-  "02n": WiDayCloudy,
-  "03d": WiCloud,
-  "03n": WiCloud,
-  "04d": WiCloudy,
-  "04n": WiCloudy,
-  "09d": WiShowers,
-  "09n": WiShowers,
-  "10d": WiDayRain,
-  "10n": WiDayRain,
-  "11d": WiDayStormShowers,
-  "11n": WiDayStormShowers,
-  "13d": WiSnowflakeCold,
-  "13n": WiSnowflakeCold,
-  "50d": WiWindy,
-  "50n": WiWindy,
+  "01d": "public/assets/weather/sun.png",
+  "01n": "public/assets/weather/sun.png",
+  "02d": "public/assets/weather/partlyCloudy.png",
+  "02n": "public/assets/weather/partlyCloudy.png",
+  "03d": "public/assets/weather/clouds.png",
+  "03n": "public/assets/weather/clouds.png",
+  "04d": "public/assets/weather/clouds.png",
+  "04n": "public/assets/weather/clouds.png",
+  "09d": "public/assets/weather/heavyRain.png",
+  "09n": "public/assets/weather/heavyRain.png",
+  "10d": "public/assets/weather/wet.png",
+  "10n": "public/assets/weather/wet.png",
+  "11d": "public/assets/weather/rainCloud.png",
+  "11n": "public/assets/weather/rainCloud.png",
+  "13d": "public/assets/weather/snow.png",
+  "13n": "public/assets/weather/snow.png",
+  "50d": "public/assets/weather/wind.png",
+  "50n": "public/assets/weather/wind.png",
 };
 
 const WeatherSVG = ({ icon, size = "1.7rem" }) => {
-  const IconComponent = iconMap[icon] || WiNa;
-  return <IconComponent style={{ fontSize: size }} />;
+  const iconUrl = iconMap[icon];
+  if (!iconUrl) return null;
+  return typeof iconUrl === "string" ? (
+    <img
+      src={iconUrl}
+      alt="weather-icon"
+      style={{ width: size, height: size }}
+    />
+  ) : (
+    <iconUrl style={{ fontSize: size }} />
+  );
 };
-
-// const WeatherSVG = ({ icon, size = "1.7rem" }) => {
-//   const iconUrl = iconMap[icon] || WiNa;
-//   return typeof iconUrl === "string" ? (
-//     <img
-//       src={iconUrl}
-//       alt="weather-icon"
-//       style={{ width: size, height: size }}
-//     />
-//   ) : (
-//     <IconComponent style={{ fontSize: size }} />
-//   );
-// };
 
 WeatherSVG.propTypes = {
   icon: PropTypes.string.isRequired,
   size: PropTypes.string,
 };
 
-const Weather = () => {
+const Weather = ({ city }) => {
   const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
   const [weather, setWeather] = useState(null);
   const [error, setError] = useState(null);
@@ -66,11 +51,12 @@ const Weather = () => {
   useEffect(() => {
     const fetchWeather = async () => {
       try {
-        // q=위치
         // appid=API KEY
         // units=metric : 온도를 섭씨로 반환
+
+        const { lat, lon } = city;
         const response = await fetch(
-          `https://api.openweathermap.org/data/2.5/weather?q=Busan,kr&appid=${API_KEY}&units=metric`
+          `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`
         );
         const data = await response.json();
         if (response.ok) {
@@ -84,9 +70,12 @@ const Weather = () => {
       }
     };
 
-    fetchWeather();
-  }, [API_KEY]);
+    if (city) {
+      fetchWeather();
+    }
+  }, [city, API_KEY]);
 
+  if (!city) return <p>날씨 정보 없음</p>;
   if (error) return <p>Error: {error}</p>;
   if (!weather) return <p>Loading...</p>;
 
@@ -103,6 +92,13 @@ const Weather = () => {
   );
 };
 
+Weather.propTypes = {
+  city: PropTypes.shape({
+    lat: PropTypes.number.isRequired,
+    lon: PropTypes.number.isRequired,
+  }).isRequired,
+};
+
 const WeatherDescription = styled.div`
   display: flex;
   align-items: center;
@@ -110,6 +106,7 @@ const WeatherDescription = styled.div`
   position: absolute;
   top: 20px;
   right: 20px;
+  gap: 0.3rem;
 
   p {
     font-size: 1.1rem;

@@ -73,6 +73,26 @@ const RealInput = styled.div`
   }
 `;
 
+const AddInput = styled.div`
+  display: flex;
+  align-items: center;
+  grid-column: 1 / 4;
+  grid-row: 3 / 4;
+  > input {
+    width: 400px;
+    padding: 12px 16px;
+    outline: none;
+    border: 1px solid rgb(229, 231, 235);
+    background-color: rgb(249, 250, 251);
+    &.error {
+      border: 1px solid rgb(239, 68, 68);
+    }
+    &.selected {
+      border: 1px solid #1d4ed8;
+    }
+  }
+`;
+
 const Condition = styled.div`
   display: flex;
   justify-content: space-between;
@@ -105,6 +125,10 @@ const MainInput = ({
   validate,
   isTouched,
   setIsTouched,
+  isAdd,
+  placeholder2,
+  Nest,
+  Nest2,
 }) => {
   const [isModal, setIsModal] = useState(false);
 
@@ -142,7 +166,7 @@ const MainInput = ({
           }}
           disabled={(!isTouched && !valueData) || valueData.trim() === ""}
         >
-          중복확인
+          {Nest}
         </button>
       ) : null}
       {isNested &&
@@ -156,6 +180,14 @@ const MainInput = ({
           />,
           document.getElementById("root")
         )}
+      {isAdd && (
+        <>
+          <AddInput>
+            <input type={types} placeholder={placeholder2} />
+          </AddInput>
+          <button>{Nest2}</button>
+        </>
+      )}
       <Condition className={`${isReverse ? "reverse" : ""}`}>
         <p>{conditionText}</p>
         <span>

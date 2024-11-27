@@ -1,10 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import Header from "../MainPage/Header/Header";
+import axios from "axios";
 
 const TeamInfo = () => {
   const { teamName } = useParams(); // URL 파라미터에서 teamName을 가져옵니다.
+  const [team, setTeam] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const teamNameMapping = {
     SAMSUNG: "삼성",
@@ -19,158 +23,105 @@ const TeamInfo = () => {
     KIWOOM: "키움",
   };
 
-  const teamData = [
-    {
-      teamId: 1,
-      ranking: 1,
-      teamName: "KIA",
-      gamesPlayed: 144,
-      win: 87,
-      loss: 55,
-      draw: 2,
-      winRate: 0.613,
-      consecutive: "2승",
-      last10Games: "5승-5패-0무",
-    },
-    {
-      teamId: 2,
-      ranking: 2,
-      teamName: "삼성",
-      gamesPlayed: 144,
-      win: 78,
-      loss: 64,
-      draw: 2,
-      winRate: 0.549,
-      consecutive: "1패",
-      last10Games: "3승-7패-0무",
-    },
-    {
-      teamId: 3,
-      ranking: 3,
-      teamName: "LG",
-      gamesPlayed: 144,
-      win: 76,
-      loss: 66,
-      draw: 2,
-      winRate: 0.535,
-      consecutive: "2승",
-      last10Games: "7승-3패-0무",
-    },
-    {
-      teamId: 4,
-      ranking: 4,
-      teamName: "두산",
-      gamesPlayed: 144,
-      win: 74,
-      loss: 68,
-      draw: 2,
-      winRate: 0.521,
-      consecutive: "4승",
-      last10Games: "8승-2패-0무",
-    },
-    {
-      teamId: 5,
-      ranking: 5,
-      teamName: "KT",
-      gamesPlayed: 144,
-      win: 72,
-      loss: 70,
-      draw: 2,
-      winRate: 0.507,
-      consecutive: "3승",
-      last10Games: "5승-5패-0무",
-    },
-    {
-      teamId: 6,
-      ranking: 6,
-      teamName: "SSG",
-      gamesPlayed: 144,
-      win: 72,
-      loss: 70,
-      draw: 2,
-      winRate: 0.507,
-      consecutive: "4승",
-      last10Games: "8승-2패-0무",
-    },
-    {
-      teamId: 7,
-      ranking: 7,
-      teamName: "롯데",
-      gamesPlayed: 144,
-      win: 66,
-      loss: 74,
-      draw: 4,
-      winRate: 0.471,
-      consecutive: "1승",
-      last10Games: "4승-6패-0무",
-    },
-    {
-      teamId: 8,
-      ranking: 8,
-      teamName: "한화",
-      gamesPlayed: 144,
-      win: 66,
-      loss: 76,
-      draw: 2,
-      winRate: 0.465,
-      consecutive: "2패",
-      last10Games: "5승-5패-0무",
-    },
-    {
-      teamId: 9,
-      ranking: 9,
-      teamName: "NC",
-      gamesPlayed: 144,
-      win: 61,
-      loss: 81,
-      draw: 2,
-      winRate: 0.43,
-      consecutive: "2패",
-      last10Games: "2승-8패-0무",
-    },
-    {
-      teamId: 10,
-      ranking: 10,
-      teamName: "키움",
-      gamesPlayed: 144,
-      win: 58,
-      loss: 86,
-      draw: 0,
-      winRate: 0.403,
-      consecutive: "5패",
-      last10Games: "1승-9패-0무",
-    },
-  ];
+  useEffect(() => {
+    const fetchTeamData = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/api/teamInfo");
+        const teamData = response.data.data;
 
-  // 영어 팀 이름을 한글로 변환
-  const koreanTeamName = teamNameMapping[teamName];
+        const koreanTeamName = teamNameMapping[teamName];
+        const team = teamData.find((team) => team.teamName === koreanTeamName);
 
-  // 변환된 한글 팀 이름을 사용하여 teamData에서 해당 팀 찾기
-  const team = teamData.find((team) => team.teamName === koreanTeamName);
+        if (team) {
+          setTeam(team);
+        } else {
+          setError("해당 팀이 없습니다.");
+        }
+      } catch (err) {
+        setError("에러");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  if (!team) {
+    fetchTeamData();
+  }, [teamName]);
+
+  if (loading) {
     return (
       <Container>
         <Header />
-        <Content>
-          <p>해당 팀이 없습니다.</p>
-        </Content>
+        <Content>로딩 중...</Content>
       </Container>
     );
   }
+
+  if (error) {
+    return (
+      <Container>
+        <Header />
+        <Content>{error}</Content>
+      </Container>
+    );
+  }
+
+  // teamNameMapping을 활용하여 로고 이름 결정
+  const koreanTeamName = teamNameMapping[teamName];
+  const teamLogo = koreanTeamName
+    ? koreanTeamName.toLowerCase()
+    : teamName.toLowerCase();
+
   return (
     <Container>
       <Header />
       <Content>
         <h1>{team.teamName} 정보</h1>
-        <p>순위 : {team.ranking}</p>
-        <p>경기 수 : {team.gamesPlayed}</p>
-        <p>승 : {team.win}</p>
-        <p>패 : {team.loss}</p>
-        <p>무 : {team.draw}</p>
-        <p>승률 : {team.winRate}</p>
-        <p>연승/연패 : {team.consecutive}</p>
-        <p>최근 10경기 : {team.last10Games}</p>
+        <TeamDetails>
+          <TeamContent>
+            <LogoContainer>
+              <Logo
+                src={`/assets/${teamLogo}.svg`} // 한글 이름이 영어로 변환되어 소문자 처리됨
+                alt="team logo"
+              />
+            </LogoContainer>
+            <Table>
+              <tbody>
+                <tr>
+                  <th>순위</th>
+                  <Ranking ranking={team.ranking}>{team.ranking}</Ranking>
+                </tr>
+                <tr>
+                  <th>경기 수</th>
+                  <td>{team.gamesPlayed}</td>
+                </tr>
+                <tr>
+                  <th>승</th>
+                  <td>{team.win}</td>
+                </tr>
+                <tr>
+                  <th>패</th>
+                  <td>{team.loss}</td>
+                </tr>
+                <tr>
+                  <th>무</th>
+                  <td>{team.draw}</td>
+                </tr>
+                <tr>
+                  <th>승률</th>
+                  <td>{team.winRate}</td>
+                </tr>
+                <tr>
+                  <th>연승/연패</th>
+                  <td>{team.consecutive}</td>
+                </tr>
+                <tr>
+                  <th>최근 10경기</th>
+                  <td>{team.last10Games}</td>
+                </tr>
+              </tbody>
+            </Table>
+          </TeamContent>
+        </TeamDetails>
       </Content>
     </Container>
   );
@@ -181,13 +132,74 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
   height: 100vh;
-  width: 100vw;
-  margin: 0;
-  padding: 0;
 `;
 
 const Content = styled.div`
   text-align: center;
+`;
+
+const TeamDetails = styled.div`
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 50px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const TeamContent = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const LogoContainer = styled.div`
+  margin-bottom: 20px;
+  position: relative;
+`;
+
+const Logo = styled.img`
+  width: 250px;
+  height: 250px;
+  object-fit: contain;
+  transform: rotate(-10deg);
+  padding-top: 20px;
+`;
+
+const Table = styled.table`
+  font-size: 17px;
+  width: 120%;
+  text-align: left;
+  border-spacing: 0;
+  border-collapse: collapse;
+
+  th {
+    font-weight: bold;
+    padding: 10px;
+    background-color: #f4f4f4;
+  }
+
+  td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+  }
+`;
+
+const Ranking = styled.td`
+  color: ${(props) =>
+    props.ranking === 1
+      ? "gold"
+      : props.ranking === 2
+      ? "silver"
+      : props.ranking === 3
+      ? "#cd7f32"
+      : "black"};
+  font-weight: ${(props) =>
+    props.ranking === 1 || props.ranking === 2 || props.ranking === 3
+      ? "bold"
+      : "normal"};
 `;
 
 export default TeamInfo;

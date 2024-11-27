@@ -7,6 +7,7 @@ import { Reset } from "styled-reset";
 import Mypage from "./pages/Mypage";
 import Signup from "./pages/Signup";
 import TeamInfo from "./components/CrawlingPage/TeamInfo";
+import WebSocketComponent from "./components/WebSocket/WebSocketComponent";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/mypage" element={<Mypage />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/api/teamInfo/:teamName" element={<TeamInfo />} />
+          <Route path="/portfolio" element={<WebSocketComponent />} />
         </Routes>
       </BrowserRouter>
     </>

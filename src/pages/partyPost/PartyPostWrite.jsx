@@ -10,24 +10,35 @@ const partyPostWrite = () => {
   1. 구단의 이름을 저기 뭐야? 뭐시기로 할 거 아니면명확하게 받을 이름 정할 것 롯데로 받을지 롯데 자이언트로 받을지 이런거
   2. 날짜 형식을 어떻게 보내줘야 명확하게 받아지는지 말해줄 것
   */
-  /* const fetchGames = async (date, teamName) => {
+  /* const fetchGames = async (date) => {
     const response = await fetch(
-      `http://localhost:8080/api/game/matchDate=${date}&teamName=${teamName}`
+      `http://localhost:8080/api/game/matchDate=${date}`
     );
     const data = await response.json();
     return data;
   };
 */
   // 임시로 받아오는 게임 엔티티 데이터
-  const gameData = {
-    // 어떤 게임엔티티인지 구분하는 id 필요
-    id: 3,
-    team: "롯데",
-    awayTeam: "NC",
-    matchDate: "2024-11-21",
-    // "10.21 월" 받아오는 양식
-    matchTime: "18:00",
-  };
+  const gameData = [
+    {
+      // 어떤 게임엔티티인지 구분하는 id 필요
+      id: 3,
+      team: "롯데",
+      awayTeam: "NC",
+      matchDate: "2024-11-21",
+      // "10.21 월" 받아오는 양식
+      matchTime: "18:00",
+    },
+    {
+      // 어떤 게임엔티티인지 구분하는 id 필요
+      id: 2,
+      team: "롯데",
+      awayTeam: "NC",
+      matchDate: "2024-11-21",
+      // "10.21 월" 받아오는 양식
+      matchTime: "18:00",
+    },
+  ];
 
   const [teamName, setTeamName] = useState("");
   const [games, setGames] = useState([]);
@@ -83,7 +94,7 @@ const partyPostWrite = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    fetch(`http://localhost:8080/api/posts`, {
+    fetch(`http://localhost:8080/api/post`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -177,10 +177,10 @@ const TabMenu = styled.div`
 `;
 
 const Tab = styled.button`
-border-radius:0;
+  border-radius: 0;
   padding: 10px;
   border: none;
-  background: rgba(0,0,0,0);
+  background: rgba(0, 0, 0, 0);
   border-bottom: ${(props) => (props.isActive ? "5px solid #acfe49" : "none")};
   font-weight: ${(props) => (props.isActive ? "bold" : "normal")};
   cursor: pointer;

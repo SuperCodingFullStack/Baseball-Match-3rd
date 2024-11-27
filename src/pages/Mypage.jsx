@@ -7,6 +7,8 @@ import styled from "styled-components";
 import Footer from "../components/Mypage/Footer/LogoutBtn";
 import MenuBar from "../components/Mypage/LeftSection/MenuBar";
 import MainContents from "../components/Mypage/Body/MainContents";
+import SendFriendRequestButton from "../components/Mypage/Body/SendFriendRequestButton";
+
 const MypageContainer = styled.div`
   width: auto;
   max-width: 1920px;
@@ -27,7 +29,9 @@ const App = () => {
       <Header />
       <MenuBar />
       <MainContents />
+
       <Footer />
+      <SendFriendRequestButton />
     </MypageContainer>
   );
 };

@@ -1,16 +1,22 @@
 import React from "react";
+import styled from "styled-components";
+
+const SendFriendRequestbtn = styled.button`
+  width: auto;
+  height: 50px;
+`;
 
 function SendFriendRequestButton({ friendId }) {
   const sendFriendRequest = async () => {
     try {
-      const yourAuthToken = localStorage.getItem("jwtToken"); // 인증 토큰 예시
+      // const yourAuthToken = localStorage.getItem("jwtToken"); // 인증 토큰 예시
       const response = await fetch(
         `http://localhost:8080/api/friend/${friendId}`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${yourAuthToken}`, // 필요 시 인증 토큰 추가
+            // Authorization: `Bearer ${yourAuthToken}`, // 필요 시 인증 토큰 추가
           },
         }
       );
@@ -26,7 +32,11 @@ function SendFriendRequestButton({ friendId }) {
     }
   };
 
-  return <button onClick={sendFriendRequest}>친구 요청 보내기</button>;
+  return (
+    <SendFriendRequestbtn onClick={sendFriendRequest}>
+      친구 요청 보내기
+    </SendFriendRequestbtn>
+  );
 }
 
 export default SendFriendRequestButton;

@@ -63,11 +63,8 @@ const MyFavorite = () => {
             <FavoriteInformButton>구단정보보기</FavoriteInformButton>
           </FavoriteInform>
           <DivRegistrant>등록자 : </DivRegistrant>
-          <PExplanation>GST</PExplanation>
-          <PExplanation>
-            설명 : 알리알라알라셩알라리알라
-            알리알라알라셩알라리알라알리알라알라셩알라리알라
-          </PExplanation>
+          <PExplanation>게시글 제목</PExplanation>
+          <PExplanation>등록 시간</PExplanation>
         </FavoriteItem>
       </FavoriteList>
     </Container>

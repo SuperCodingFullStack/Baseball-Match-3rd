@@ -29,7 +29,6 @@ const App = () => {
       <Header />
       <MenuBar />
       <MainContents />
-
       <Footer />
       <SendFriendRequestButton />
     </MypageContainer>

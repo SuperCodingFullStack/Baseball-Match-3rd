@@ -15,9 +15,27 @@ const useNotifications = () => {
 
   useEffect(() => {
     const sampleNotifications = [
-      { id: 1, message: "Sample Notification 1", isRead: false },
-      { id: 2, message: "Sample Notification 2", isRead: false },
-      { id: 3, message: "Sample Notification 3", isRead: false },
+      {
+        id: 1,
+        message: "Sample Notification 1",
+        isRead: false,
+        type: "party",
+        timestamp: new Date(),
+      },
+      {
+        id: 2,
+        message: "Sample Notification 2",
+        isRead: false,
+        type: "friends",
+        timestamp: new Date(),
+      },
+      {
+        id: 3,
+        message: "Sample Notification 3",
+        isRead: false,
+        type: "party",
+        timestamp: new Date(),
+      },
     ];
 
     let index = 0;

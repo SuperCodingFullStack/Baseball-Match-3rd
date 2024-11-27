@@ -13,17 +13,19 @@ const MonthlyCalendar = () => {
   const firstDayOfWeek = currentMonth.startOf("month").day();
 
   useEffect(() => {
-    console.log("Current month:", currentMonth.format("MMMM YYYY"));
-    // fetch(`http://localhost:8080/api/gameInfo/${currentMonth.format("MM")}`)
-    fetch("http://localhost:8080/api/gameInfo/10")
-      .then((res) => res.json())
-      .then((response) => {
-        if (
-          response &&
-          response.status === "success" &&
-          Array.isArray(response.data)
-        ) {
-          const formattedGames = response.data.map((game) => {
+    const fetchGameData = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/api/gameInfo/${currentMonth.format("MM")}`
+        );
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+
+        if (data && data.status === "success" && Array.isArray(data.data)) {
+          const formattedGames = data.data.map((game) => {
             const currentYear = dayjs().year();
             const matchDateWithoutDay = game.matchDate.split(" ")[0];
             const [month, day] = matchDateWithoutDay.split(".");
@@ -48,10 +50,11 @@ const MonthlyCalendar = () => {
         } else {
           console.error("Games data is not an array", response.data);
         }
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("Error fetching game data: ", error);
-      });
+      }
+    };
+    fetchGameData();
   }, [currentMonth]);
 
   const handlePrevMonth = () =>

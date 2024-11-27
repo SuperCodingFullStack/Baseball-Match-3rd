@@ -76,6 +76,11 @@ const Login = () => {
           secure: true,
           sameSite: "Strict",
         }); // 쿠키에 저장
+        /*
+          path: '/': 이 쿠키는 모든 경로에서 접근 가능합니다.
+          secure: true: 쿠키는 HTTPS 연결을 통해서만 전송됩니다.
+          sameSite: 'Strict': 쿠키가 다른 사이트에서의 요청에 포함되지 않도록 설정합니다. 이는 CSRF 공격을 방지하는 데 도움이 됩니다.
+          */
       }
 
       console.log("Login successful");
@@ -84,51 +89,6 @@ const Login = () => {
     }
   };
 
-  // 로그인 함수
-  /*
-  const requestLogin = async () => {
-    console.log("요청할 때 들어가는 id", username, "비번", password);
-
-    try {
-      const response = await fetch("http://localhost:8080/api/user/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: username,
-          password: password,
-        }),
-      });
-      console.log("패치로 받아오는 객체", response);
-
-      // 응답 상태 확인
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const token = response.headers.get("authorization"); // JWT 추출
-      if (token) {
-        const jwtToken = token.split(" ")[1]; // "Bearer"를 제거하고 JWT만 추출
-        console.log("우리가 잘받아서 뜯은 토큰은 ", jwtToken);
-
-        Cookies.set("Authorization", jwtToken, {
-          path: "/",
-          secure: true,
-          sameSite: "Strict",
-        }); // 쿠키에 저장
-        /*
-          path: '/': 이 쿠키는 모든 경로에서 접근 가능합니다.
-          secure: true: 쿠키는 HTTPS 연결을 통해서만 전송됩니다.
-          sameSite: 'Strict': 쿠키가 다른 사이트에서의 요청에 포함되지 않도록 설정합니다. 이는 CSRF 공격을 방지하는 데 도움이 됩니다.
-          */
-  /*
-      }
-    } catch (error) {
-      console.error("로그인 요청 중 오류 발생:", error);
-    }
-  };
-*/
   return (
     <>
       <div className="로그인 영역">

@@ -1,10 +1,13 @@
 import React from "react";
 import styled from "styled-components";
-
-const SendFriendRequestbtn = styled.button`
+const PotinCusur = styled.div`
   width: auto;
   height: 50px;
+  cursor: pointer;
+  bottom: 50px;
+  position: absolute;
 `;
+const SendFriendRequestbtn = styled.button``;
 
 function SendFriendRequestButton({ friendId }) {
   const sendFriendRequest = async () => {
@@ -33,9 +36,9 @@ function SendFriendRequestButton({ friendId }) {
   };
 
   return (
-    <SendFriendRequestbtn onClick={sendFriendRequest}>
-      친구 요청 보내기
-    </SendFriendRequestbtn>
+    <PotinCusur onClick={sendFriendRequest}>
+      <SendFriendRequestbtn>친구 요청 보내기</SendFriendRequestbtn>
+    </PotinCusur>
   );
 }
 

@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 
-const FriendRequest = ({ userId }) => {
+const RequestFriendsList = ({ userId }) => {
   const [toUserId, setToUserId] = useState("");
   const [message, setMessage] = useState("");
+  const [status, setstatus] = useState("");
 
   const handleInputChange = (e) => {
     setToUserId(e.target.value);
@@ -10,13 +11,16 @@ const FriendRequest = ({ userId }) => {
 
   const sendFriendRequest = async () => {
     try {
-      const response = await fetch(`/api/friend/${user_id}?type=`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ toUserId: parseInt(toUserId) }),
-      });
+      const response = await fetch(
+        `http://localhost:8080/api/friend/${user_id}?type=${status}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ toUserId: parseInt(toUserId) }),
+        }
+      );
 
       const data = await response.json();
       if (response.ok) {
@@ -44,4 +48,4 @@ const FriendRequest = ({ userId }) => {
   );
 };
 
-export default FriendRequest;
+export default RequestFriendsList;

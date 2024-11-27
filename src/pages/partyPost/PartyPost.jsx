@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useParams } from "react-router-dom";
 import Map from "../../components/board/Map";
 import Header from "../../components/MainPage/Header/Header";
+import apiClient from "../Login/apiClient";
 
 const partyPost = () => {
   const { id } = useParams();
@@ -40,6 +41,17 @@ const partyPost = () => {
   };
   useEffect(() => {
     fetchPost();
+  }, []);
+
+  useEffect(() => {
+    apiClient
+      .get(`/api/post/${id}`)
+      .then((response) => {
+        setPost(response.data.partyPost);
+      })
+      .catch((error) => {
+        `API 호출 실패:`, error;
+      });
   }, []);
 
   return (

@@ -7,6 +7,8 @@ import { Reset } from "styled-reset";
 import Mypage from "./pages/Mypage";
 import Signup from "./pages/Signup";
 import TeamInfo from "./components/CrawlingPage/TeamInfo";
+import WebSocketComponent from "./components/WebSocket/WebSocketComponent";
+import Login from "./pages/Login/Login";
 
 function App() {
   return (
@@ -20,7 +22,9 @@ function App() {
           <Route path="/postWrite" element={<PartyPostWrite />} />
           <Route path="/mypage" element={<Mypage />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/api/teamInfo/:teamName" element={<TeamInfo />} />
+          <Route path="/portfolio" element={<WebSocketComponent />} />
         </Routes>
       </BrowserRouter>
     </>

@@ -3,13 +3,16 @@ import React from "react";
 function AcceptFriendRequestButton({ requestId }) {
   const acceptFriendRequest = async () => {
     try {
-      const response = await fetch(`/api/friends/${requestId}/accept`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${yourAuthToken}`, // 필요 시 인증 토큰 추가
-        },
-      });
+      const response = await fetch(
+        `http://localhost:8080/api/friends/${requestId}/accept`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${yourAuthToken}`, // 필요 시 인증 토큰 추가
+          },
+        }
+      );
 
       if (response.ok) {
         alert("친구 요청이 수락되었습니다.");

@@ -4,13 +4,16 @@ function SendFriendRequestButton({ friendId }) {
   const sendFriendRequest = async () => {
     try {
       const yourAuthToken = localStorage.getItem("jwtToken"); // 인증 토큰 예시
-      const response = await fetch(`/api/friend/${friendId}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${yourAuthToken}`, // 필요 시 인증 토큰 추가
-        },
-      });
+      const response = await fetch(
+        `http://localhost:8080/api/friend/${friendId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${yourAuthToken}`, // 필요 시 인증 토큰 추가
+          },
+        }
+      );
 
       if (response.ok) {
         alert("친구 요청이 성공적으로 보내졌습니다.");

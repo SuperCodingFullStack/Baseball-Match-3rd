@@ -77,6 +77,7 @@ const Body = () => {
   return (
     <BodyWrapper>
       <BulletinBoard title={data.title} items={data.items} />
+      {/* 내가쓴글 */}
       <BulletinBoard
         title="나의 즐겨찾기"
         items={["Favorite 1", "Favorite 2", "Favorite 3"]}
@@ -89,6 +90,7 @@ const Body = () => {
         title="참여파티 목록"
         items={["Party 1", "Party 2", "Party 3"]}
       />
+
       <RequestFriendsList />
     </BodyWrapper>
   );

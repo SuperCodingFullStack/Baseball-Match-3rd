@@ -77,15 +77,22 @@ const DropdownTeam = ({ onSelectTeam }) => {
 
 const TeamContainer = styled.div`
   z-index: 5;
-  width: 100vw;
-  position: absolute;
+  position: fixed;
   top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
   background-color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 1rem;
   overflow-x: auto;
+  width: 100vw;
+  box-sizing: border-box;
+
+  @media (max-width: 1507px) {
+    justify-content: flex-start; /* 화면 크기가 1507px 이하일 경우 변경 */
+  }
 `;
 
 const TeamItem = styled.div`

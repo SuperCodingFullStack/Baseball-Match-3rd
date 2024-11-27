@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 
-
 const BodyWrapper = styled.main`
   display: flex;
   flex-direction: column; /* Stack children vertically */

@@ -6,6 +6,8 @@ import { LuLogIn, LuLogOut } from "react-icons/lu";
 import { IoSettingsOutline, IoChatbubbleOutline } from "react-icons/io5";
 import { PiUserListBold } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
+import NotificationModal from "./NotificationModal";
+import useNotifications from "../../../hooks/useNotifications";
 
 const Icon = () => {
   const navigate = useNavigate();
@@ -43,10 +45,31 @@ const Icon = () => {
     };
   }, []);
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { notifications, markAsRead } = useNotifications();
+
+  const handleBellClick = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  // 읽지 않은 알림 개수
+  const unreadCount = notifications.filter((n) => !n.isRead).length;
+
   return (
     <Container>
       <StyledIcon as={IoChatbubbleOutline} />
-      <StyledIcon as={SlBell} />
+      <StyledIcon as={SlBell} onClick={handleBellClick} />
+      {unreadCount > 0 && <UnreadBadge>{unreadCount}</UnreadBadge>}
+      <NotificationModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        notifications={notifications}
+        markAsRead={markAsRead}
+      />
       <Profile
         ref={profileRef}
         src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
@@ -91,6 +114,22 @@ const StyledIcon = styled.div`
   }
 `;
 
+const UnreadBadge = styled.div`
+  position: absolute;
+  top: 25px;
+  right: 77px;
+  background-color: red;
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+  border-radius: 50%;
+  width: 15px;
+  height: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 const Profile = styled.img`
   width: 40px;
   height: 40px;
@@ -112,6 +151,7 @@ const dropdownAnimation = keyframes`
 `;
 
 const DropdownMenu = styled.div`
+  z-index: 5;
   position: absolute;
   top: 100%;
   right: 0;

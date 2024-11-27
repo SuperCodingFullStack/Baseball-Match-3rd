@@ -11,4 +11,12 @@ export const linkSection = [
     section: "핸드폰 인증",
     id: "phoneAuth",
   },
+  {
+    section: "주소 입력",
+    id: "address",
+  },
+  {
+    section: "프로필 사진 등록",
+    id: "profile",
+  },
 ];

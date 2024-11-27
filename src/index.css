@@ -33,6 +33,14 @@ button {
   font-family: inherit;
   background-color: #1a1a1a;
   cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: none;
+}
+button:focus,
+button:focus-visible {
+  outline: none;
 }
 
 @media (prefers-color-scheme: light) {

@@ -1,6 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 import { FaCheckCircle } from "react-icons/fa";
+import { useDispatch } from "react-redux";
+import { isNestActions } from "../../Store/slice/isNestSlice";
+import { isModalActions } from "../../Store/slice/isModalSlice";
 
 const Modals = styled.div`
   padding: 40px;
@@ -57,20 +60,42 @@ const ModalButtons = styled.div`
   }
 `;
 
-const ConfirmModal = ({ isTouched, errorMsg, isError, setModal }) => {
+const ConfirmModal = ({ isTouched, errorMsg, isError, title }) => {
+  const dispatch = useDispatch();
+
   const onCancel = () => {
-    setModal(false);
-    document.getElementById("root").classList.remove("dim");
+    if (title === "아이디") {
+      dispatch(isModalActions.setEmailModalFalse());
+      document.getElementById("root").classList.remove("dim");
+    }
+    if (title === "닉네임") {
+      dispatch(isModalActions.setNicknameModalFalse());
+      document.getElementById("root").classList.remove("dim");
+    }
   };
 
   const onSelect = () => {
-    setModal(false);
-    document.getElementById("root").classList.remove("dim");
+    if (title === "아이디") {
+      dispatch(isModalActions.setEmailModalFalse());
+      document.getElementById("root").classList.remove("dim");
+      dispatch(isNestActions.setEmailNest());
+    }
+    if (title === "닉네임") {
+      dispatch(isModalActions.setNicknameModalFalse());
+      document.getElementById("root").classList.remove("dim");
+      dispatch(isNestActions.setNicknameNest());
+    }
   };
 
   const onClose = () => {
-    setModal(false);
-    document.getElementById("root").classList.remove("dim");
+    if (title === "아이디") {
+      dispatch(isModalActions.setEmailModalFalse());
+      document.getElementById("root").classList.remove("dim");
+    }
+    if (title === "닉네임") {
+      dispatch(isModalActions.setNicknameModalFalse());
+      document.getElementById("root").classList.remove("dim");
+    }
   };
 
   return (

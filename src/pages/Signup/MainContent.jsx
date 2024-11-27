@@ -6,8 +6,12 @@ import useEmail from "../../hooks/useEmail";
 import usePassword from "../../hooks/usePassword";
 import usePasswordCheck from "../../hooks/usePasswordCheck";
 import ProfileInput from "./ProfileInput";
-import useName from "../../hooks/useName";
 import useNickname from "../../hooks/useNickname";
+import { useSelector } from "react-redux";
+import usePhone from "../../hooks/usePhone";
+import PhoneAndAddressInput from "./PhoneAndAddressInput";
+import { useAddress } from "../../hooks/useAddress";
+import axios from "axios";
 
 const SectionAll = styled.div``;
 
@@ -56,6 +60,11 @@ const FormButton = styled.button`
 const MainContent = () => {
   const [isTouched, setIsTouched] = useState(false);
 
+  const emailNest = useSelector((state) => state.isNest.emailNest);
+  const nicknameNest = useSelector((state) => state.isNest.nicknameNest);
+  const isPhoneAuth = useSelector((state) => state.phoneAuth.isPhoneAuth);
+  const isAddressAuth = useSelector((state) => state.phoneAuth.isAddressAuth);
+
   const { email, setEmail, validateEmail, error, msg } = useEmail();
 
   const { password, validatePw, passwordChange, pwError, pwMsg } =
@@ -63,9 +72,6 @@ const MainContent = () => {
 
   const { passwordCheck, validatePwChk, pwChkHandler, pwChkError, pwChkMsg } =
     usePasswordCheck(isTouched, password);
-
-  const { name, validateName, nameChangeHandler, nameError, nameErrorMsg } =
-    useName(isTouched);
 
   const {
     nickname,
@@ -75,28 +81,57 @@ const MainContent = () => {
     nicknameErrorMsg,
   } = useNickname(isTouched);
 
+  const {
+    phone,
+    phoneCode,
+    phoneCodeChangeHandler,
+    phoneChangeHandler,
+    phoneError,
+    phoneErrorMsg,
+  } = usePhone(isTouched);
+
+  const { address, addressChangeHandler, addressError, addressErrorMsg } =
+    useAddress(isTouched);
+
+  const fd = new FormData();
+
   const FormSubmitHandler = async (e) => {
     e.preventDefault();
-    console.log("Prevent Default");
+
+    if (emailNest && !error) {
+      fd.append("username", email);
+    }
+    if (!pwError && !pwChkError) {
+      fd.append("password", password);
+    }
+    if (nicknameNest && !nicknameError) {
+      fd.append("nickname", nickname);
+    }
+    if (isPhoneAuth && !phoneError) {
+      fd.append("phone", phone);
+    }
+    if (isAddressAuth && !addressError) {
+      fd.append("address", address);
+    }
+
     try {
-      const response = await fetch("http://localhost:8080/api/user/signUp", {
+      const response = axios.post("http://localhost:8080/api/user/signUp", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "multipart/form-data",
         },
-        body: JSON.stringify({
-          username: email,
-          password: password,
-          nickname: "뿡뿡이",
-          phone: "010-1234-1234",
-          address: "경기도 용인시",
+        body: {
+          username: fd.get("username"),
+          password: fd.get("password"),
+          nickname: fd.get("nickname"),
+          phone: fd.get("phone"),
+          address: fd.get("address"),
           profileImg: "test.jpg",
-        }),
+        },
       });
-      const json = await response.json();
-      console.log(json);
-    } catch (err) {
-      console.log(err);
+      console.log(response.data);
+    } catch (error) {
+      console.log("데이터 받아오기 실패");
     }
   };
 
@@ -152,20 +187,6 @@ const MainContent = () => {
         </IdAndPassword>
         <NameAndNicks id={linkSection[1].id}>
           <MainInput
-            title="이름"
-            isRequired
-            types="text"
-            placeholder="자신의 이름을 입력해주세요."
-            maxLength={30}
-            onChangeHandler={nameChangeHandler}
-            valueData={name}
-            errorMsg={nameErrorMsg}
-            isError={nameError}
-            validate={validateName}
-            isTouched={isTouched}
-            setIsTouched={setIsTouched}
-          />
-          <MainInput
             title="닉네임"
             types="text"
             placeholder="자신의 닉네임을 입력하세요.(필수는 아닙니다)"
@@ -175,7 +196,9 @@ const MainContent = () => {
             conditionText="입력하지 않을 경우 랜덤된 닉네임으로 설정됩니다. "
             Nest="중복확인"
             onChangeHandler={nicknameChangeHandler}
+            onChangeHandler2={phoneCodeChangeHandler}
             valueData={nickname}
+            valueData2={phoneCode}
             errorMsg={nicknameErrorMsg}
             isError={nicknameError}
             validate={validateNickname}
@@ -184,40 +207,27 @@ const MainContent = () => {
           />
         </NameAndNicks>
         <PhoneAuth id={linkSection[2].id}>
-          <MainInput
-            title="핸드폰 번호"
-            types="number"
-            placeholder="핸드폰 번호를 입력하세요."
-            maxLength={30}
-            isNested
-            isRequired
-            isAdd
-            Nest="번호입력"
-            Nest2="인증확인"
-            valueData={nickname}
-            errorMsg={nicknameErrorMsg}
-            isError={nicknameError}
-            validate={validateNickname}
+          <PhoneAndAddressInput
+            title="핸드폰 인증"
+            firstNest="인증받기"
+            secondNest="인증완료"
+            valueData={phone}
+            onChangeHandler={phoneChangeHandler}
+            errorMsg={phoneErrorMsg}
+            isError={phoneError}
             isTouched={isTouched}
             setIsTouched={setIsTouched}
           />
         </PhoneAuth>
         <Address id={linkSection[3].id}>
-          <MainInput
-            title="주소"
-            types="text"
-            placeholder="주소를 입력하세요."
-            placeholder2="상세 주소를 입력하세요."
-            maxLength={30}
-            isNested
-            isRequired
-            isAdd
-            Nest="주소API"
-            Nest2="상세입력"
-            valueData={nickname}
-            errorMsg={nicknameErrorMsg}
-            isError={nicknameError}
-            validate={validateNickname}
+          <PhoneAndAddressInput
+            title="주소 인증"
+            firstNest="인증받기"
+            secondNest="인증완료"
+            valueData={address}
+            onChangeHandler={addressChangeHandler}
+            errorMsg={addressErrorMsg}
+            isError={addressError}
             isTouched={isTouched}
             setIsTouched={setIsTouched}
           />

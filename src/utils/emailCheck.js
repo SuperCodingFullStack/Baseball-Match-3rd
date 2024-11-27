@@ -6,25 +6,27 @@ export const emailCheck = async (email) => {
   try {
     if (email) {
       const response = await axios.get(
-        `http://localhost:8080/api/user/email?email=${email}`
+        `http://localhost:8080/api/user/username?username=${email}`
       );
-      const data = response.data;
-      if (data.status === "sucess" || regex.test(email)) {
-        return {
-          error: false,
-          msg: "올바른 이메일입니다.",
-        };
-      }
-      if (email.trim() === "") {
+      console.log(response.data);
+      if (response.data.status === "success") {
+        if (regex.test(email)) {
+          return {
+            error: false,
+            msg: response.data.data,
+          };
+        } else {
+          return {
+            error: true,
+            msg: "형식에 맞지 않는 이메일입니다.",
+          };
+        }
+      } else {
         return {
           error: true,
-          msg: "이메일을 입력하십시오.",
+          msg: response.data.data,
         };
       }
-      return {
-        error: true,
-        msg: "올바른 이메일을 입력하십시오.",
-      };
     }
   } catch (error) {
     console.error(error);

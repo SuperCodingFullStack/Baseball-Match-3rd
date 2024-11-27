@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import styled from "styled-components";
 import ConfirmModal from "./ConfirmModal";
+import { useDispatch } from "react-redux";
+import { isModalActions } from "../../Store/slice/isModalSlice";
+import { useSelector } from "react-redux";
 
 const Inputs = styled.div`
   font-family: "Pretendard", sans-serif;
@@ -73,26 +76,6 @@ const RealInput = styled.div`
   }
 `;
 
-const AddInput = styled.div`
-  display: flex;
-  align-items: center;
-  grid-column: 1 / 4;
-  grid-row: 3 / 4;
-  > input {
-    width: 400px;
-    padding: 12px 16px;
-    outline: none;
-    border: 1px solid rgb(229, 231, 235);
-    background-color: rgb(249, 250, 251);
-    &.error {
-      border: 1px solid rgb(239, 68, 68);
-    }
-    &.selected {
-      border: 1px solid #1d4ed8;
-    }
-  }
-`;
-
 const Condition = styled.div`
   display: flex;
   justify-content: space-between;
@@ -125,12 +108,14 @@ const MainInput = ({
   validate,
   isTouched,
   setIsTouched,
-  isAdd,
-  placeholder2,
   Nest,
-  Nest2,
 }) => {
-  const [isModal, setIsModal] = useState(false);
+  const dispatch = useDispatch();
+
+  const emailModal = useSelector((state) => state.isModal.emailModal);
+  const nicknameModal = useSelector((state) => state.isModal.nicknameModal);
+  const emailNest = useSelector((state) => state.isNest.emailNest);
+  const nicknameNest = useSelector((state) => state.isNest.nicknameNest);
 
   return (
     <Inputs>
@@ -161,33 +146,36 @@ const MainInput = ({
           onClick={(e) => {
             e.preventDefault();
             validate();
-            setIsModal(true);
-            document.getElementById("root").classList.add("dim");
+            if (title === "아이디") {
+              dispatch(isModalActions.setEmailModal());
+              document.getElementById("root").classList.add("dim");
+            }
+            if (title === "닉네임") {
+              dispatch(isModalActions.setNicknameModal());
+              document.getElementById("root").classList.add("dim");
+            }
           }}
-          disabled={(!isTouched && !valueData) || valueData.trim() === ""}
+          disabled={
+            (!isTouched && !valueData) ||
+            valueData.trim() === "" ||
+            emailNest ||
+            nicknameNest
+          }
         >
           {Nest}
         </button>
       ) : null}
       {isNested &&
-        isModal &&
+        (emailModal || nicknameModal) &&
         ReactDOM.createPortal(
           <ConfirmModal
             isTouched={isTouched}
             errorMsg={errorMsg}
             isError={isError}
-            setModal={setIsModal}
+            title={title}
           />,
           document.getElementById("root")
         )}
-      {isAdd && (
-        <>
-          <AddInput>
-            <input type={types} placeholder={placeholder2} />
-          </AddInput>
-          <button>{Nest2}</button>
-        </>
-      )}
       <Condition className={`${isReverse ? "reverse" : ""}`}>
         <p>{conditionText}</p>
         <span>

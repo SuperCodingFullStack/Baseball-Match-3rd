@@ -84,12 +84,15 @@ const TeamContainer = styled.div`
   background-color: white;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   padding: 1rem;
   overflow-x: auto;
-  width: fit-content;
-  max-width: 100vw;
+  width: 100vw;
   box-sizing: border-box;
+
+  @media (max-width: 1507px) {
+    justify-content: flex-start; /* 화면 크기가 1507px 이하일 경우 변경 */
+  }
 `;
 
 const TeamItem = styled.div`

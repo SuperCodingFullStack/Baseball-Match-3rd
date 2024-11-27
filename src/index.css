@@ -33,7 +33,6 @@ button {
   font-family: inherit;
   background-color: #1a1a1a;
   cursor: pointer;
-<<<<<<< HEAD
   transition: border-color 0.25s;
 }
 button:hover {
@@ -42,8 +41,6 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: none;
-=======
->>>>>>> dev
 }
 
 @media (prefers-color-scheme: light) {

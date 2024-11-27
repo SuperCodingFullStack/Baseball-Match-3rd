@@ -1,6 +1,7 @@
 export const passwdCheck = (passwd) => {
   const regex =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+
   if (regex.test(passwd)) {
     return {
       isError: false,

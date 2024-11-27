@@ -136,6 +136,8 @@ const MainInput = ({
             signUpActions.setPasswdConfirm(e.target.value.slice(0, maxLength))
           );
         }
+      case "이름":
+        dispatch(signUpActions.setUserName(e.target.value));
     }
   };
 

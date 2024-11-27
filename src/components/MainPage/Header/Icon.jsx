@@ -151,6 +151,7 @@ const dropdownAnimation = keyframes`
 `;
 
 const DropdownMenu = styled.div`
+  z-index: 5;
   position: absolute;
   top: 100%;
   right: 0;

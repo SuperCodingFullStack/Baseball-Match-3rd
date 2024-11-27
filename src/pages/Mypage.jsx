@@ -6,7 +6,7 @@ import Body from "../components/Mypage/Body/Body";
 import styled from "styled-components";
 import Footer from "../components/Mypage/Footer/LogoutBtn";
 import MenuBar from "../components/Mypage/LeftSection/MenuBar";
-
+import MainContents from "../components/Mypage/Body/MainContents";
 const MypageContainer = styled.div`
   width: auto;
   max-width: 1920px;
@@ -26,9 +26,7 @@ const App = () => {
     <MypageContainer>
       <Header />
       <MenuBar />
-
-      {/* <UserProfileSection /> */}
-      <Body />
+      <MainContents />
       <Footer />
     </MypageContainer>
   );

@@ -13,44 +13,6 @@ const BodyWrapper = styled.main`
   margin: 0 auto;
 `;
 
-const SectionContainer = styled.div`
-  background-color: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  padding: 2rem;
-  text-align: center;
-`;
-
-const SectionTitle = styled.h2`
-  color: #333;
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-`;
-
-const LinkButton = styled.button`
-  background-color: #40cf66;
-  color: #ffffff;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-
-  &:hover {
-    background-color: #33a956;
-  }
-`;
-
-const BulletinBoard = ({ title, items }) => (
-  <SectionContainer>
-    <SectionTitle>{title}</SectionTitle>
-    {items.map((item, index) => (
-      <p key={index}>{item}</p>
-    ))}
-    <LinkButton>더보기</LinkButton>
-  </SectionContainer>
-);
-
 const Body = () => {
   const [data, setData] = useState({ title: "", items: [] }); // title과 items 상태 관리
 

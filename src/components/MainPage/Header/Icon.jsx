@@ -17,6 +17,12 @@ const Icon = () => {
   const handleSignupBtnClick = () => {
     navigate("/signup");
   };
+  const handleLoginBtnClick = () => {
+    navigate("/login");
+  };
+  const handleChatBtnClick = () => {
+    navigate("/portfolio");
+  };
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -61,7 +67,7 @@ const Icon = () => {
 
   return (
     <Container>
-      <StyledIcon as={IoChatbubbleOutline} />
+      <StyledIcon as={IoChatbubbleOutline} onClick={handleChatBtnClick} />
       <StyledIcon as={SlBell} onClick={handleBellClick} />
       {unreadCount > 0 && <UnreadBadge>{unreadCount}</UnreadBadge>}
       <NotificationModal
@@ -83,7 +89,7 @@ const Icon = () => {
           <DropdownItem>
             <IoSettingsOutline /> 설정
           </DropdownItem>
-          <DropdownItem>
+          <DropdownItem onClick={handleLoginBtnClick}>
             <LuLogIn /> 로그인
           </DropdownItem>
           <DropdownItem onClick={handleSignupBtnClick}>

@@ -8,53 +8,74 @@ const MonthlyCalendar = () => {
   const [currentMonth, setCurrentMonth] = useState(dayjs().startOf("month"));
   const [games, setGames] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const daysInMonth = currentMonth.daysInMonth();
   const firstDayOfWeek = currentMonth.startOf("month").day();
 
-  useEffect(() => {
-    const fetchGameData = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:8080/api/gameInfo/${currentMonth.format("MM")}`
-        );
+  const fetchGameData = async (monthToCheck) => {
+    if (monthToCheck < 1) {
+      console.log("더 이상 이전 달 데이터가 없습니다.");
+      setLoading(false);
+      return;
+    }
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const data = await response.json();
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/gameInfo/${dayjs(monthToCheck).format("MM")}`
+      );
 
-        if (data && data.status === "success" && Array.isArray(data.data)) {
-          const formattedGames = data.data.map((game) => {
-            const currentYear = dayjs().year();
-            const matchDateWithoutDay = game.matchDate.split(" ")[0];
-            const [month, day] = matchDateWithoutDay.split(".");
-            const formattedDate = dayjs(
-              `${currentYear}-${month}-${day}`,
-              "YYYY-MM-DD"
-            );
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json();
 
-            return {
-              date: formattedDate,
-              team: `${game.homeTeam} vs ${game.awayTeam}`,
-              homeTeam: game.homeTeam,
-              homeTeamScore: game.homeTeamScore,
-              awayTeam: game.awayTeam,
-              awayTeamScore: game.awayTeamScore,
-              matchTime: game.matchTime,
-              stadium: game.stadium,
-            };
-          });
+      if (data && data.status === "success" && Array.isArray(data.data)) {
+        const formattedGames = data.data.map((game) => {
+          const currentYear = dayjs().year();
+          const matchDateWithoutDay = game.matchDate.split(" ")[0];
+          const [month, day] = matchDateWithoutDay.split(".");
+          const formattedDate = dayjs(
+            `${currentYear}-${month}-${day}`,
+            "YYYY-MM-DD"
+          );
+
+          return {
+            date: formattedDate,
+            team: `${game.homeTeam} vs ${game.awayTeam}`,
+            homeTeam: game.homeTeam,
+            homeTeamScore: game.homeTeamScore,
+            awayTeam: game.awayTeam,
+            awayTeamScore: game.awayTeamScore,
+            matchTime: game.matchTime,
+            stadium: game.stadium,
+          };
+        });
+        if (formattedGames.length > 0) {
           setGames(formattedGames);
           console.log(formattedGames);
-        } else {
-          console.error("Games data is not an array", response.data);
+          setLoading(false);
+          return true;
         }
-      } catch (error) {
-        console.error("Error fetching game data: ", error);
       }
+      console.error(
+        `데이터가 없습니다. 이전달 (${monthToCheck
+          .subtract(1, "month")
+          .format("MMMM")})로 이동합니다.`
+      );
+      return await fetchGameData(monthToCheck.subtract(1, "month"));
+    } catch (error) {
+      console.error("Error fetching game data: ", error);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      await fetchGameData(currentMonth);
     };
-    fetchGameData();
+    fetchData();
   }, [currentMonth]);
 
   const handlePrevMonth = () =>
@@ -63,6 +84,10 @@ const MonthlyCalendar = () => {
 
   const openModal = (date) => setSelectedDate(dayjs(date));
   const closeModal = () => setSelectedDate(null);
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <Container>
@@ -115,7 +140,13 @@ const MonthlyCalendar = () => {
         })}
       </Grid>
       {selectedDate && (
-        <GameModal date={selectedDate} games={games} onClose={closeModal} />
+        <GameModal
+          date={selectedDate}
+          dayGames={games.filter((game) =>
+            dayjs(game.date).isSame(selectedDate, "day")
+          )}
+          onClose={closeModal}
+        />
       )}
     </Container>
   );

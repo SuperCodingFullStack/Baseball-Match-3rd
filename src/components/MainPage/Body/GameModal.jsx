@@ -3,69 +3,17 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { getTeamLogo } from "../../../utils/getTeamLogo";
 import Weather from "./Weather";
-import { useState, useEffect } from "react";
 import { stadiumCityMap } from "../../../constants";
 
-const GameModal = ({ date, onClose }) => {
+const GameModal = ({ date, onClose, dayGames }) => {
   // date가 유효하지 않으면 현재 날짜를 기본값으로 설정
   const formattedDate = date ? dayjs(date) : dayjs();
-  const [games, setGames] = useState([]);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const fetchGames = async () => {
-      try {
-        // 월 정보를 추출하여 API 요청
-        // const month = formattedDate.format("MM");
-        const response = await fetch(
-          // `http://localhost:8080/api/gameInfo/${formattedDate.format("MM")}`
-          "http://localhost:8080/api/gameInfo/10"
-        );
-        const result = await response.json();
-
-        if (
-          response.ok &&
-          result.status === "success" &&
-          Array.isArray(result.data)
-        ) {
-          setGames(result.data);
-        } else {
-          console.error("Invalid data format:", result);
-          setGames([]);
-        }
-      } catch (err) {
-        console.error(err);
-        setError("경기 정보를 가져오는데 실패했습니다.");
-        setGames([]);
-      }
-    };
-
-    fetchGames();
-  }, [formattedDate]);
-
-  // 날짜에 맞는 경기를 필터링
-  const dayGames = Array.isArray(games)
-    ? games.filter((game) => {
-        const currentYear = dayjs().year();
-        const matchDateWithoutDay = game.matchDate.split(" ")[0];
-        const [month, day] = matchDateWithoutDay.split(".");
-
-        const formattedMatchDate = dayjs(
-          `${currentYear}-${month}-${day}`,
-          "YYYY-MM-DD"
-        ).format("YYYY-MM-DD");
-
-        return formattedMatchDate === formattedDate.format("YYYY-MM-DD");
-      })
-    : [];
 
   return (
     <ModalOverlay>
       <ModalContent>
         <ModalTitle>{formattedDate.format("MM월 DD일")}</ModalTitle>
-        {error ? (
-          <GameInfo>{error}</GameInfo>
-        ) : dayGames.length > 0 ? (
+        {dayGames.length > 0 ? (
           <GameList>
             {dayGames.map((game, index) => (
               <GameItem key={index}>
@@ -78,7 +26,7 @@ const GameModal = ({ date, onClose }) => {
                   {game.awayTeam}
                 </GameInfo>
                 <GameInfo>{game.stadium}</GameInfo>
-                <GameInfo>{game.time}</GameInfo>
+                <GameInfo>{game.matchTime}</GameInfo>
               </GameItem>
             ))}
           </GameList>
@@ -93,21 +41,20 @@ const GameModal = ({ date, onClose }) => {
 
 GameModal.propTypes = {
   date: PropTypes.oneOfType([PropTypes.instanceOf(dayjs), PropTypes.string]),
-  //   games: PropTypes.arrayOf(
-  //     PropTypes.shape({
-  //       date: PropTypes.string.isRequired,
-  //       team1: PropTypes.string.isRequired,
-  //       team2: PropTypes.string.isRequired,
-  //       stadium: PropTypes.string.isRequired,
-  //       time: PropTypes.string.isRequired,
-  //     })
-  //   ),
+  dayGames: PropTypes.arrayOf(
+    PropTypes.shape({
+      homeTeam: PropTypes.string.isRequired,
+      awayTeam: PropTypes.string.isRequired,
+      stadium: PropTypes.string.isRequired,
+      matchTime: PropTypes.string.isRequired,
+    })
+  ),
   onClose: PropTypes.func.isRequired,
 };
 
 GameModal.defaultProps = {
   date: dayjs(),
-  //   games: [], // 기본 게임 데이터는 빈 배열
+  dayGames: [],
 };
 
 const ModalOverlay = styled.div`

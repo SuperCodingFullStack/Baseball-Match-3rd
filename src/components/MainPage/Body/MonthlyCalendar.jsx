@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect,useRef } from "react";
 import dayjs from "dayjs";
 import styled from "styled-components";
 import GameModal from "./GameModal";
 import { FaAngleLeft, FaAngleRight, FaPlus } from "react-icons/fa6";
+import { useCallback } from "react";
 
 const MonthlyCalendar = () => {
   const [currentMonth, setCurrentMonth] = useState(dayjs().startOf("month"));
@@ -13,8 +14,11 @@ const MonthlyCalendar = () => {
   const daysInMonth = currentMonth.daysInMonth();
   const firstDayOfWeek = currentMonth.startOf("month").day();
 
-  const fetchGameData = async (monthToCheck) => {
-    if (monthToCheck < 1) {
+  const calendarRef = useRef(null);
+  const scrollPosition = useRef(0);
+
+  const fetchGameData = useCallback(async (monthToCheck) => {
+    if (monthToCheck.month < 1) {
       console.log("더 이상 이전 달 데이터가 없습니다.");
       setLoading(false);
       return;
@@ -53,7 +57,6 @@ const MonthlyCalendar = () => {
         });
         if (formattedGames.length > 0) {
           setGames(formattedGames);
-          console.log(formattedGames);
           setLoading(false);
           return true;
         }
@@ -68,7 +71,7 @@ const MonthlyCalendar = () => {
       console.error("Error fetching game data: ", error);
       setLoading(false);
     }
-  };
+  },[]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -76,21 +79,32 @@ const MonthlyCalendar = () => {
       await fetchGameData(currentMonth);
     };
     fetchData();
-  }, [currentMonth]);
+  }, [currentMonth, fetchGameData]);
 
-  const handlePrevMonth = () =>
+  const handlePrevMonth = () => {
+    scrollPosition.current = calendarRef.current.scrollTop;
     setCurrentMonth(currentMonth.subtract(1, "month"));
-  const handleNextMonth = () => setCurrentMonth(currentMonth.add(1, "month"));
+  };
+  const handleNextMonth = () => {
+    scrollPosition.current = calendarRef.current.scrollTop;
+    setCurrentMonth(currentMonth.add(1, "month"));
+  };
 
   const openModal = (date) => setSelectedDate(dayjs(date));
   const closeModal = () => setSelectedDate(null);
+
+  useEffect(() => {
+    if (calendarRef.current){
+      calendarRef.current.scrollTop = scrollPosition.current;
+    }
+  }, [currentMonth]);
 
   if (loading) {
     return <p>Loading...</p>;
   }
 
   return (
-    <Container>
+    <Container ref={calendarRef}>
       <Header>
         <button onClick={handlePrevMonth}>
           <FaAngleLeft />
@@ -203,7 +217,7 @@ const Cell = styled.div`
   text-align: center;
   position: relative;
   weight: 90px;
-  height: 90px;
+  height: 110px;
 `;
 
 const DateLabel = styled.div`
@@ -229,8 +243,8 @@ const GamesSummary = styled.div`
 const GameIcon = styled.div`
 font-size:14px;
 background:#f0f0f0;
-padding 2px 5px;
-margin: 2px 0
+padding 2px 4px;
+margin: 4px 0
 `;
 
 const PlusButton = styled.button`

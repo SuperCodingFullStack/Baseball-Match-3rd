@@ -1,151 +1,163 @@
-import React, { useState, useEffect } from "react";
-import DropdownTeam from "../../components/board/DropdownTeam";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
+import styled from "styled-components";
+import apiClient from "../Login/apiClient";
+import axios from "axios";
 
-const partyPostWrite = () => {
-  // 게임 정보를 검색해서 받아오는 과정
-  // 기억하기로 어떤날에 어떤 구단의 경기는 1개 밖에 없기에 이렇게 하면 특정지어서
-  // 받을 수 있다고 기억한다.
-  /*
-  받아야 하는 명확한 형식
-  1. 구단의 이름을 저기 뭐야? 뭐시기로 할 거 아니면명확하게 받을 이름 정할 것 롯데로 받을지 롯데 자이언트로 받을지 이런거
-  2. 날짜 형식을 어떻게 보내줘야 명확하게 받아지는지 말해줄 것
-  */
-  /* const fetchGames = async (date) => {
-    const response = await fetch(
-      `http://localhost:8080/api/game/matchDate=${date}`
-    );
-    const data = await response.json();
-    return data;
-  };
-*/
-  // 임시로 받아오는 게임 엔티티 데이터
-  const gameData = [
-    {
-      // 어떤 게임엔티티인지 구분하는 id 필요
-      id: 3,
-      team: "롯데",
-      awayTeam: "NC",
-      matchDate: "2024-11-21",
-      // "10.21 월" 받아오는 양식
-      matchTime: "18:00",
-    },
-    {
-      // 어떤 게임엔티티인지 구분하는 id 필요
-      id: 2,
-      team: "롯데",
-      awayTeam: "NC",
-      matchDate: "2024-11-21",
-      // "10.21 월" 받아오는 양식
-      matchTime: "18:00",
-    },
-  ];
-
-  const [teamName, setTeamName] = useState("");
-  const [games, setGames] = useState([]);
-  const [selectedGame, setSelectedGame] = useState(null);
-  // const [showGamesList, setShowGamesList] = useState(false);
-
-  // 경기 목록을 받아오는 함수
-  const handleSearchGames = async () => {
-    const gameData = await fetchGames(matchDate, teamName);
-    setGames(gameData);
-    setShowGamesList(true);
-  };
-
+const PartyPostWrite = () => {
+  const [games, setGames] = useState([]); // 원하는 날짜에 있는 게임들
+  const [selectedGame, setSelectedGame] = useState(null); // 내가 고른 게임
+  const [showGamesList, setShowGamesList] = useState(false); // 모달
+  // api 보낼 양식
   const [formData, setFormData] = useState({
-    userId: "JWT 토큰에서 가져오는 user id",
-    gameId: "game 확인한 후 해당 경기의 id",
+    gameId: "게임아이디",
     title: "글 제목",
     content: "글 내용",
-    MaxPeopleNum: "최대모집인원",
+    MaxPeopleNum: "최대인원",
   });
 
+  // 내가 보고 싶은 날짜
   const [surchGameInfo, setSurchGameInfo] = useState({
     matchDate: "이벤트로 선택한 날짜",
-    team: "받아온 팀명",
   });
-  //  input에 작성을 해서 이벤트가 발생하면 내가 만든 state에 해당하는 값이 덧씌워지도록하는 함수
-  const handleChange = (e) => {
+
+  // 게임 목록을 가져오는 함수
+  const handleSearchGames = useCallback(async (matchDate) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/api/gameMatchDate?matchDate=${matchDate}`
+      );
+      console.log("응답객체는 = ", response);
+      console.log("response.status는? =", response.status);
+      console.log("response.data.status는? =", response.data.status);
+
+      if (response.data.status === "success") {
+        setGames(response.data.data);
+        setShowGamesList(true);
+        console.log("저장되는 게임 데이터는 = ", response.data.data);
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (e) {
+      console.error("에러발생 : ", e.message);
+    }
+  }, []);
+
+  // 폼 데이터 변경 함수
+  const handleChange = useCallback((e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
-  };
-  // 상태 변경 후 로그 출력
-  useEffect(() => {
-    console.log("Updated data:", formData);
-  }, [formData]); //formData가 변경될 때마다 실행
-  // game 정보를 불러오기 위한 날짜와 팀명을 저장하기 위한 함수
-  const handleSurchGameInfo = (e) => {
+  }, []);
+
+  // 게임 정보 검색 입력 처리 함수
+  const handleSurchGameInfo = useCallback((e) => {
     const { name, value } = e.target;
     setSurchGameInfo((prevData) => ({
       ...prevData,
       [name]: value,
     }));
-  };
-  // 상태 변경 후 로그 출력
-  useEffect(() => {
-    console.log("Updated matchDate:", surchGameInfo.matchDate);
-    console.log("Updated team:", surchGameInfo.team);
-  }, [surchGameInfo]); // surchGameInfo가 변경될 때마다 실행
+  }, []);
 
-  // 전체 전송 어 그러니까 글을 작성하는 post 요청을 보내는 함수
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  // 폼 제출 함수
+  const handleSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
+      try {
+        const response = await apiClient.post(`/api/post`, formData);
+        console.log("response는 = >", response);
 
-    fetch(`http://localhost:8080/api/post`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    })
-      .then((response) => response.json()) // 응답을 JSON 형식으로 변환
-      .then((data) => {
-        if (data.status === "success") {
-          console.log("Success:", data.message); // 성공 메시지 출력
-          // 성공 시 추가 작업 (예: 포스트 ID 출력)
-          console.log("Post ID:", data.data.post_id);
+        if (response.data.status === "success") {
+          console.log(response.data.message);
         } else {
-          throw new Error(data.message); // 실패 시 에러 발생
+          throw new Error(response.data.message);
         }
-      })
-      .catch((error) => {
-        console.error("Error:", error.message); // 에러 메시지 출력
-      });
-  };
+      } catch (e) {
+        console.error("에러발생 : ", e.message);
+      }
+    },
+    [formData]
+  );
+
+  // 게임 선택 핸들러
+  const handleSelectGame = useCallback(
+    (e) => {
+      const selectedGameId = e.target.value;
+      const selected = games.find((game) => game.id === selectedGameId);
+      setSelectedGame(selected);
+      setFormData((prevData) => ({
+        ...prevData,
+        gameId: selectedGameId,
+      }));
+    },
+    [games]
+  );
+
+  // 선택된 게임 정보는 useMemo로 메모이제이션
+  const memoizedGameList = useMemo(() => {
+    if (showGamesList) {
+      return (
+        <Select onChange={handleSelectGame}>
+          <option value="">게임을 선택하세요</option>
+          {games.map((game) => (
+            <option key={game.id} value={game.id}>
+              {game.homeTeamName} vs {game.awayTeamName} ({game.matchDate}:
+              {game.matchTime})
+            </option>
+          ))}
+        </Select>
+      );
+    }
+    return null;
+  }, [games, showGamesList, handleSelectGame]);
+
+  // 선택된 게임 정보는 useMemo로 메모이제이션
+  const memoizedSelectedGame = useMemo(() => {
+    if (selectedGame) {
+      return (
+        <SelectedGame>
+          <p>
+            선택한 경기: {selectedGame.homeTeamName} vs{" "}
+            {selectedGame.awayTeamName} ({selectedGame.matchDate}:
+            {selectedGame.matchTime})
+          </p>
+        </SelectedGame>
+      );
+    }
+    return null;
+  }, [selectedGame]);
 
   return (
-    <>
-      <form onSubmit={handleSubmit}>
+    <Container>
+      <Form onSubmit={handleSubmit}>
         {/* 제목 입력 */}
-        <div>
-          <label htmlFor="title">제목</label>
-          <input
+        <FormGroup>
+          <Label htmlFor="title">제목</Label>
+          <Input
             type="text"
             id="title"
             name="title"
             onChange={handleChange}
             required
           />
-        </div>
+        </FormGroup>
 
         {/* 내용 입력 */}
-        <div>
-          <label htmlFor="content">내용</label>
-          <textarea
+        <FormGroup>
+          <Label htmlFor="content">내용</Label>
+          <Textarea
             id="content"
             name="content"
             onChange={handleChange}
             required
           />
-        </div>
+        </FormGroup>
 
         {/* 최대 인원 수 입력 */}
-        <div>
-          <label htmlFor="maxPeopleNum">최대 인원 수</label>
-          <input
+        <FormGroup>
+          <Label htmlFor="maxPeopleNum">최대 인원 수</Label>
+          <Input
             type="number"
             id="maxPeopleNum"
             name="maxPeopleNum"
@@ -153,53 +165,134 @@ const partyPostWrite = () => {
             min="2"
             required
           />
-        </div>
+        </FormGroup>
 
         {/* 경기 정보 선택 */}
-        <div>
-          <label>경기 정보</label>
-          <div>
-            <input
+        <div className="game-selection">
+          <Label>경기 정보</Label>
+          <DateInputContainer>
+            <Input
               type="date"
-              name="matchDate" // name 속성 추가
+              name="matchDate"
               placeholder="경기 일자"
               onChange={handleSurchGameInfo}
             />
-
-            <div>드롭다운 해야지 스스로 만들어</div>
-            <button type="button" onClick={handleSearchGames}>
+            <SearchButton
+              type="button"
+              onClick={() => handleSearchGames(surchGameInfo.matchDate)}
+            >
               경기 검색
-            </button>
-          </div>
+            </SearchButton>
+          </DateInputContainer>
 
-          {/* 경기 목록 어차피 하나라면 삭제 할 공간
-          {showGamesList && (
-            <div>
-              <ul>
-                {games.map((game) => (
-                  <li key={game.id} onClick={() => setSelectedGame(game)}>
-                    {game.awayTeam} vs {game.homeTeam} ({game.matchDate})
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )} */}
+          {/* 경기 목록 드롭다운 표시 */}
+          {memoizedGameList}
 
           {/* 선택된 경기 표시 */}
-          {selectedGame && (
-            <div>
-              <p>
-                선택한 경기: {gameData.team} vs {gameData.awayTeam}
-              </p>
-            </div>
-          )}
+          {memoizedSelectedGame}
         </div>
 
         {/* 제출 버튼 */}
-        <button type="submit">글작성하기</button>
-      </form>
-    </>
+        <SubmitButton type="submit">글작성하기</SubmitButton>
+      </Form>
+    </Container>
   );
 };
 
-export default partyPostWrite;
+export default PartyPostWrite;
+
+// 스타일 컴포넌트 정의
+const Container = styled.div`
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  background-color: #f4f4f4;
+`;
+
+const Form = styled.form`
+  width: 100%;
+  max-width: 600px;
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+`;
+
+const FormGroup = styled.div`
+  margin-bottom: 15px;
+`;
+
+const Label = styled.label`
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+`;
+
+const Input = styled.input`
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+`;
+
+const Textarea = styled.textarea`
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  height: 100px;
+  resize: vertical;
+`;
+
+const DateInputContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+`;
+
+const SearchButton = styled.button`
+  font-size: 12px;
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  &:hover {
+    background-color: #0056b3;
+  }
+`;
+
+const Select = styled.select`
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+`;
+
+const SelectedGame = styled.div`
+  margin-top: 15px;
+  padding: 10px;
+  background-color: #e9f5f0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+`;
+
+const SubmitButton = styled.button`
+  width: 100%;
+  padding: 10px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  &:hover {
+    background-color: #218838;
+  }
+`;

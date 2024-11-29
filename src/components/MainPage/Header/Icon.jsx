@@ -8,11 +8,19 @@ import { PiUserListBold } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
 import NotificationModal from "./NotificationModal";
 import useNotifications from "../../../hooks/useNotifications";
+import Cookies from "js-cookie";
 
 const Icon = () => {
   const navigate = useNavigate();
+
+  const isLoggedIn = !!Cookies.get("Authorization");
+
   const handleMypageBtnClick = () => {
-    navigate("/mypage");
+    if(!isLoggedIn){
+      alert("로그인이 필요합니다.");
+      navigate("/login");}
+      else {
+    navigate("/mypage");}
   };
   const handleSignupBtnClick = () => {
     navigate("/signup");
@@ -22,6 +30,10 @@ const Icon = () => {
   };
   const handleChatBtnClick = () => {
     navigate("/portfolio");
+  };
+  const handleLogoutBtnClick = () => {
+    Cookies.remove("Authorization");
+    navigate("/");
   };
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -89,15 +101,22 @@ const Icon = () => {
           <DropdownItem>
             <IoSettingsOutline /> 설정
           </DropdownItem>
-          <DropdownItem onClick={handleLoginBtnClick}>
+          {isLoggedIn ? (
+            <>
+          <DropdownItem onClick={handleLogoutBtnClick}>
+            <LuLogOut /> 로그아웃
+          </DropdownItem>
+            </>
+          ) : (
+            <>
+             <DropdownItem onClick={handleLoginBtnClick}>
             <LuLogIn /> 로그인
           </DropdownItem>
           <DropdownItem onClick={handleSignupBtnClick}>
             <PiUserListBold /> 회원가입
           </DropdownItem>
-          <DropdownItem>
-            <LuLogOut /> 로그아웃
-          </DropdownItem>
+            </>
+          )}
         </DropdownMenu>
       )}
     </Container>

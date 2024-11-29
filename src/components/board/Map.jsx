@@ -17,74 +17,65 @@ const Map = React.memo(({ latitude, longitude }) => {
   const prevCenterRef = useRef({ lat: latitude, lng: longitude });
 
   useEffect(() => {
-    // 이전 값과 현재 값이 다를 때만 실행
-    if (
-      prevCenterRef.current.lat !== latitude ||
-      prevCenterRef.current.lng !== longitude
-    ) {
-      setLoading(true); // 로딩 시작
+    if (latitude && longitude) {
+      // latitude와 longitude가 존재할 때만 실행
+      const fetchData = async () => {
+        setLoading(true);
 
-      // 구글 맵 API 요청
-      const timer = setTimeout(() => {
         if (window.google && window.google.maps && window.google.maps.places) {
-          const service = new window.google.maps.places.PlacesService(
-            document.createElement("div")
-          );
-          const request = {
-            location: center,
-            radius: 500,
-            type: "stadium",
-          };
+          try {
+            const service = new window.google.maps.places.PlacesService(
+              document.createElement("div")
+            );
+            const request = {
+              location: center,
+              radius: 500,
+              type: "stadium",
+            };
 
-          service.nearbySearch(request, (results, status) => {
-            if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-              setPlaceInfo(results);
-              setLoading(false); // 로딩 종료
-            } else {
-              setLoading(false); // 오류 발생 시 로딩 종료
-              console.error("Nearby search failed: ", status);
-            }
-          });
+            service.nearbySearch(request, (results, status) => {
+              if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+                setPlaceInfo(results);
+              } else {
+                console.error("Nearby search failed: ", status);
+              }
+            });
+
+            const geocoder = new window.google.maps.Geocoder();
+            geocoder.geocode({ location: center }, (results, status) => {
+              if (status === "OK" && results[0]) {
+                setAddress(results[0].formatted_address);
+              } else {
+                console.error("Geocode failed: ", status);
+              }
+            });
+          } catch (error) {
+            console.error("Error fetching data: ", error);
+          } finally {
+            setLoading(false);
+          }
         } else {
           console.error("Google Maps API not loaded.");
-          setLoading(false); // API 로드 안 됐을 때 로딩 종료
+          setLoading(false);
         }
-      }, 1000); // 1000ms 지연 후 호출 (디바운스 효과)
+      };
 
-      return () => clearTimeout(timer); // 클린업
+      if (
+        prevCenterRef.current.lat !== latitude ||
+        prevCenterRef.current.lng !== longitude
+      ) {
+        fetchData();
+      }
+
+      prevCenterRef.current = { lat: latitude, lng: longitude };
     }
   }, [latitude, longitude]); // 의존성 배열에 latitude와 longitude 추가
-
-  // 주소 검색
-  useEffect(() => {
-    if (window.google && window.google.maps && window.google.maps.Geocoder) {
-      const geocoder = new window.google.maps.Geocoder();
-
-      geocoder.geocode({ location: center }, (results, status) => {
-        if (status === "OK" && results[0]) {
-          setAddress(results[0].formatted_address);
-        } else {
-          console.error("Geocode failed: ", status);
-        }
-      });
-    } else {
-      console.error("Google Maps API not loaded.");
-    }
-  }, [latitude, longitude]); // `latitude`와 `longitude`가 변경될 때마다 실행
-
-  // 이전 center 값을 갱신
-  useEffect(() => {
-    prevCenterRef.current = { lat: latitude, lng: longitude };
-  }, [latitude, longitude]);
 
   return (
     <LoadScript googleMapsApiKey={apiKey} libraries={["places"]}>
       <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={15}>
         {/* 로딩 상태 표시 */}
         {loading && <div>Loading...</div>}
-
-        {/* 마커표시확인 */}
-        {/* <Marker position={center} /> */}
 
         {/* 주소 표시 */}
         {address && (
@@ -93,18 +84,24 @@ const Map = React.memo(({ latitude, longitude }) => {
           </div>
         )}
 
+        {/* 중심 마커 표시 - 추가된 부분 */}
+        <Marker position={center} title="Center Point" />
+
         {/* 해당 스타디움 마크 표시 */}
         {!loading &&
           placeInfo.length > 0 &&
           placeInfo.map((place, index) => (
-            <Marker key={index} position={place.geometry.location} />
+            <Marker
+              key={place.place_id || index}
+              position={place.geometry.location}
+            />
           ))}
 
         {/* 장소 정보 표시 */}
         {!loading && placeInfo.length > 0 && (
           <div className="place-info">
             {placeInfo.map((place, index) => (
-              <div key={index}>
+              <div key={place.place_id || index}>
                 <h3>{place.name}</h3>
                 <p>{place.vicinity}</p>
               </div>

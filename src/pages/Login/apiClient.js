@@ -11,7 +11,7 @@ apiClient.interceptors.request.use(
   (config) => {
     const token = Cookies.get("Authorization"); // 쿠키에서 JWT 토큰 가져오기
     if (token) {
-      config.headers["Authorization"] = token; // 요청 헤더에 토큰 추가
+      config.headers["Authorization"] = `Brearer ${token}`; // 요청 헤더에 토큰 추가
     }
     return config;
   },

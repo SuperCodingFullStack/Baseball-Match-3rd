@@ -30,7 +30,6 @@ const App = () => {
       <MenuBar />
       <MainContents />
       <Footer />
-      <SendFriendRequestButton />
     </MypageContainer>
   );
 };

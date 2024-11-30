@@ -1,10 +1,10 @@
-import React, { useEffect, useRef } from "react";
-import styled from "styled-components";
-import SignHeader from "./SignHeader";
-import SignBody from "./SignBody";
-import { useDispatch } from "react-redux";
-import { activeIdActions } from "../../Store/Slice/ActiveIdSlice";
-import { linkSection } from "./linkSection";
+import React, { useEffect, useRef } from 'react';
+import styled from 'styled-components';
+import SignHeader from './SignHeader';
+import SignBody from './SignBody';
+import { useDispatch } from 'react-redux';
+import { activeIdActions } from '../../Store/Slice/ActiveIdSlice';
+import { linkSection } from './linkSection';
 
 const SignWrapper = styled.div``;
 
@@ -18,7 +18,7 @@ const Signup = () => {
       if (entry.isIntersecting) {
         dispatch(activeIdActions.changeActive(entry.target.id));
         if (signBodyRef.current) {
-          signBodyRef.current.style.marginLeft = "210px";
+          signBodyRef.current.style.marginLeft = '240px';
         }
       }
     });
@@ -33,7 +33,7 @@ const Signup = () => {
       const element = document.getElementById(section.id);
       if (element) {
         observer.observe(element);
-        element.scrollIntoView({ behavior: "smooth" });
+        element.scrollIntoView({ behavior: 'smooth' });
       }
     });
 

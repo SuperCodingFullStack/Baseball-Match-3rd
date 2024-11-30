@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-import ReactDOM from "react-dom";
-import styled from "styled-components";
-import ConfirmModal from "./ConfirmModal";
-import { useDispatch } from "react-redux";
-import { isModalActions } from "../../Store/slice/isModalSlice";
-import { useSelector } from "react-redux";
+import React, { useEffect, useState } from 'react';
+import ReactDOM from 'react-dom';
+import styled from 'styled-components';
+import ConfirmModal from './ConfirmModal';
+import { useDispatch } from 'react-redux';
+import { isModalActions } from '../../Store/slice/isModalSlice';
+import { useSelector } from 'react-redux';
 
 const Inputs = styled.div`
-  font-family: "Pretendard", sans-serif;
+  font-family: 'Pretendard', sans-serif;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   gap: 15px;
@@ -117,6 +117,19 @@ const MainInput = ({
   const emailNest = useSelector((state) => state.isNest.emailNest);
   const nicknameNest = useSelector((state) => state.isNest.nicknameNest);
 
+  const NestHandler = async (e) => {
+    e.preventDefault();
+    await validate();
+    if (title === '아이디') {
+      dispatch(isModalActions.setEmailModal());
+      document.getElementById('root').classList.add('dim');
+    }
+    if (title === '닉네임') {
+      dispatch(isModalActions.setNicknameModal());
+      document.getElementById('root').classList.add('dim');
+    }
+  };
+
   return (
     <Inputs>
       <TitleWrapper>
@@ -125,7 +138,7 @@ const MainInput = ({
           {isRequired ? <b>*</b> : null}
         </h2>
         {!isNested && isTouched && (
-          <p className={`${isError ? "error" : "ok"}`}>{errorMsg}</p>
+          <p className={`${isError ? 'error' : 'ok'}`}>{errorMsg}</p>
         )}
       </TitleWrapper>
       <RealInput>
@@ -143,23 +156,12 @@ const MainInput = ({
       </RealInput>
       {isNested ? (
         <button
-          onClick={(e) => {
-            e.preventDefault();
-            validate();
-            if (title === "아이디") {
-              dispatch(isModalActions.setEmailModal());
-              document.getElementById("root").classList.add("dim");
-            }
-            if (title === "닉네임") {
-              dispatch(isModalActions.setNicknameModal());
-              document.getElementById("root").classList.add("dim");
-            }
-          }}
+          onClick={NestHandler}
           disabled={
             (!isTouched && !valueData) ||
-            valueData.trim() === "" ||
-            emailNest ||
-            nicknameNest
+            valueData.trim() === '' ||
+            (title === '아이디' && emailNest) ||
+            (title === '닉네임' && nicknameNest)
           }
         >
           {Nest}
@@ -168,15 +170,10 @@ const MainInput = ({
       {isNested &&
         (emailModal || nicknameModal) &&
         ReactDOM.createPortal(
-          <ConfirmModal
-            isTouched={isTouched}
-            errorMsg={errorMsg}
-            isError={isError}
-            title={title}
-          />,
-          document.getElementById("root")
+          <ConfirmModal errorMsg={errorMsg} isError={isError} title={title} />,
+          document.getElementById('root')
         )}
-      <Condition className={`${isReverse ? "reverse" : ""}`}>
+      <Condition className={`${isReverse ? 'reverse' : ''}`}>
         <p>{conditionText}</p>
         <span>
           {isTouched ? valueData.length : 0} / {maxLength}

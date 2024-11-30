@@ -1,9 +1,9 @@
-import React from "react";
-import styled from "styled-components";
-import { FaCheckCircle } from "react-icons/fa";
-import { useDispatch } from "react-redux";
-import { isNestActions } from "../../Store/slice/isNestSlice";
-import { isModalActions } from "../../Store/slice/isModalSlice";
+import React from 'react';
+import styled from 'styled-components';
+import { FaCheckCircle } from 'react-icons/fa';
+import { useDispatch } from 'react-redux';
+import { isNestActions } from '../../Store/slice/isNestSlice';
+import { isModalActions } from '../../Store/slice/isModalSlice';
 
 const Modals = styled.div`
   padding: 40px;
@@ -60,41 +60,41 @@ const ModalButtons = styled.div`
   }
 `;
 
-const ConfirmModal = ({ isTouched, errorMsg, isError, title }) => {
+const ConfirmModal = ({ errorMsg, isError, title }) => {
   const dispatch = useDispatch();
 
   const onCancel = () => {
-    if (title === "아이디") {
+    if (title === '아이디') {
       dispatch(isModalActions.setEmailModalFalse());
-      document.getElementById("root").classList.remove("dim");
+      document.getElementById('root').classList.remove('dim');
     }
-    if (title === "닉네임") {
+    if (title === '닉네임') {
       dispatch(isModalActions.setNicknameModalFalse());
-      document.getElementById("root").classList.remove("dim");
+      document.getElementById('root').classList.remove('dim');
     }
   };
 
   const onSelect = () => {
-    if (title === "아이디") {
+    if (title === '아이디') {
       dispatch(isModalActions.setEmailModalFalse());
-      document.getElementById("root").classList.remove("dim");
+      document.getElementById('root').classList.remove('dim');
       dispatch(isNestActions.setEmailNest());
     }
-    if (title === "닉네임") {
+    if (title === '닉네임') {
       dispatch(isModalActions.setNicknameModalFalse());
-      document.getElementById("root").classList.remove("dim");
+      document.getElementById('root').classList.remove('dim');
       dispatch(isNestActions.setNicknameNest());
     }
   };
 
   const onClose = () => {
-    if (title === "아이디") {
+    if (title === '아이디') {
       dispatch(isModalActions.setEmailModalFalse());
-      document.getElementById("root").classList.remove("dim");
+      document.getElementById('root').classList.remove('dim');
     }
-    if (title === "닉네임") {
+    if (title === '닉네임') {
       dispatch(isModalActions.setNicknameModalFalse());
-      document.getElementById("root").classList.remove("dim");
+      document.getElementById('root').classList.remove('dim');
     }
   };
 
@@ -105,9 +105,9 @@ const ConfirmModal = ({ isTouched, errorMsg, isError, title }) => {
           <FaCheckCircle />
         </ModalIcon>
         <ModalMsgs>
-          <p>{isTouched && errorMsg}</p>
+          <p>{errorMsg || 'Loading'}</p>
           <strong>
-            {isError ? "다시 돌아가 선택하세요." : "이것으로 고르실 건가요?"}
+            {isError ? '다시 돌아가 선택하세요.' : '이것으로 고르실 건가요?'}
           </strong>
         </ModalMsgs>
       </ModalMessage>

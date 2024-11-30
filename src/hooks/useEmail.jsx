@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { emailCheck } from "../utils/emailCheck";
+import { useState } from 'react';
+import { emailCheck } from '../utils/emailCheck';
 
 const useEmail = () => {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState('');
   const [error, setError] = useState(false);
-  const [msg, setMsg] = useState("");
+  const [msg, setMsg] = useState('');
 
   const validateEmail = async () => {
     try {

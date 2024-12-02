@@ -4,11 +4,15 @@ import apiClient from "../Login/apiClient";
 import Map from "../../components/board/Map";
 import Header from "../../components/MainPage/Header/Header";
 import { getTeamLogo } from "../../utils/getTeamLogo";
+import Comment from "./Comment";
+import { useNavigate, useParams } from "react-router-dom";
 
 const partyPost = () => {
   const [post, setPost] = useState(null);
-  const postId = 1;
+  const { postId } = useParams();
   const [isLiked, setIsLiked] = useState(false); // 좋아요 눌렸는지 아닌지 상태
+  const [showDeleteModal, setShowDeleteModal] = useState(false); // 삭제 모달 상태
+  const navigate = useNavigate(); // 네비이용
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -87,6 +91,27 @@ const partyPost = () => {
       console.error("좋아요 토글 중 에러 발생:", e.message);
     }
   };
+  // 글 삭제하는 함수
+  const deletePost = async () => {
+    try {
+      console.log("postId는?", postId);
+
+      const response = await apiClient.delete(`/api/post/${postId}`);
+      if (response.data.status === "success") {
+        alert("글이 삭제되었습니다.");
+        setTimeout(() => {
+          navigate(`/partyPosts`);
+        }, 1000); // 1초 지연 후 페이지 이동
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (e) {
+      console.error("글 삭제 중 에러 발생:", e.message);
+      alert("글 삭제에 실패했습니다.");
+    } finally {
+      setShowDeleteModal(false);
+    }
+  };
 
   return (
     <Container>
@@ -101,11 +126,11 @@ const partyPost = () => {
           <Title>{post.title}</Title>
           <Content>{post.content}</Content>
           <MapSection>
-            <Map
+            {/* <Map
               latitude={parseFloat(post.latitude)}
               longitude={parseFloat(post.longitude)}
-            />
-            {/* <div>임시 지도</div> */}
+            /> */}
+            <div>임시 지도</div>
           </MapSection>
           <StatsContainer>
             <LikeContainer>
@@ -121,6 +146,21 @@ const partyPost = () => {
               <ViewsLabel>조회수</ViewsLabel>
               <ViewCount>{post.hitCount}</ViewCount>
             </ViewsContainer>
+            <div>
+              <div
+                onClick={() => navigate(`/modification/${postId}`)}
+                style={{ cursor: "pointer" }}
+              >
+                수정하기
+              </div>
+              <div
+                onClick={() => setShowDeleteModal(true)}
+                style={{ cursor: "pointer" }}
+              >
+                삭제하기
+              </div>
+            </div>
+            <div> 이곳은 파티참여버튼 입니다 만들어주세요</div>
           </StatsContainer>
           <ProfileSection>
             <ProfileImage>
@@ -134,13 +174,29 @@ const partyPost = () => {
           </ProfileSection>
           <CommentsSection>
             <CommentCount>댓글 총 0 개</CommentCount>
-            <CommentList>대충 이 영역 안에 댓글 컴포넌트들 뿌려짐</CommentList>
+            <CommentList>
+              <Comment postId={postId} />
+            </CommentList>
           </CommentsSection>
         </PostWrapper>
       ) : (
         <LoadingText>로딩 중...</LoadingText>
       )}
       <FooterNav>하단고정네비</FooterNav>
+      {showDeleteModal && (
+        <DeleteModal>
+          <p>삭제하시겠습니까?</p>
+          <div onClick={deletePost} style={{ cursor: "pointer" }}>
+            삭제
+          </div>
+          <div
+            onClick={() => setShowDeleteModal(false)}
+            style={{ cursor: "pointer" }}
+          >
+            취소
+          </div>
+        </DeleteModal>
+      )}
     </Container>
   );
 };
@@ -317,4 +373,18 @@ const FooterNav = styled.div`
   padding: 10px;
   text-align: center;
   box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+`;
+const DeleteModal = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;

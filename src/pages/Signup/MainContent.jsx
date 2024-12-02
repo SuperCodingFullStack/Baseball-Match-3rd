@@ -65,7 +65,7 @@ const MainContent = () => {
   const isPhoneAuth = useSelector((state) => state.phoneAuth.isPhoneAuth);
   const isAddressAuth = useSelector((state) => state.phoneAuth.isAddressAuth);
 
-  const { email, setEmail, validateEmail, error, msg } = useEmail();
+  const { email, emailChangeHandler, error, errorMsg } = useEmail();
 
   const { password, validatePw, passwordChange, pwError, pwMsg } =
     usePassword(isTouched);
@@ -147,11 +147,10 @@ const MainContent = () => {
             isNested
             conditionText="한글,영문,특수문자 사용가능"
             maxLength={50}
-            onChangeHandler={setEmail}
+            onChangeHandler={emailChangeHandler}
             valueData={email}
-            errorMsg={msg}
+            errorMsg={errorMsg}
             isError={error}
-            validate={validateEmail}
             isTouched={isTouched}
             setIsTouched={setIsTouched}
             Nest="중복확인"

@@ -67,11 +67,10 @@ const MainContent = () => {
 
   const { email, emailChangeHandler, error, errorMsg } = useEmail();
 
-  const { password, validatePw, passwordChange, pwError, pwMsg } =
-    usePassword(isTouched);
+  const { password, passwordChange, pwError, pwMsg } = usePassword();
 
-  const { passwordCheck, validatePwChk, pwChkHandler, pwChkError, pwChkMsg } =
-    usePasswordCheck(isTouched, password);
+  const { passwordCheck, pwChkHandler, pwChkError, pwChkMsg } =
+    usePasswordCheck(password);
 
   const {
     nickname,
@@ -165,7 +164,6 @@ const MainContent = () => {
             valueData={password}
             errorMsg={pwMsg}
             isError={pwError}
-            validate={validatePw}
             isTouched={isTouched}
             setIsTouched={setIsTouched}
           />
@@ -179,7 +177,6 @@ const MainContent = () => {
             valueData={passwordCheck}
             errorMsg={pwChkMsg}
             isError={pwChkError}
-            validate={validatePwChk}
             isTouched={isTouched}
             setIsTouched={setIsTouched}
           />

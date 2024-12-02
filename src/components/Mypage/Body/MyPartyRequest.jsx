@@ -5,7 +5,7 @@ import apiClient from "../../../pages/Login/apiClient";
 // 인터셉터가 설정된 apiClient가져오기  자기 파일기준 상대경로 작성 위치는  페이지의 로그인에 있습니다
 
 // MyFavorite 컴포넌트 정의
-const MyFavorite = ({}) => {
+const MyPartyRequest = ({}) => {
   const [posts, setPosts] = useState([]);
   const [error, setError] = useState(null);
 
@@ -55,7 +55,7 @@ const MyFavorite = ({}) => {
   );
 };
 
-export default MyFavorite;
+export default MyPartyRequest;
 
 const Container = styled.div`
   position: absolute;

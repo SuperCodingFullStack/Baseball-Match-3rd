@@ -4,6 +4,55 @@ import { FaRegTrashAlt } from "react-icons/fa"; //쓰레기통
 import apiClient from "../../../pages/Login/apiClient";
 // 인터셉터가 설정된 apiClient가져오기  자기 파일기준 상대경로 작성 위치는  페이지의 로그인에 있습니다
 
+// 목데이터 수정
+const mockData = {
+  status: "success",
+  message: "직관 신청 목록 조회가 완료되었습니다.",
+  data: [
+    {
+      partyId: 10,
+      partPostId: 3,
+      partyTitle: "11/13(수) 롯데 vs 한화 경기 같이 보러가실분",
+      gameDate: "2024-11-13",
+      gameTime: "18:30:00",
+      userNick: "고감자",
+      stadiumName: "부산 사직 야구장",
+      state: "수락",
+    },
+    {
+      partyId: 15,
+      partPostId: 5,
+      partyTitle: "11/30(토) 롯데 vs nc 경기 같이 보러가실분",
+      gameDate: "2024-11-30",
+      gameTime: "17:00:00",
+      userNick: "썩은 감자",
+      stadiumName: "부산 사직 야구장",
+      state: "미수락",
+    },
+    {
+      partyId: 25,
+      partPostId: 12,
+      partyTitle: "11/15(금) 롯데 vs 두산 경기 같이 보러가실분",
+      gameDate: "2024-11-15",
+      gameTime: "18:30:00",
+      userNick: "나는 감자",
+      stadiumName: "부산 사직 야구장",
+      state: "수락",
+    },
+    {
+      partyId: 25,
+      partPostId: 12,
+      partyTitle: "11/15(금) 롯데 vs 두산 경기 같이 보러가실분",
+      gameDate: "2024-11-15",
+      gameTime: "18:30:00",
+      userNick: "나는 감자",
+      stadiumName: "부산 사직 야구장",
+      state: "수락",
+    },
+  ],
+  timestamp: "2024-11-09T01:14:16.653015",
+};
+
 // MyFavorite 컴포넌트 정의
 const MyPartyRequest = ({}) => {
   const [posts, setPosts] = useState([]);
@@ -11,7 +60,7 @@ const MyPartyRequest = ({}) => {
 
   const fetchPosts = async () => {
     try {
-      const response = await apiClient.get(`/api/posts/myList/liked`);
+      const response = await apiClient.get(`/api/party`);
       if (response.status === "success") {
         setPosts(response.data);
       } else {
@@ -28,28 +77,23 @@ const MyPartyRequest = ({}) => {
 
   return (
     <Container>
-      <Title>내 즐겨찾기</Title>
-      {error && <p style={{ color: "red" }}>Error: {error}</p>}
-      <SerchInput placeholder="검색" />
+      <Between>
+        <Title>나의 파티 요청 리스트</Title>
+        <SerchInput placeholder="검색" />
+      </Between>
       <FavoriteList>
-        {posts && posts.length > 0 ? (
-          posts.map((post) => (
-            <FavoriteItem key={post.id}>
-              <FavoriteInform>
-                <FavoriteInformTitle>{post.teamName}</FavoriteInformTitle>
-                <FavoriteInformButton>구단정보보기</FavoriteInformButton>
-                <FaRegTrashAlt />
-              </FavoriteInform>
-              <DivRegistrant>등록자: {post.id}</DivRegistrant>
-              <PExplanation>{post.title}</PExplanation>
-              <PExplanation>
-                {new Date(post.createdDate).toLocaleString()}
-              </PExplanation>
-            </FavoriteItem>
-          ))
-        ) : (
-          <p>즐겨찾기 목록이 비어있습니다.</p>
-        )}
+        {mockData.data.map((item) => (
+          <FavoriteItem key={item.partyId}>
+            <FavoriteInform>
+              <FavoriteInformTitle>{item.partyTitle}</FavoriteInformTitle>
+              <DivTrashIcon>
+                <FaRegTrashAlt className="trash-icon" />
+              </DivTrashIcon>
+            </FavoriteInform>
+            <DivRegistrant>등록자: {item.partyId}</DivRegistrant>
+            <PExplanation>파티 등록일: {item.gameDate}</PExplanation>
+          </FavoriteItem>
+        ))}
       </FavoriteList>
     </Container>
   );
@@ -70,17 +114,21 @@ const Title = styled.h2`
   padding: 0.7em;
 `;
 const SerchInput = styled.input`
-  left: 50em;
   background-color: aliceblue;
-  width: 100px;
-  height: 10px;
+  width: 200px;
+  height: 30px;
   font-size: large;
   padding: 10px;
-  border-radius: 5%;
+  border-radius: 5px;
+  margin-right: 50px;
 `;
 const Between = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  padding: 0 5em;
+  max-width: 120em;
+  margin: 0 5em;
 `;
 const FavoriteList = styled.ul`
   background-color: white;
@@ -122,3 +170,19 @@ const DivRegistrant = styled.div`
   font-weight: 700;
 `;
 const PExplanation = styled.p``;
+
+const DivTrashIcon = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  .trash-icon {
+    cursor: pointer;
+    padding: 5px;
+    width: 1.2em;
+    height: 1.2em;
+    &:hover {
+      color: #ff6b6b;
+    }
+  }
+`;

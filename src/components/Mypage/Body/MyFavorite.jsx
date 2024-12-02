@@ -14,8 +14,6 @@ const MyFavorite = ({}) => {
       const response = await apiClient.get(`/api/posts/myList/liked`);
       if (response.status === "success") {
         setPosts(response.data);
-      } else {
-        console.error("API 요청 실패:", response.message);
       }
     } catch (error) {
       setError("데이터를 가져오는 중 오류가 발생했습니다.");

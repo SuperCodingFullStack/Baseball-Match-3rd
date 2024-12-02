@@ -1,26 +1,20 @@
-export const emailCheck = async (email) => {
+export const emailCheck = (email) => {
   const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-  try {
-    const response = await fetch(`http://localhost:8080/api/user/username?username=${email}`);
-    const json = await response.json();
-    if(json && json.status === 'success') {
-      if(regex.test(email)) {
-        return {
-          error: false,
-          msg: "올바른 이메일입니다."
-        }
-      } else {
-        return {
-          error: true,
-          msg: "형식이 다른 이메일입니다."
-        }
-      }
-    }
-  } catch(err) {
+  if (regex.test(email)) {
+    return {
+      error: false,
+      msg: "올바른 이메일입니다.",
+    };
+  }
+  if (!email) {
     return {
       error: true,
-      msg: '데이터를 가지고 오는데 오류가 있습니다'
-    }
+      msg: "이메일을 입력해주세요.",
+    };
   }
+  return {
+    error: true,
+    msg: "형식에 맞지 않는 이메일입니다.",
+  };
 };

@@ -4,8 +4,7 @@ import { FaCheckCircle } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { isNestActions } from "../../Store/slice/isNestSlice";
 import { isModalActions } from "../../Store/slice/isModalSlice";
-import { useEffect } from "react";
-import { useState } from "react";
+import { useSelector } from "react-redux";
 
 const Modals = styled.div`
   padding: 40px;
@@ -62,8 +61,13 @@ const ModalButtons = styled.div`
   }
 `;
 
-const ConfirmModal = ({ errorMsg, isError, title }) => {
+const ConfirmModal = ({ title }) => {
   const dispatch = useDispatch();
+
+  const emailNestError = useSelector((state) => state.isNest.emailNestError);
+  const emailNestMessage = useSelector(
+    (state) => state.isNest.emailNestMessage
+  );
 
   const onCancel = () => {
     if (title === "아이디") {
@@ -107,14 +111,16 @@ const ConfirmModal = ({ errorMsg, isError, title }) => {
           <FaCheckCircle />
         </ModalIcon>
         <ModalMsgs>
-          <p>{errorMsg !== '' ? errorMsg : "Loading"}</p>
+          <p>{emailNestMessage ? emailNestMessage : "Loading"}</p>
           <strong>
-            {isError ? "다시 돌아가 선택하세요." : "이것으로 고르실 건가요?"}
+            {emailNestError
+              ? "다시 돌아가 선택하세요."
+              : "이것으로 고르실 건가요?"}
           </strong>
         </ModalMsgs>
       </ModalMessage>
       <ModalButtons>
-        {!isError ? (
+        {!emailNestError ? (
           <>
             <button onClick={onCancel}>아니오, 취소합니다.</button>
             <button onClick={onSelect}>예, 선택할래요.</button>

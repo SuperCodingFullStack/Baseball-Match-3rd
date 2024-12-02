@@ -25,6 +25,11 @@ const useNotifications = () => {
         "Authorization": `Bearer ${token}`
       },
       withCredentials: true,
+      retry: 5000, // 5초마다 재연결 시도
+    });
+
+    eventSource.addEventListener('ping',(event) => {
+      console.log("Ping received", event);
     });
 
     // 알람 수신 처리

@@ -12,6 +12,7 @@ import Login from "./pages/Login/Login";
 import PostModification from "./pages/partyPost/PostModification";
 import MyPosts from "./pages/partyPost/Myposts";
 import LikedPosts from "./pages/partyPost/LikedPosts";
+import ChatSidebar from "./components/WebSocket/Sidebar/ChatSidebar";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
           <Route path="/api/teamInfo/:teamName" element={<TeamInfo />} />
           <Route path="/portfolio" element={<WebSocketComponent />} />
           <Route path="/modification/:postId" element={<PostModification />} />
+          <Route path="/side" element={<ChatSidebar />} />
         </Routes>
       </BrowserRouter>
     </>

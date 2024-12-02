@@ -4,20 +4,8 @@ import { useState } from "react";
 
 const NotificationModal = ({ isOpen, onClose, notifications, markAsRead }) => {
   console.log("Notifications in modal:", notifications);
-  const [currentTab, setCurrentTab] = useState("unread");
 
   if (!isOpen) return null;
-
-  const unreadNotifications = notifications.filter(
-    (notification) => !notification.isRead
-  );
-  const readNotifications = notifications.filter(
-    (notification) => notification.isRead
-  );
-
-  const handleTabChange = (tab) => {
-    setCurrentTab(tab);
-  };
 
   const handleNotificationClick = (id) => {
     markAsRead(id); // 알림을 읽음으로 처리
@@ -42,53 +30,31 @@ const NotificationModal = ({ isOpen, onClose, notifications, markAsRead }) => {
           </Button>
         </ModalHeader>
 
-        {/* 탭 메뉴 */}
-        <TabMenu>
-          <Tab
-            isActive={currentTab === "unread"}
-            onClick={() => handleTabChange("unread")}
-          >
-            안읽은 알림
-          </Tab>
-          <Tab
-            isActive={currentTab === "read"}
-            onClick={() => handleTabChange("read")}
-          >
-            읽은 알림
-          </Tab>
-        </TabMenu>
-
-        {/* 탭 내용 */}
-        {currentTab === "unread" && (
-          <NotificationList>
-            {unreadNotifications.length > 0 ? (
-              unreadNotifications.map((notification) => (
+        <NotificationList>
+          {notifications.length > 0 ? (
+            notifications.map((notification) => {
+              console.log("Notification: ", notification);
+              return (
                 <NotificationItem
                   key={notification.id}
+                  isRead={notification.isRead}
                   onClick={() => handleNotificationClick(notification.id)}
                 >
-                  {notification.message}
+                  <NotificationHeader hasAlarm={!notification.isRead}>
+                    <NotificationAlarm isRead={notification.isRead} />
+                    <Type>[{notification.type}]</Type>
+                  </NotificationHeader>
+                  <Message>{notification.message}</Message>
+                  <Time>
+                    {new Date(notification.timestamp).toLocaleString()}
+                  </Time>
                 </NotificationItem>
-              ))
-            ) : (
-              <NoNotificationsMessage>알림이 없습니다.</NoNotificationsMessage>
-            )}
-          </NotificationList>
-        )}
-
-        {currentTab === "read" && (
-          <NotificationList>
-            {readNotifications.length > 0 ? (
-              readNotifications.map((notification) => (
-                <NotificationItem key={notification.id}>
-                  {notification.message}
-                </NotificationItem>
-              ))
-            ) : (
-              <NoNotificationsMessage>알림이 없습니다.</NoNotificationsMessage>
-            )}
-          </NotificationList>
-        )}
+              );
+            })
+          ) : (
+            <NoNotificationsMessage>알림이 없습니다.</NoNotificationsMessage>
+          )}
+        </NotificationList>
       </ModalContent>
     </ModalOverlay>
   );
@@ -105,7 +71,6 @@ NotificationModal.propTypes = {
     })
   ).isRequired,
   markAsRead: PropTypes.func.isRequired,
-  //   removeReadNotification: PropTypes.func.isRequired,
 };
 
 NotificationModal.defaultProps = {
@@ -139,7 +104,7 @@ const ModalOverlay = styled.div`
 
 const ModalContent = styled.div`
   background-color: white;
-  padding: 0.5rem 1rem;
+  padding: 0.8rem 0.8rem;
   border-radius: 8px;
   width: 300px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -170,25 +135,9 @@ const Button = styled.div`
   gap: 1rem;
 `;
 
-const TabMenu = styled.div`
-  display: flex;
-  justify-content: space-around;
-  margin: 10px;
-`;
-
-const Tab = styled.button`
-border-radius:0;
-  padding: 10px;
-  border: none;
-  background: rgba(0,0,0,0);
-  border-bottom: ${(props) => (props.isActive ? "5px solid #acfe49" : "none")};
-  font-weight: ${(props) => (props.isActive ? "bold" : "normal")};
-  cursor: pointer;
-`;
-
 const NotificationList = styled.ul`
   list-style: none;
-  padding: 0.8rem;
+  // padding: 0.8rem;
   cursor: pointer;
   display: flex;
   flex-direction: column;
@@ -196,8 +145,39 @@ const NotificationList = styled.ul`
 `;
 
 const NotificationItem = styled.li`
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
   padding: 1rem;
   border-bottom: 1px solid #ddd;
+  background-color: ${(props) => (props.isRead ? "#f5f5f5" : "white")};
+  cursor: pointer;
+
+  &:hover {
+    border: ${(props) => (props.isRead ? "" : "1px solid #e1e1e1")};
+  }
+`;
+
+const NotificationHeader = styled.div`
+  display: flex;
+  gap: ${({ hasAlarm }) => (hasAlarm ? "0.5rem" : "0.2rem")};
+`;
+
+const NotificationAlarm = styled.div`
+  width: ${({ isRead }) => (isRead ? "0px" : "7px")};
+  height: ${({ isRead }) => (isRead ? "0px" : "7px")};
+  border-radius: 50%;
+  background-color: ${({ isRead }) => (isRead ? "transparent" : "red")};
+  transition: width 0.3s, height 0.3s;
+`;
+
+const Type = styled.div``;
+const Message = styled.div`
+  font-weight: 600;
+`;
+const Time = styled.div`
+  font-size: 12px;
+  color: gray;
 `;
 
 const NoNotificationsMessage = styled.p`

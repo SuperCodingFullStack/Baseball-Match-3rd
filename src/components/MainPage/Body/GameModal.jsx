@@ -3,63 +3,73 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { getTeamLogo } from "../../../utils/getTeamLogo";
 import Weather from "./Weather";
+import { useState, useEffect } from "react";
+import { stadiumCityMap } from "../../../constants";
 
 const GameModal = ({ date, onClose }) => {
   // date가 유효하지 않으면 현재 날짜를 기본값으로 설정
   const formattedDate = date ? dayjs(date) : dayjs();
+  const [games, setGames] = useState([]);
+  const [error, setError] = useState(null);
 
-  const sampleGames = [
-    {
-      matchDate: dayjs("2024-11-02").format("YYYY-MM-DD"),
-      homeTeam: "롯데",
-      awayTeam: "KIA",
-      stadium: "사직 야구장",
-      time: "14:00",
-    },
-    {
-      matchDate: dayjs("2024-11-02").format("YYYY-MM-DD"),
-      homeTeam: "NC",
-      awayTeam: "KT",
-      stadium: "수원 KT Wiz 파크",
-      time: "18:00",
-    },
-    {
-      matchDate: dayjs("2024-11-02").format("YYYY-MM-DD"),
-      homeTeam: "NC",
-      awayTeam: "KT",
-      stadium: "수원 KT Wiz 파크",
-      time: "18:00",
-    },
-    {
-      matchDate: dayjs("2024-11-02").format("YYYY-MM-DD"),
-      homeTeam: "NC",
-      awayTeam: "KT",
-      stadium: "수원 KT Wiz 파크",
-      time: "18:00",
-    },
-    {
-      matchDate: dayjs("2024-11-02").format("YYYY-MM-DD"),
-      homeTeam: "NC",
-      awayTeam: "KT",
-      stadium: "수원 KT Wiz 파크",
-      time: "18:00",
-    },
-  ];
+  useEffect(() => {
+    const fetchGames = async () => {
+      try {
+        // 월 정보를 추출하여 API 요청
+        // const month = formattedDate.format("MM");
+        const response = await fetch(
+          // `http://localhost:8080/api/gameInfo/${formattedDate.format("MM")}`
+          "http://localhost:8080/api/gameInfo/10"
+        );
+        const result = await response.json();
+
+        if (
+          response.ok &&
+          result.status === "success" &&
+          Array.isArray(result.data)
+        ) {
+          setGames(result.data);
+        } else {
+          console.error("Invalid data format:", result);
+          setGames([]);
+        }
+      } catch (err) {
+        console.error(err);
+        setError("경기 정보를 가져오는데 실패했습니다.");
+        setGames([]);
+      }
+    };
+
+    fetchGames();
+  }, [formattedDate]);
 
   // 날짜에 맞는 경기를 필터링
-  const dayGames = sampleGames.filter(
-    (game) => game.matchDate === formattedDate.format("YYYY-MM-DD")
-  );
+  const dayGames = Array.isArray(games)
+    ? games.filter((game) => {
+        const currentYear = dayjs().year();
+        const matchDateWithoutDay = game.matchDate.split(" ")[0];
+        const [month, day] = matchDateWithoutDay.split(".");
+
+        const formattedMatchDate = dayjs(
+          `${currentYear}-${month}-${day}`,
+          "YYYY-MM-DD"
+        ).format("YYYY-MM-DD");
+
+        return formattedMatchDate === formattedDate.format("YYYY-MM-DD");
+      })
+    : [];
 
   return (
     <ModalOverlay>
       <ModalContent>
         <ModalTitle>{formattedDate.format("MM월 DD일")}</ModalTitle>
-        {dayGames.length > 0 ? (
+        {error ? (
+          <GameInfo>{error}</GameInfo>
+        ) : dayGames.length > 0 ? (
           <GameList>
             {dayGames.map((game, index) => (
               <GameItem key={index}>
-                <Weather />
+                <Weather city={stadiumCityMap[game.stadium]} />
                 <GameInfo size="18px">
                   <TeamImg src={getTeamLogo(game.homeTeam)} />
                   {game.homeTeam}
@@ -73,7 +83,7 @@ const GameModal = ({ date, onClose }) => {
             ))}
           </GameList>
         ) : (
-          <GameInfo>오늘은 경기가 없습니다.</GameInfo>
+          <GameInfo style={{ color: "red" }}>오늘은 경기가 없습니다.</GameInfo>
         )}
         <CloseButton onClick={onClose}>close</CloseButton>
       </ModalContent>
@@ -169,6 +179,8 @@ const GameInfo = styled.p`
 const Vs = styled.span`
   font-weight: bold;
   padding: 0.3rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
 `;
 
 const CloseButton = styled.button`

@@ -105,7 +105,6 @@ const MainInput = ({
   valueData,
   errorMsg,
   isError,
-  validate,
   isTouched,
   setIsTouched,
   Nest,
@@ -116,6 +115,19 @@ const MainInput = ({
   const nicknameModal = useSelector((state) => state.isModal.nicknameModal);
   const emailNest = useSelector((state) => state.isNest.emailNest);
   const nicknameNest = useSelector((state) => state.isNest.nicknameNest);
+
+  const nestHandler = (e) => {
+    e.preventDefault();
+ㅎ
+    if (title === "아이디") {
+      document.getElementById("root").classList.add("dim");
+      dispatch(isModalActions.setEmailModal());
+    }
+    if (title === "닉네임") {
+      document.getElementById("root").classList.add("dim");
+      dispatch(isModalActions.setNicknameModal());
+    }
+  };
 
   return (
     <Inputs>
@@ -143,18 +155,7 @@ const MainInput = ({
       </RealInput>
       {isNested ? (
         <button
-          onClick={(e) => {
-            e.preventDefault();
-            validate();
-            if (title === "아이디") {
-              dispatch(isModalActions.setEmailModal());
-              document.getElementById("root").classList.add("dim");
-            }
-            if (title === "닉네임") {
-              dispatch(isModalActions.setNicknameModal());
-              document.getElementById("root").classList.add("dim");
-            }
-          }}
+          onClick={nestHandler}
           disabled={
             (!isTouched && !valueData) ||
             valueData.trim() === "" ||
@@ -168,12 +169,7 @@ const MainInput = ({
       {isNested &&
         (emailModal || nicknameModal) &&
         ReactDOM.createPortal(
-          <ConfirmModal
-            isTouched={isTouched}
-            errorMsg={errorMsg}
-            isError={isError}
-            title={title}
-          />,
+          <ConfirmModal errorMsg={errorMsg} isError={isError} title={title} />,
           document.getElementById("root")
         )}
       <Condition className={`${isReverse ? "reverse" : ""}`}>

@@ -1,298 +1,320 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { useParams } from "react-router-dom";
+import apiClient from "../Login/apiClient";
 import Map from "../../components/board/Map";
 import Header from "../../components/MainPage/Header/Header";
-import apiClient from "../Login/apiClient";
+import { getTeamLogo } from "../../utils/getTeamLogo";
 
 const partyPost = () => {
-  const { id } = useParams();
-  const [post, setPost] = useState({});
+  const [post, setPost] = useState(null);
+  const postId = 1;
+  const [isLiked, setIsLiked] = useState(false); // 좋아요 눌렸는지 아닌지 상태
 
-  // 이 페이지에 뿌려줘야하는 것들을 받아오는 함수
-  // const fetchPost = async () => {
-  //   try {
-  //     const response = await fetch(`http://localhost:8080/api/post/${id}`);
-  //     const data = await response.json();
-  //     console.log("서버에서 받아온 해당 글에 대한 정보", data);
-  //     setPost(data);
-  //   } catch (error) {
-  //     console.error("서버에서 글받아오면서 문제발생", error);
-  //   }
-  // };
-  const fetchPost = () => {
-    setPost({
-      id: { id },
-      userNickname: "bin",
-      userImg: "프로필 사진 주소",
-      title: "롯데 경기 보러 가실분",
-      content: "야구장 첨가봐요 혼자가기 무서운데 같이 가실분",
-      myTeamImg: "../../../public/assets/logo.png",
-      opposingTeam: "../../../public/assets/logo.png",
-      latitude: 35.19,
-      longitude: 129.06,
-      matchDate: "2024-12-31 18:00",
-      maxPeopleNum: 2,
-      currentPeopleNum: 1,
-      likeCount: 0,
-      hitCount: 10,
-      createAt: "2024-11-01 12:00",
-    });
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        const response = await apiClient.get(`/api/post/${postId}`);
+        console.log("전체 객체 >>", response);
+
+        if (response.data.status === "success") {
+          console.log(response.data.message);
+          console.log("저장되는 값: >>>>", response.data.data);
+
+          setPost(response.data.data);
+        } else {
+          throw new Error(response.data.message);
+        }
+      } catch (e) {
+        console.error("에러발생 : ", e.message);
+      }
+    };
+
+    const hitUp = async () => {
+      try {
+        const response = await apiClient.post(`/api/hit/${postId}`);
+        console.log("전체 객체 >>", response);
+
+        if (response.data.status === "success") {
+          console.log(response.data.message);
+        } else {
+          throw new Error(response.data.message);
+        }
+      } catch (e) {
+        console.error("에러발생 : ", e.message);
+      }
+    };
+
+    const fetchData = async () => {
+      await hitUp(); // 조회수 증가 요청
+      await fetchIsLiked();
+      await fetchPost(); // 포스트 정보 가져오기
+    };
+
+    fetchData();
+  }, []);
+
+  // 로고 이미지 가져오는거
+  const TeamLogo = ({ teamName }) => {
+    const logoSrc = getTeamLogo(teamName);
+    return <LogoImage src={logoSrc} alt={`${teamName} logo`} />;
   };
-  useEffect(() => {
-    fetchPost();
-  }, []);
 
-  useEffect(() => {
-    apiClient
-      .get(`/api/post/${id}`)
-      .then((response) => {
-        setPost(response.data.partyPost);
-      })
-      .catch((error) => {
-        `API 호출 실패:`, error;
-      });
-  }, []);
+  // 서버에서 현재 좋아요 상태 가져오기
+  const fetchIsLiked = async () => {
+    try {
+      const response = await apiClient.get(`/api/like/isLike/${postId}`);
+      setIsLiked(response.data.data); // 서버에서 받은 true/false 저장
+    } catch (error) {
+      console.error("좋아요 상태 가져오기 실패:", error);
+    }
+  };
+
+  // 좋아요 토글 함수
+  const toggleLike = async () => {
+    try {
+      const response = await apiClient.patch(`/api/like/${postId}`);
+      if (response.data.status === "success") {
+        // 성공 시 로컬 상태를 업데이트
+        setIsLiked((prevIsLiked) => !prevIsLiked);
+        setPost((prevPost) => ({
+          ...prevPost,
+          likeCount: isLiked ? prevPost.likeCount - 1 : prevPost.likeCount + 1,
+        }));
+      } else {
+        throw new Error(response.data.message);
+      }
+    } catch (e) {
+      console.error("좋아요 토글 중 에러 발생:", e.message);
+    }
+  };
 
   return (
-    <>
-      <Header />
-      <Post>
-        <PostContent>
-          <Post__Images>
-            <Post__teamImages>
-              <img src={post.myTeamImg} alt="우리팀 이미지" />
-            </Post__teamImages>
-            <img src="vs이미지주소" alt="vs" />
-            <Post__teamImages>
-              <img src={post.opposingTeam} alt="상대팀 이미지" />
-            </Post__teamImages>
-          </Post__Images>
-          <Post__title>{post.title}</Post__title>
-          <Post__body>{post.content}</Post__body>
-
-          <Post__Map>
-            {/* <Map latitude={post.latitude} longitude={post.longitude} /> */}
-            <div>지도 대용</div>
-          </Post__Map>
-          <Post__stats>
-            <Post__like_container>
-              <div className="post__like" id="likeNum">
+    <Container>
+      {/* <Header /> */}
+      {post ? (
+        <PostWrapper>
+          <ImageSection>
+            <TeamLogo teamName={post.myTeamImg} />
+            <VsImage src="vs이미지주소" alt="vs" />
+            <TeamLogo teamName={post.opposingTeam} />
+          </ImageSection>
+          <Title>{post.title}</Title>
+          <Content>{post.content}</Content>
+          <MapSection>
+            <Map
+              latitude={parseFloat(post.latitude)}
+              longitude={parseFloat(post.longitude)}
+            />
+            {/* <div>임시 지도</div> */}
+          </MapSection>
+          <StatsContainer>
+            <LikeContainer>
+              <LikeIcon
+                onClick={toggleLike}
+                style={{ color: isLiked ? "#e83e8c" : "black" }}
+              >
                 ♡
-              </div>
-              <label htmlFor="likeCount" className="post__like-count">
-                {post.likeCount}
-              </label>
-            </Post__like_container>
-            <Post__views_group>
-              <div className="post__views" id="view">
-                조회
-              </div>
-              <label htmlFor="view" className="post__view-count">
-                {post.hitCount}
-              </label>
-            </Post__views_group>
-          </Post__stats>
-          <Post__profile>
-            <Post__profile_img>
+              </LikeIcon>
+              <LikeCount>{post.likeCount}</LikeCount>
+            </LikeContainer>
+            <ViewsContainer>
+              <ViewsLabel>조회수</ViewsLabel>
+              <ViewCount>{post.hitCount}</ViewCount>
+            </ViewsContainer>
+          </StatsContainer>
+          <ProfileSection>
+            <ProfileImage>
               <img src="프로필 이미지 주소" alt="프로필 이미지" />
-            </Post__profile_img>
-            <div className="post__user-info">
-              <div className="post__user-nickname">{post.userNickname}</div>
-              <div className="post__user-location">주소</div>
-            </div>
-            <div className="post__profile-detail-modal">상세프로필보기모달</div>
-          </Post__profile>
-        </PostContent>
-        <PostComments>
-          <Post__comment_count>댓글 총 0 개</Post__comment_count>
-
-          <Post__comment_list>
-            대충 이 영역 안에 댓글 컴포넌트들 뿌려짐
-          </Post__comment_list>
-        </PostComments>
-      </Post>
-      <div> 하단고정네비</div>
-    </>
+            </ProfileImage>
+            <UserInfo>
+              <Nickname>{post.userNickname}</Nickname>
+              <Location>주소</Location>
+            </UserInfo>
+            <ProfileDetailModal>상세프로필보기모달</ProfileDetailModal>
+          </ProfileSection>
+          <CommentsSection>
+            <CommentCount>댓글 총 0 개</CommentCount>
+            <CommentList>대충 이 영역 안에 댓글 컴포넌트들 뿌려짐</CommentList>
+          </CommentsSection>
+        </PostWrapper>
+      ) : (
+        <LoadingText>로딩 중...</LoadingText>
+      )}
+      <FooterNav>하단고정네비</FooterNav>
+    </Container>
   );
 };
 
 export default partyPost;
 
-// css
-
-//전체
-const Post = styled.div`
-  margin-top: 90px;
+// 스타일 컴포넌트
+const Container = styled.div`
   display: flex;
   flex-direction: column;
-  max-width: 1500px;
-  width: 100%;
-  border: 1px solid black;
   align-items: center;
-  padding: 16px;
+  padding: 20px;
+  background-color: #f8f9fa;
+  min-height: 100vh;
 `;
 
-// 내용들
-const PostContent = styled.div`
+const PostWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  max-width: 1000px;
   width: 100%;
-  border: 1px solid black;
-  align-items: center;
-  padding: 16px;
+  max-width: 1200px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
 `;
 
-// 제목
-const Post__title = styled.div`
-  border: 1px solid black;
-  max-width: 1000px;
-  width: 100%;
-  max-height: 50px;
-  height: auto;
-`;
-
-// 상세내용
-const Post__body = styled.div`
-  max-width: 1000px;
-  width: 100%;
-  height: auto;
-  min-height: 200px;
-
-  border: 1px solid black;
-`;
-
-//이미지들 정렬
-const Post__Images = styled.div`
+const ImageSection = styled.div`
   display: flex;
-  max-width: 1000px;
-  width: 100%;
-  height: auto;
-  max-height: 150px;
   justify-content: center;
   align-items: center;
+  margin-bottom: 20px;
+  gap: 20px;
 `;
 
-// 팀 로고 이미지
-const Post__teamImages = styled.div`
-  display: flex;
-  width: auto;
-  justify-content: center;
-  align-items: center;
-  margin: 0 10px; /* 이미지 간 간격을 조정하려면 margin을 추가할 수 있습니다 */
+const LogoImage = styled.img`
+  width: 150px;
+  height: 150px;
+  object-fit: contain;
+`;
 
+const VsImage = styled.img`
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+`;
+
+const Title = styled.h1`
+  font-size: 2rem;
+  margin-bottom: 15px;
+  color: #343a40;
+`;
+
+const Content = styled.p`
+  font-size: 1rem;
+  color: #495057;
+  line-height: 1.5;
+  margin-bottom: 20px;
+`;
+
+const MapSection = styled.div`
+  margin-bottom: 20px;
+`;
+
+const StatsContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+`;
+
+const LikeContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 5px;
+`;
+
+const LikeIcon = styled.span`
+  font-size: 1.5rem;
+  color: #e83e8c;
+`;
+
+const LikeCount = styled.span`
+  font-size: 1rem;
+  color: #6c757d;
+`;
+
+const ViewsContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 5px;
+`;
+
+const ViewsLabel = styled.span`
+  font-size: 1rem;
+  color: #6c757d;
+`;
+
+const ViewCount = styled.span`
+  font-size: 1rem;
+  font-weight: bold;
+  color: #6c757d;
+`;
+
+const ProfileSection = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 15px;
+`;
+
+const ProfileImage = styled.div`
   img {
-    width: 170px;
-    height: 170px;
-    object-fit: contain; /* 이미지 비율 유지하면서 잘리지 않게 */
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
   }
 `;
 
-// 지도
-const Post__Map = styled.div`
-  display: flex;
-  max-width: 1000px;
-  width: 100%;
-  height: auto;
-  min-height: 100px;
-  justify-content: center;
-  align-items: center;
-  border: 1px solid black;
-`;
-// 좋아요나 조회수 통계
-const Post__stats = styled.div`
-  display: flex;
-  max-width: 1000px;
-  width: 100%;
-  height: auto;
-  min-height: 10px;
-  // justify-content: center;
-  align-items: center;
-  border: 1px solid black;
-`;
-// 좋아요 묶음
-const Post__like_container = styled.div`
-  display: flex;
-  max-width: 100px;
-  width: 100%;
-  height: auto;
-  min-height: 10px;
-  justify-content: center;
-  align-items: center;
-  border: 1px solid black;
-`;
-
-// 조회수 묶음
-const Post__views_group = styled.div`
-  display: flex;
-  max-width: 100px;
-  width: 100%;
-  height: auto;
-  min-height: 10px;
-  justify-content: center;
-  align-items: center;
-  border: 1px solid black;
-`;
-
-// 유저 프로필 구역
-const Post__profile = styled.div`
-  display: flex;
-  flex-direction: row;
-  max-width: 1000px;
-  width: 100%;
-  height: auto;
-  min-height: 10px;
-  // sjustify-content: center;
-  align-items: center;
-  border: 1px solid black;
-`;
-
-const Post__profile_img = styled.div`
-  max-width: 100px;
-  width: 100%;
-  height: auto;
-  min-height: 30px;
-  justify-content: center;
-  align-items: center;
-  border: 1px solid black;
-
-  img {
-    width: 30px;
-    height: 30px;
-    object-fit: contain; /* 이미지 비율 유지하면서 잘리지 않게 */
-  }
-`;
-
-//댓글구역
-const PostComments = styled.div`
+const UserInfo = styled.div`
   display: flex;
   flex-direction: column;
-  max-width: 1000px;
-  width: 100%;
-  border: 1px solid black;
-  align-items: center;
+`;
+
+const Nickname = styled.div`
+  font-size: 1rem;
+  font-weight: bold;
+  color: #343a40;
+`;
+
+const Location = styled.div`
+  font-size: 0.875rem;
+  color: #6c757d;
+`;
+
+const ProfileDetailModal = styled.div`
+  font-size: 0.875rem;
+  color: #007bff;
   cursor: pointer;
-  padding: 16px;
-`;
-// 댓글수
-const Post__comment_count = styled.div`
-  display: flex;
-  max-width: 1000px;
-  width: 100%;
-  height: auto;
-  min-height: 10px;
-  border: 1px solid black;
-  align-items: center;
+  text-decoration: underline;
 `;
 
-// 댓글들
-const Post__comment_list = styled.div`
+const CommentsSection = styled.div`
   display: flex;
-  max-width: 1000px;
+  flex-direction: column;
+  border-top: 1px solid #e0e0e0;
+  padding-top: 15px;
+`;
+
+const CommentCount = styled.div`
+  font-size: 1rem;
+  color: #343a40;
+  margin-bottom: 10px;
+`;
+
+const CommentList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
+
+const LoadingText = styled.div`
+  font-size: 1.25rem;
+  color: #6c757d;
+`;
+
+const FooterNav = styled.div`
+  position: fixed;
+  bottom: 0;
   width: 100%;
-  height: auto;
-  min-height: 200px;
-  border: 1px solid black;
-  align-items: center;
+  background-color: #ffffff;
+  border-top: 1px solid #e0e0e0;
+  padding: 10px;
+  text-align: center;
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
 `;

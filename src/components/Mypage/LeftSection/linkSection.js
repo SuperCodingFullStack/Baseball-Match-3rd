@@ -15,4 +15,8 @@ export const linkSection = [
     section: "게시글 목록",
     // id: myPostList,
   },
+  {
+    section: "친구추가",
+    // id: myPostList,
+  },
 ];

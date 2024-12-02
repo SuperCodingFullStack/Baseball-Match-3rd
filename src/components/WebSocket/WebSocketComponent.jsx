@@ -26,7 +26,9 @@ const WebSocketComponent = ({ roomId, currentUser }) => {
 
     return () => {
       if (stompClient) {
-        stompClient.disconnect();
+        stompClient.disconnect(() => {
+          console.log("Disconnected");
+        });
       }
     };
   }, []);

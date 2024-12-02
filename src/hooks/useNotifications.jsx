@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
+import { EventSourcePolyfill } from "event-source-polyfill";
 
 const useNotifications = () => {
   const [notifications, setNotifications] = useState([]);
@@ -18,7 +19,13 @@ const useNotifications = () => {
   useEffect(() => {
     const token = Cookies.get("Authorization");
     console.log(token);
-    const eventSource = new EventSource(`http://localhost:8080/api/connect?token=${token}`);
+
+    const eventSource = new EventSourcePolyfill('http://localhost:8080/api/connect', {
+      headers: {
+        "Authorization": `Bearer ${token}`
+      },
+      withCredentials: true,
+    });
 
     // 알람 수신 처리
     eventSource.onmessage = (event) => {

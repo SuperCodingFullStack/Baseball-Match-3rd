@@ -33,16 +33,14 @@ export default function SwiperComponent() {
     fetchGameData();
   }, []);
 
-  // 날짜별로 데이터를 그룹화
-  const groupedGames = Array.isArray(gameData)
-    ? gameData.reduce((acc, game) => {
-        if (!acc[game.matchDate]) {
-          acc[game.matchDate] = [];
-        }
-        acc[game.matchDate].push(game);
-        return acc;
-      }, {})
-    : {};
+  const groupedGames = gameData.reduce((acc, game) => {
+    const { matchDate } = game;
+    if (!acc[matchDate]) {
+      acc[matchDate] = [];
+    }
+    acc[matchDate].push(game);
+    return acc;
+  }, {});
 
   if (loading) {
     return <p>Loading...</p>;
@@ -51,6 +49,7 @@ export default function SwiperComponent() {
   return (
     <Container>
       <Swiper
+        slidesPerView={1}
         loop={true}
         cssMode={true}
         navigation={true}

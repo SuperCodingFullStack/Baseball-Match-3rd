@@ -4,6 +4,8 @@ import { FaCheckCircle } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { isNestActions } from "../../Store/slice/isNestSlice";
 import { isModalActions } from "../../Store/slice/isModalSlice";
+import { useEffect } from "react";
+import { useState } from "react";
 
 const Modals = styled.div`
   padding: 40px;
@@ -60,7 +62,7 @@ const ModalButtons = styled.div`
   }
 `;
 
-const ConfirmModal = ({ isTouched, errorMsg, isError, title }) => {
+const ConfirmModal = ({ errorMsg, isError, title }) => {
   const dispatch = useDispatch();
 
   const onCancel = () => {
@@ -105,7 +107,7 @@ const ConfirmModal = ({ isTouched, errorMsg, isError, title }) => {
           <FaCheckCircle />
         </ModalIcon>
         <ModalMsgs>
-          <p>{isTouched && errorMsg}</p>
+          <p>{errorMsg !== '' ? errorMsg : "Loading"}</p>
           <strong>
             {isError ? "다시 돌아가 선택하세요." : "이것으로 고르실 건가요?"}
           </strong>

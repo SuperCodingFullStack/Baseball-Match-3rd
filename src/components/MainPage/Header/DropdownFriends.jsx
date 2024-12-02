@@ -1,11 +1,17 @@
 import styled from "styled-components";
 import { LiaUserFriendsSolid } from "react-icons/lia";
+import { useNavigate } from "react-router-dom";
 
 const DropdownFriends = () => {
+  const navigate = useNavigate();
+  const handleFriendsBtnClick = () => {
+    navigate("/friends");
+  };
+
   return (
     <FriendsContainer>
       <MyFriends>
-        <StyledIcon as={LiaUserFriendsSolid} /> 친구 목록
+        <StyledIcon as={LiaUserFriendsSolid} onClick={handleFriendsBtnClick}/> 친구 목록
       </MyFriends>
     </FriendsContainer>
   );

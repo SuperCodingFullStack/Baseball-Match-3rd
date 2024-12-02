@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 // import { linkSection } from "./LinkSection";
 import MyFavorite from "./MyFavorite";
+import MyPartyRequest from "./MyPartyRequest";
 
 const SectionAll = styled.div``;
 
@@ -11,7 +12,8 @@ const MainContents = () => {
   return (
     <SectionAll>
       <SectionForm>
-        <MyFavorite />
+        {/* <MyFavorite /> */}
+        <MyPartyRequest />
       </SectionForm>
     </SectionAll>
   );

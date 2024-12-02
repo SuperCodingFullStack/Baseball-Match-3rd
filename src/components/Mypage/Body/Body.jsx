@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import RequestFriendsList from "./RequestFriendsList";
+// import RequestFriendsList from "./RequestFriendsList";
 
 const BodyWrapper = styled.main`
   display: flex;

@@ -1,71 +1,110 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect,useRef } from "react";
 import dayjs from "dayjs";
 import styled from "styled-components";
 import GameModal from "./GameModal";
 import { FaAngleLeft, FaAngleRight, FaPlus } from "react-icons/fa6";
+import { useCallback } from "react";
 
 const MonthlyCalendar = () => {
   const [currentMonth, setCurrentMonth] = useState(dayjs().startOf("month"));
   const [games, setGames] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const daysInMonth = currentMonth.daysInMonth();
   const firstDayOfWeek = currentMonth.startOf("month").day();
 
-  useEffect(() => {
-    const fetchGameData = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:8080/api/gameInfo/${currentMonth.format("MM")}`
-        );
+  const calendarRef = useRef(null);
+  const scrollPosition = useRef(0);
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const data = await response.json();
+  const fetchGameData = useCallback(async (monthToCheck) => {
+    if (monthToCheck.month < 1) {
+      console.log("더 이상 이전 달 데이터가 없습니다.");
+      setLoading(false);
+      return;
+    }
 
-        if (data && data.status === "success" && Array.isArray(data.data)) {
-          const formattedGames = data.data.map((game) => {
-            const currentYear = dayjs().year();
-            const matchDateWithoutDay = game.matchDate.split(" ")[0];
-            const [month, day] = matchDateWithoutDay.split(".");
-            const formattedDate = dayjs(
-              `${currentYear}-${month}-${day}`,
-              "YYYY-MM-DD"
-            );
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/gameInfo/${dayjs(monthToCheck).format("MM")}`
+      );
 
-            return {
-              date: formattedDate,
-              team: `${game.homeTeam} vs ${game.awayTeam}`,
-              homeTeam: game.homeTeam,
-              homeTeamScore: game.homeTeamScore,
-              awayTeam: game.awayTeam,
-              awayTeamScore: game.awayTeamScore,
-              matchTime: game.matchTime,
-              stadium: game.stadium,
-            };
-          });
-          setGames(formattedGames);
-          console.log(formattedGames);
-        } else {
-          console.error("Games data is not an array", response.data);
-        }
-      } catch (error) {
-        console.error("Error fetching game data: ", error);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
-    };
-    fetchGameData();
-  }, [currentMonth]);
+      const data = await response.json();
 
-  const handlePrevMonth = () =>
+      if (data && data.status === "success" && Array.isArray(data.data)) {
+        const formattedGames = data.data.map((game) => {
+          const currentYear = dayjs().year();
+          const matchDateWithoutDay = game.matchDate.split(" ")[0];
+          const [month, day] = matchDateWithoutDay.split(".");
+          const formattedDate = dayjs(
+            `${currentYear}-${month}-${day}`,
+            "YYYY-MM-DD"
+          );
+
+          return {
+            date: formattedDate,
+            team: `${game.homeTeam} vs ${game.awayTeam}`,
+            homeTeam: game.homeTeam,
+            homeTeamScore: game.homeTeamScore,
+            awayTeam: game.awayTeam,
+            awayTeamScore: game.awayTeamScore,
+            matchTime: game.matchTime,
+            stadium: game.stadium,
+          };
+        });
+        if (formattedGames.length > 0) {
+          setGames(formattedGames);
+          setLoading(false);
+          return true;
+        }
+      }
+      console.error(
+        `데이터가 없습니다. 이전달 (${monthToCheck
+          .subtract(1, "month")
+          .format("MMMM")})로 이동합니다.`
+      );
+      return await fetchGameData(monthToCheck.subtract(1, "month"));
+    } catch (error) {
+      console.error("Error fetching game data: ", error);
+      setLoading(false);
+    }
+  },[]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      await fetchGameData(currentMonth);
+    };
+    fetchData();
+  }, [currentMonth, fetchGameData]);
+
+  const handlePrevMonth = () => {
+    scrollPosition.current = calendarRef.current.scrollTop;
     setCurrentMonth(currentMonth.subtract(1, "month"));
-  const handleNextMonth = () => setCurrentMonth(currentMonth.add(1, "month"));
+  };
+  const handleNextMonth = () => {
+    scrollPosition.current = calendarRef.current.scrollTop;
+    setCurrentMonth(currentMonth.add(1, "month"));
+  };
 
   const openModal = (date) => setSelectedDate(dayjs(date));
   const closeModal = () => setSelectedDate(null);
 
+  useEffect(() => {
+    if (calendarRef.current){
+      calendarRef.current.scrollTop = scrollPosition.current;
+    }
+  }, [currentMonth]);
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
   return (
-    <Container>
+    <Container ref={calendarRef}>
       <Header>
         <button onClick={handlePrevMonth}>
           <FaAngleLeft />
@@ -115,7 +154,13 @@ const MonthlyCalendar = () => {
         })}
       </Grid>
       {selectedDate && (
-        <GameModal date={selectedDate} games={games} onClose={closeModal} />
+        <GameModal
+          date={selectedDate}
+          dayGames={games.filter((game) =>
+            dayjs(game.date).isSame(selectedDate, "day")
+          )}
+          onClose={closeModal}
+        />
       )}
     </Container>
   );
@@ -172,7 +217,7 @@ const Cell = styled.div`
   text-align: center;
   position: relative;
   weight: 90px;
-  height: 90px;
+  height: 110px;
 `;
 
 const DateLabel = styled.div`
@@ -198,8 +243,8 @@ const GamesSummary = styled.div`
 const GameIcon = styled.div`
 font-size:14px;
 background:#f0f0f0;
-padding 2px 5px;
-margin: 2px 0
+padding 2px 4px;
+margin: 4px 0
 `;
 
 const PlusButton = styled.button`

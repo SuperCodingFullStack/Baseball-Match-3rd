@@ -1,14 +1,16 @@
 import styled, { keyframes } from "styled-components";
 import PropTypes from "prop-types";
-import { useState } from "react";
 
-const NotificationModal = ({ isOpen, onClose, notifications, markAsRead }) => {
-  console.log("Notifications in modal:", notifications);
-
+const NotificationModal = ({ isOpen, onClose, notifications, setNotifications, markAsRead }) => {
   if (!isOpen) return null;
 
   const handleNotificationClick = (id) => {
-    markAsRead(id); // 알림을 읽음으로 처리
+    markAsRead(id);
+    setNotifications((prev) =>
+      prev.map((notification) =>
+        notification.id === id ? { ...notification, isRead: true, readAt: Date.now() } : notification
+      )
+    );
   };
 
   const handleMarkAllAsRead = () => {
@@ -183,6 +185,8 @@ const Time = styled.div`
 const NoNotificationsMessage = styled.p`
   font-weight: 600;
   text-align: center;
+  margin:1rem;
+  color:red;
 `;
 
 export default NotificationModal;

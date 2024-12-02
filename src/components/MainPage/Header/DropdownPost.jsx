@@ -4,14 +4,27 @@ import { IoHeartOutline } from "react-icons/io5";
 import { IoClipboardOutline } from "react-icons/io5";
 import { LuClipboardEdit } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
 const DropdownPost = () => {
   const navigate = useNavigate();
+
+  const isLoggedIn = !!Cookies.get("Authorization");
+
   const handleBoardBtnClick = () => {
-    navigate("/partyPosts");
+    if(!isLoggedIn){
+      alert("로그인 후 이용 가능한 페이지입니다.");
+      navigate("/login");}
+      else {
+    navigate("/partyPosts");}
   };
+  
   const handlePostWriteBtnClick = () => {
-    navigate("/postWrite");
+    if(!isLoggedIn){
+      alert("로그인 후 이용 가능한 페이지입니다.");
+      navigate("/login");}
+      else {
+    navigate("/postWrite");}
   };
 
   return (

@@ -2,8 +2,10 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 import styled from "styled-components";
 import apiClient from "../Login/apiClient";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const PartyPostWrite = () => {
+  const navigate = useNavigate(); // 네비이용
   const [games, setGames] = useState([]); // 원하는 날짜에 있는 게임들
   const [selectedGame, setSelectedGame] = useState(null); // 내가 고른 게임
   const [showGamesList, setShowGamesList] = useState(false); // 모달
@@ -70,6 +72,10 @@ const PartyPostWrite = () => {
 
         if (response.data.status === "success") {
           console.log(response.data.message);
+          alert(response.data.message);
+          setTimeout(() => {
+            navigate(`/partyPost/${response.data.data.id}`);
+          }, 1000); // 1초 지연 후 페이지 이동
         } else {
           throw new Error(response.data.message);
         }

@@ -2,49 +2,89 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 import styled from "styled-components";
 import apiClient from "../Login/apiClient";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-const PartyPostWrite = () => {
-  const navigate = useNavigate(); // 네비이용
-  const [games, setGames] = useState([]); // 원하는 날짜에 있는 게임들
-  const [selectedGame, setSelectedGame] = useState(null); // 내가 고른 게임
-  const [showGamesList, setShowGamesList] = useState(false); // 모달
-  // api 보낼 양식
+const PostModification = () => {
+  const { postId } = useParams();
+  const navigate = useNavigate();
+  const [games, setGames] = useState([]);
+  const [selectedGame, setSelectedGame] = useState(null);
+  const [showGamesList, setShowGamesList] = useState(false);
+
   const [formData, setFormData] = useState({
-    gameId: "게임아이디",
-    title: "글 제목",
-    content: "글 내용",
-    MaxPeopleNum: "최대인원",
+    gameId: "",
+    title: "",
+    content: "",
+    maxPeopleNum: 2,
   });
 
-  // 내가 보고 싶은 날짜
   const [surchGameInfo, setSurchGameInfo] = useState({
-    matchDate: "이벤트로 선택한 날짜",
+    matchDate: "",
   });
 
-  // 게임 목록을 가져오는 함수
+  // 날짜 포맷 함수
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+
+    // 날짜 포맷이 "10.01 화" 형식인 경우 처리
+    const [monthDay] = dateString.split(" "); // "10.01" 분리
+    const [month, day] = monthDay.split("."); // "10"과 "01" 분리
+
+    const currentYear = new Date().getFullYear();
+
+    // 결과 조합
+    return `${currentYear}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+  };
+
+  // 수정할 글 정보 가져오기
+  useEffect(() => {
+    const fetchPostData = async () => {
+      try {
+        const response = await apiClient.get(`/api/post/${postId}`);
+        console.log("수정하고 싶은 세부 글에 대한 응답객체?", response);
+
+        const data = response.data.data;
+
+        setFormData({
+          title: data.title,
+          content: data.content,
+          maxPeopleNum: data.maxPeopleNum,
+          gameId: data.gameId || "",
+        });
+
+        setSurchGameInfo({ matchDate: formatDate(data.matchDate) });
+        console.log("날짜 변환이 잘되었나?", formatDate(data.matchDate));
+      } catch (error) {
+        console.error("Failed to fetch post data:", error);
+      }
+    };
+
+    fetchPostData();
+  }, [postId]);
+
+  // 경기 검색
   const handleSearchGames = useCallback(async (matchDate) => {
+    console.log("경기 검색버튼 누를 때 요청하는날짜", matchDate);
+
     try {
       const response = await axios.get(
         `http://localhost:8080/api/gameMatchDate?matchDate=${matchDate}`
       );
-      console.log("응답객체는 = ", response);
-      console.log("response.status는? =", response.status);
-      console.log("response.data.status는? =", response.data.status);
+
+      console.log("겜 요청해서 잘 가져왔어?", response);
 
       if (response.data.status === "success") {
         setGames(response.data.data);
         setShowGamesList(true);
-        console.log("저장되는 게임 데이터는 = ", response.data.data);
       } else {
         throw new Error(response.data.message);
       }
     } catch (e) {
-      console.error("에러발생 : ", e.message);
+      console.error("Error occurred while fetching games:", e.message);
     }
   }, []);
 
-  // 폼 데이터 변경 함수
+  // formData 변경
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -53,44 +93,55 @@ const PartyPostWrite = () => {
     }));
   }, []);
 
-  // 게임 정보 검색 입력 처리 함수
+  // surchGameInfo 변경
   const handleSurchGameInfo = useCallback((e) => {
     const { name, value } = e.target;
+    console.log("이벤트를 통해 들어오는 이름과 값이 무어냐", name, value);
+
     setSurchGameInfo((prevData) => ({
       ...prevData,
       [name]: value,
     }));
   }, []);
 
-  // 폼 제출 함수
+  // 수정 요청
   const handleSubmit = useCallback(
     async (e) => {
       e.preventDefault();
       try {
-        const response = await apiClient.post(`/api/post`, formData);
-        console.log("response는 = >", response);
+        console.log("보내는 요청바디?", formData);
 
+        const response = await apiClient.put(`/api/post/${postId}`, formData);
         if (response.data.status === "success") {
-          console.log(response.data.message);
           alert(response.data.message);
           setTimeout(() => {
             navigate(`/partyPost/${response.data.data.id}`);
-          }, 1000); // 1초 지연 후 페이지 이동
+          }, 1000);
         } else {
           throw new Error(response.data.message);
         }
       } catch (e) {
-        console.error("에러발생 : ", e.message);
+        console.error("Error occurred while submitting form:", e.message);
       }
     },
-    [formData]
+    [formData, navigate, postId]
   );
 
-  // 게임 선택 핸들러
+  // 게임 선택
   const handleSelectGame = useCallback(
     (e) => {
       const selectedGameId = e.target.value;
-      const selected = games.find((game) => game.id === selectedGameId);
+      console.log(
+        "selectedGameId는? 내가 고른 게임의 아이디는?",
+        selectedGameId
+      );
+
+      console.log("games 배열:", games);
+      const selected = games.find(
+        (game) => String(game.id) === String(selectedGameId)
+      );
+      console.log("최종으로 내가 고른 게임객체는? ", selected);
+
       setSelectedGame(selected);
       setFormData((prevData) => ({
         ...prevData,
@@ -100,7 +151,7 @@ const PartyPostWrite = () => {
     [games]
   );
 
-  // 선택된 게임 정보는 useMemo로 메모이제이션
+  // memoized 게임 리스트
   const memoizedGameList = useMemo(() => {
     if (showGamesList) {
       return (
@@ -118,7 +169,7 @@ const PartyPostWrite = () => {
     return null;
   }, [games, showGamesList, handleSelectGame]);
 
-  // 선택된 게임 정보는 useMemo로 메모이제이션
+  // memoized 선택된 게임
   const memoizedSelectedGame = useMemo(() => {
     if (selectedGame) {
       return (
@@ -137,50 +188,49 @@ const PartyPostWrite = () => {
   return (
     <Container>
       <Form onSubmit={handleSubmit}>
-        {/* 제목 입력 */}
         <FormGroup>
           <Label htmlFor="title">제목</Label>
           <Input
             type="text"
             id="title"
             name="title"
+            value={formData.title}
             onChange={handleChange}
             required
           />
         </FormGroup>
 
-        {/* 내용 입력 */}
         <FormGroup>
           <Label htmlFor="content">내용</Label>
           <Textarea
             id="content"
             name="content"
+            value={formData.content}
             onChange={handleChange}
             required
           />
         </FormGroup>
 
-        {/* 최대 인원 수 입력 */}
         <FormGroup>
           <Label htmlFor="maxPeopleNum">최대 인원 수</Label>
           <Input
             type="number"
             id="maxPeopleNum"
             name="maxPeopleNum"
+            value={formData.maxPeopleNum}
             onChange={handleChange}
             min="2"
             required
           />
         </FormGroup>
 
-        {/* 경기 정보 선택 */}
         <div className="game-selection">
           <Label>경기 정보</Label>
           <DateInputContainer>
             <Input
               type="date"
               name="matchDate"
-              placeholder="경기 일자"
+              value={surchGameInfo.matchDate}
               onChange={handleSurchGameInfo}
             />
             <SearchButton
@@ -190,22 +240,17 @@ const PartyPostWrite = () => {
               경기 검색
             </SearchButton>
           </DateInputContainer>
-
-          {/* 경기 목록 드롭다운 표시 */}
           {memoizedGameList}
-
-          {/* 선택된 경기 표시 */}
           {memoizedSelectedGame}
         </div>
 
-        {/* 제출 버튼 */}
-        <SubmitButton type="submit">글작성하기</SubmitButton>
+        <SubmitButton type="submit">글 수정하기</SubmitButton>
       </Form>
     </Container>
   );
 };
 
-export default PartyPostWrite;
+export default PostModification;
 
 // 스타일 컴포넌트 정의
 const Container = styled.div`
@@ -239,7 +284,6 @@ const Input = styled.input`
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  box-sizing: border-box;
 `;
 
 const Textarea = styled.textarea`
@@ -266,7 +310,6 @@ const SearchButton = styled.button`
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.3s;
   &:hover {
     background-color: #0056b3;
   }
@@ -277,8 +320,6 @@ const Select = styled.select`
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  box-sizing: border-box;
-  margin-bottom: 10px;
 `;
 
 const SelectedGame = styled.div`
@@ -296,8 +337,6 @@ const SubmitButton = styled.button`
   color: white;
   border: none;
   border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s;
   &:hover {
     background-color: #218838;
   }

@@ -9,38 +9,91 @@ import styled from "styled-components";
 import { useState } from "react";
 import { useEffect } from "react";
 import axios from "axios";
+import dayjs from "dayjs";
 
 export default function SwiperComponent() {
   const [gameData, setGameData] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchGameData = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:8080/api/gameInfo/10"
-        );
+  const fetchGameData = async (currentMonth) => {
+    if (currentMonth < 1 || currentMonth > 12) {
+      console.error("잘못된 월 값:", currentMonth);
+      return false;
+    }
+
+    try {
+      const url = `http://localhost:8080/api/gameInfo/${String(
+        currentMonth
+      ).padStart(2, "0")}`;
+      console.log("Request URL:", url);
+
+      const response = await axios.get(url);
+      console.log("Full Response:", response);
+
+      if (response.status === 200) {
         console.log("API 응답 데이터:", response.data);
 
-        const limitedData = response.data.data.slice(0, 5);
-        setGameData(limitedData);
-      } catch (error) {
-        console.error("Error fetching game data:", error);
-      } finally {
+        if (
+          response.data &&
+          Array.isArray(response.data.data) &&
+          response.data.data.length > 0
+        ) {
+          const sortedGames = response.data.data.sort((a, b) =>
+            dayjs(b.matchDate, "MM.DD").diff(dayjs(a.matchDate, "MM.DD"))
+          );
+          const limitedData = sortedGames.slice(0, 5);
+          setGameData(limitedData);
+          return true;
+        } else {
+          console.log(
+            `데이터가 없습니다. 이전달 (${currentMonth - 1}월)로 이동합니다.`
+          );
+          const result = await fetchGameData(currentMonth - 1);
+          return result;
+        }
+      } else {
+        if (response.status === 400) {
+          console.log(
+            "Bad Request (400) - 데이터가 없습니다. 이전달로 이동합니다."
+          );
+          const result = await fetchGameData(currentMonth - 1);
+          return result;
+        }
+        console.error(`API 요청 실패: 상태코드 ${response.status}`);
+        return false;
+      }
+    } catch (error) {
+      console.error("Error fetching game data:", error);
+
+      if (error.response) {
+        console.error("Response Error Data:", error.response.data);
+        console.error("Response Error Status:", error.response.status);
+      } else {
+        console.error("Error Message:", error.message);
+      }
+      const result = await fetchGameData(currentMonth - 1);
+      return result;
+    }
+  };
+
+  useEffect(() => {
+    const currentMonth = parseInt(dayjs().format("MM"), 10);
+    console.log(currentMonth);
+    let isMounted = true;
+
+    const fetchData = async () => {
+      const result = await fetchGameData(currentMonth);
+      if (isMounted && result !== false) {
         setLoading(false);
       }
     };
-    fetchGameData();
-  }, []);
 
-  const groupedGames = gameData.reduce((acc, game) => {
-    const { matchDate } = game;
-    if (!acc[matchDate]) {
-      acc[matchDate] = [];
-    }
-    acc[matchDate].push(game);
-    return acc;
-  }, {});
+    fetchData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   if (loading) {
     return <p>Loading...</p>;
@@ -58,9 +111,9 @@ export default function SwiperComponent() {
         modules={[Navigation, Pagination, Mousewheel, Keyboard]}
         className="mainSwiper"
       >
-        {Object.entries(groupedGames).map(([date, games]) => (
-          <SwiperSlide key={date}>
-            <SlideContent date={date} games={games} />
+        {gameData.map((game, index) => (
+          <SwiperSlide key={index}>
+            <SlideContent game={game} date={game.matchDate} />
           </SwiperSlide>
         ))}
       </Swiper>

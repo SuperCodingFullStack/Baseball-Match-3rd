@@ -118,7 +118,7 @@ const MainInput = ({
 
   const nestHandler = (e) => {
     e.preventDefault();
-
+ㅎ
     if (title === "아이디") {
       document.getElementById("root").classList.add("dim");
       dispatch(isModalActions.setEmailModal());

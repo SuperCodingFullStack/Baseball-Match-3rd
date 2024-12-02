@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
 
 const useNotifications = () => {
   const [notifications, setNotifications] = useState([]);
@@ -13,48 +14,35 @@ const useNotifications = () => {
     });
   };
 
+  // SSE 연결 및 알림 수신
   useEffect(() => {
-    const sampleNotifications = [
-      {
-        id: 1,
-        message: "Sample Notification 1",
-        isRead: false,
-        type: "party",
-        timestamp: new Date(),
-      },
-      {
-        id: 2,
-        message: "Sample Notification 2",
-        isRead: false,
-        type: "friends",
-        timestamp: new Date(),
-      },
-      {
-        id: 3,
-        message: "Sample Notification 3",
-        isRead: false,
-        type: "party",
-        timestamp: new Date(),
-      },
-    ];
+    const token = Cookies.get("Authorization");
+    console.log(token);
+    const eventSource = new EventSource(`http://localhost:8080/api/connect?token=${token}`);
 
-    let index = 0;
-    const intervalId = setInterval(() => {
-      if (index < sampleNotifications.length) {
-        const newNotification = sampleNotifications[index];
-        console.log("Simulating notification:", newNotification);
+    // 알람 수신 처리
+    eventSource.onmessage = (event) => {
+      const newNotification = JSON.parse(event.data);
+      addNotification({
+        id: newNotification.id,
+        message: newNotification.content,
+        isRead: newNotification.readStatus === "READ",
+        type: newNotification.type || "알림",
+        sender: newNotification.sender,
+        timestamp: newNotification.createdAt,
+      });
+    };
 
-        addNotification(newNotification); // 중복 체크 후 알림 추가
-        index++;
-      } else {
-        clearInterval(intervalId); // 모든 알림이 표시되면 타이머 정지
-      }
-    }, 1000); // 1초 간격으로 알림 추가
+    // SSE 연결 에러 핸들링
+    eventSource.onerror = (error) => {
+      console.error("SSE connection error:",error);
+      eventSource.close(); // 에러 발생 시 연결 종료
+    };
 
     return () => {
-      clearInterval(intervalId); // 컴포넌트가 언마운트될 때 타이머 정리
+      eventSource.close();
     };
-  }, []);
+  },[]);
 
   // 알림 읽음 처리
   const markAsRead = (id) => {
@@ -75,7 +63,7 @@ const useNotifications = () => {
     (notification) => notification.isRead
   );
 
-  // 새로운 알림이 추가될 때마다 상태 업데이트
+  // 알림 목록 반환
   return {
     notifications: [...unreadNotifications, ...readNotifications],
     markAsRead,

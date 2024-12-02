@@ -146,6 +146,24 @@ const MainInput = ({
       dispatch(isModalActions.setEmailModal());
     }
     if (title === "닉네임") {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/api/user/nickname?nickname=${valueData}`
+        );
+        dispatch(
+          isNestActions.setNicknameNestMessage({
+            error: response.data.status !== "success",
+            message: response.data.data,
+          })
+        );
+      } catch (err) {
+        dispatch(
+          isNestActions.setEmailNestMessage({
+            error: true,
+            message: "데이터 패치에 실패했습니다.",
+          })
+        );
+      }
       document.getElementById("root").classList.add("dim");
       dispatch(isModalActions.setNicknameModal());
     }

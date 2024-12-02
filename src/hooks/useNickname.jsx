@@ -1,20 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { nicknameCheck } from "../utils/nicknameCheck";
+import { useDebouncedValue } from "./useDebouncedValue";
 
-const useNickname = (isTouched) => {
+const useNickname = () => {
   const [nickname, setNickname] = useState("");
   const [nicknameError, setNicknameError] = useState(false);
   const [nicknameErrorMsg, setNicknameErrorMsg] = useState("");
+  const debouncedNickname = useDebouncedValue(nickname, 200);
 
-  const validateNickname = async () => {
-    const nicknameResponse = await nicknameCheck(nickname);
-    if (nicknameResponse.error) {
-      setNicknameError(true);
-    } else {
-      setNicknameError(false);
-    }
-    setNicknameErrorMsg(nicknameResponse.msg);
-  };
+  useEffect(() => {
+    const validateNickname = () => {
+      const res = nicknameCheck(nickname);
+      setNicknameError(res.error);
+      setNicknameErrorMsg(res.msg);
+    };
+    if (debouncedNickname) validateNickname();
+  }, [debouncedNickname, nickname]);
 
   const nicknameChangeHandler = (value, maxLength) => {
     setNickname(value);
@@ -25,7 +26,6 @@ const useNickname = (isTouched) => {
 
   return {
     nickname,
-    validateNickname,
     nicknameChangeHandler,
     nicknameError,
     nicknameErrorMsg,

@@ -72,13 +72,8 @@ const MainContent = () => {
   const { passwordCheck, pwChkHandler, pwChkError, pwChkMsg } =
     usePasswordCheck(password);
 
-  const {
-    nickname,
-    validateNickname,
-    nicknameChangeHandler,
-    nicknameError,
-    nicknameErrorMsg,
-  } = useNickname(isTouched);
+  const { nickname, nicknameChangeHandler, nicknameError, nicknameErrorMsg } =
+    useNickname();
 
   const {
     phone,
@@ -192,12 +187,9 @@ const MainContent = () => {
             conditionText="입력하지 않을 경우 랜덤된 닉네임으로 설정됩니다. "
             Nest="중복확인"
             onChangeHandler={nicknameChangeHandler}
-            onChangeHandler2={phoneCodeChangeHandler}
             valueData={nickname}
-            valueData2={phoneCode}
             errorMsg={nicknameErrorMsg}
             isError={nicknameError}
-            validate={validateNickname}
             isTouched={isTouched}
             setIsTouched={setIsTouched}
           />

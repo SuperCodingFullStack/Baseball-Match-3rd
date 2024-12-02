@@ -1,10 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 import { FaCheckCircle } from "react-icons/fa";
-import { useDispatch } from "react-redux";
 import { isNestActions } from "../../Store/slice/isNestSlice";
 import { isModalActions } from "../../Store/slice/isModalSlice";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const Modals = styled.div`
   padding: 40px;
@@ -111,11 +110,11 @@ const ConfirmModal = ({ title }) => {
           <FaCheckCircle />
         </ModalIcon>
         <ModalMsgs>
-          <p>{emailNestMessage ? emailNestMessage : "Loading"}</p>
+          <p>{emailNestMessage}</p>
           <strong>
             {emailNestError
-              ? "다시 돌아가 선택하세요."
-              : "이것으로 고르실 건가요?"}
+              ? "다시 입력해주십시오"
+              : "이걸로 선택하시겠습니까?"}
           </strong>
         </ModalMsgs>
       </ModalMessage>

@@ -7,6 +7,8 @@ const isNestSlice = createSlice({
     nicknameNest: false,
     emailNestMessage: "",
     emailNestError: false,
+    nicknameNestMessage: "",
+    nicknameNestError: false,
   },
   reducers: {
     setEmailNest(state) {
@@ -18,6 +20,10 @@ const isNestSlice = createSlice({
     setEmailNestMessage(state, action) {
       state.emailNestMessage = action.payload.message;
       state.emailNestError = action.payload.error;
+    },
+    setNicknameNestMessage(state, action) {
+      state.nicknameNestMessage = action.payload.message;
+      state.nicknameNestError = action.payload.error;
     },
   },
 });

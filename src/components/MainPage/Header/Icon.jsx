@@ -17,7 +17,7 @@ const Icon = () => {
 
   const handleMypageBtnClick = () => {
     if(!isLoggedIn){
-      alert("로그인이 필요합니다.");
+      alert("로그인 후 이용 가능한 페이지입니다.");
       navigate("/login");}
       else {
     navigate("/mypage");}
@@ -29,10 +29,15 @@ const Icon = () => {
     navigate("/login");
   };
   const handleChatBtnClick = () => {
-    navigate("/portfolio");
+    if(!isLoggedIn){
+      alert("로그인 후 이용 가능한 페이지입니다.");
+      navigate("/login");}
+      else {
+    navigate("/portfolio");}
   };
   const handleLogoutBtnClick = () => {
     Cookies.remove("Authorization");
+    alert("로그아웃되었습니다");
     navigate("/");
   };
 

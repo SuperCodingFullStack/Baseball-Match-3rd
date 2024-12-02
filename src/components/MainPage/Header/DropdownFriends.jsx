@@ -1,11 +1,19 @@
 import styled from "styled-components";
 import { LiaUserFriendsSolid } from "react-icons/lia";
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
 const DropdownFriends = () => {
   const navigate = useNavigate();
+
+  const isLoggedIn = !!Cookies.get("Authorization");
+
   const handleFriendsBtnClick = () => {
-    navigate("/friends");
+    if(!isLoggedIn){
+      alert("로그인 후 이용 가능한 페이지입니다.");
+      navigate("/login");}
+      else {
+    navigate("/friends");}
   };
 
   return (

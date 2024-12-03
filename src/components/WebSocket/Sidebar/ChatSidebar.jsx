@@ -6,11 +6,10 @@ import FooterSection from "./FooterSection";
 import apiClient from "../../../pages/Login/apiClient";
 import Cookies from "js-cookie";
 
-const ChatSidebar = ({ userId }) => {
+const ChatSidebar = ({ userId, onSelectChat }) => {
   const [chats, setChats] = useState([]);
   const [roomName, setRoomName] = useState("");
   const [searchedChats, setSearchedChats] = useState([]);
-  const [selectedChats, setSelectedChats] = useState(null);
   const [chatData, setChatData] = useState([]);
 
   // 채팅방 조회
@@ -34,15 +33,23 @@ const ChatSidebar = ({ userId }) => {
   // 채팅방 검색
   const searchChatRooms = async () => {
     if (roomName.trim() === "") {
-      setSearchedChats(chats); // 검색어가 없으면 원래 목록 반환
+      setSearchedChats(chatData);
       return;
     }
     try {
       const response = await apiClient.get(`/api/chatroom/room/${roomName}`);
-      if (Array.isArray(response.data)) {
-        setSearchedChats(response.data); // 배열이면 검색 결과 상태 업데이트
+      const result = response.data;
+
+      if (Array.isArray(result.data) && result.data.length > 0) {
+        const searchedChats = result.data; // 조회된 채팅방
+        const pastChats = chatData.filter(
+          // 조회되지 않은 채팅방
+          (chat) =>
+            !searchedChats.some((searchedChat) => searchedChat.id === chat.id)
+        );
+        setSearchedChats([...searchedChats, ...pastChats]);
       } else {
-        console.error("잘못된 데이터 형식:", response.data);
+        console.error("잘못된 데이터 형식:", result);
         setSearchedChats([]); // 오류 시 빈 배열 설정
       }
     } catch (error) {
@@ -51,6 +58,7 @@ const ChatSidebar = ({ userId }) => {
     }
   };
 
+  // 채팅방 생성
   const handleCreateRoom = async (roomName) => {
     try {
       const token = Cookies.get("Authorization");
@@ -70,19 +78,49 @@ const ChatSidebar = ({ userId }) => {
     }
   };
 
+  // 채팅방 삭제
+  const handleDeleteRoom = async (roomId) => {
+    try {
+      const response = await apiClient.delete(`/api/chatroom/rooms/${roomId}`);
+      if (response.status === 200) {
+        console.log("채팅방이 삭제되었습니다.");
+      }
+    } catch (error) {
+      console.error("삭제 에러");
+    }
+  };
+
   const handleSearchChange = (e) => {
     setRoomName(e.target.value);
     searchChatRooms();
   };
 
-  const handleSearchDelete = () => {
-    setRoomName("");
-  };
-
   const handleSelectChat = (chatId) => {
-    setSearchedChats(chatId);
+    onSelectChat(chatId);
+    console.log("선택된 채팅방 Id: ", chatId);
   };
   const [searchValue, setSearchValue] = useState("");
+  const [showCheckboxes, setShowCheckboxes] = useState(false); // 체크박스 표시 여부
+  const [selectedChatIds, setSelectedChatIds] = useState([]); // 선택된 채팅방 ID
+  const [selectedChatId, setSelectedChatId] = useState(null); // 선택된 채팅방 ID (MainChatComponent에 전달)
+
+  const handleCheckboxClick = (chatId) => {
+    setSelectedChatIds(
+      (prev) =>
+        prev.includes(chatId)
+          ? prev.filter((id) => id !== chatId)
+          : [...prev, chatId] // 선택 추가
+    );
+  };
+
+  const handleRoomDeleteClick = () => {
+    if (showCheckboxes && selectedChatIds.length > 0) {
+      // 선택된 채팅방 삭제
+      selectedChatIds.forEach((roomId) => handleDeleteRoom(roomId));
+      setSelectedChatIds([]); // 선택 목록 초기화
+    }
+    setShowCheckboxes(!showCheckboxes); // 체크박스 표시/숨기기 전환
+  };
 
   return (
     <Sidebar>
@@ -94,10 +132,16 @@ const ChatSidebar = ({ userId }) => {
       />
       <ListSection
         chats={searchedChats.length > 0 ? searchedChats : chatData}
-        selectedChats={selectedChats}
         handleSelectChat={handleSelectChat}
+        handleCheckboxClick={handleCheckboxClick}
+        selectedChatIds={selectedChatIds}
+        showCheckboxes={showCheckboxes}
       />
-      <FooterSection handleCreateRoom={handleCreateRoom} />
+      <FooterSection
+        handleCreateRoom={handleCreateRoom}
+        handleRoomDeleteClick={handleRoomDeleteClick}
+        showCheckboxes={showCheckboxes}
+      />
     </Sidebar>
   );
 };
@@ -106,6 +150,8 @@ export default ChatSidebar;
 
 const Sidebar = styled.aside`
   width: 310px;
+  height: 700px;
+  margin-top: 20px;
   background-color: #ffffff;
   padding: 20px;
   border-radius: 8px;

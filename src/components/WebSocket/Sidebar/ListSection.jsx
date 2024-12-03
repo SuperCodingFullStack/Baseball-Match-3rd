@@ -1,8 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
-const ListSection = ({ chats, selectedChats, handleSelectChat }) => {
+const ListSection = ({
+  chats,
+  handleSelectChat,
+  handleCheckboxClick,
+  selectedChatIds,
+  showCheckboxes,
+}) => {
   console.log(chats);
+  const [selectedChatId, setSelectedChatId] = useState(null);
+
+  const onChatSelect = (chatId) => {
+    setSelectedChatId(chatId);
+  };
+
   return (
     <ChatListWrap className="chat_list_wrap">
       <ChatList className="chat_list">
@@ -10,17 +22,22 @@ const ListSection = ({ chats, selectedChats, handleSelectChat }) => {
           <ChatItem
             key={chat.id}
             onClick={() => handleSelectChat(chat.id)}
-            selected={selectedChats === chat.id}
+            selected={selectedChatId === chat.id}
           >
+            {showCheckboxes && (
+              <input
+                type="checkbox"
+                checked={selectedChatIds.includes(chat.id)}
+                onChange={() => handleCheckboxClick(chat.id)}
+              />
+            )}
             <InfoArea className="info_area">
               <TextWrap className="text_wrap">
                 <NameArea className="name_area">
-                  <Name>{chat.roomName}</Name>
+                  <Name>{chat.roomName}</Name> {/* roomName만 표시 */}
                   <DateArea>{chat.createdDate}</DateArea>
                 </NameArea>
-                <Message className="text_area">
-                  {chat.message || "No message"}
-                </Message>
+                <Message className="text_area">{chat.message}</Message>
               </TextWrap>
             </InfoArea>
           </ChatItem>
@@ -32,13 +49,12 @@ const ListSection = ({ chats, selectedChats, handleSelectChat }) => {
 
 export default ListSection;
 
-// Styled Components for ChatListWrap
-
 const ChatListWrap = styled.div`
-  max-height: 600px;
-  overflow-y: auto; /* 스크롤을 추가 */
-  overflow-x: hidden;
-  border: 1px solid #efeff0;
+  width: 300px;
+  height: 550px;
+  border-right: 1px solid #efeff0;
+  display: flex;
+  flex-direction: column;
 `;
 
 const ChatList = styled.ul`
@@ -55,11 +71,10 @@ const ChatItem = styled.li`
   margin-bottom: 10px;
   transition: background-color 0.3s;
   cursor: pointer;
-  background-color: ${(props) =>
-    props.selected ? "#67fc99" : "transparent"}; // 클릭된 항목 배경색
-  width: 255px; /* 가로 크기 고정 */
-  height: 50px; /* 세로 크기 고정 */
-  overflow: hidden; /* 콘텐츠가 넘칠 경우 숨김 처리 */
+  background-color: ${(props) => (props.selected ? "#67fc99" : "transparent")};
+  width: 255px;
+  height: 50px;
+  overflow: hidden;
   &:hover {
     background-color: #f9f9f9;
   }

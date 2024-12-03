@@ -14,6 +14,7 @@ import MyPosts from "./pages/partyPost/Myposts";
 import LikedPosts from "./pages/partyPost/LikedPosts";
 import Friends from "./pages/Friends";
 import ChatSidebar from "./components/WebSocket/Sidebar/ChatSidebar";
+import ChatComponent from "./components/WebSocket/ChatComponent";
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
           <Route path="/modification/:postId" element={<PostModification />} />
           <Route path="/friends" element={<Friends />} />
           <Route path="/side" element={<ChatSidebar />} />
+          <Route path="/chat" element={<ChatComponent />} />
         </Routes>
       </BrowserRouter>
     </>

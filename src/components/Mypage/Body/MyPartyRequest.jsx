@@ -54,46 +54,61 @@ const mockData = {
 };
 
 // MyFavorite 컴포넌트 정의
-const MyPartyRequest = ({}) => {
+const MyPartyRequest = () => {
   const [posts, setPosts] = useState([]);
   const [error, setError] = useState(null);
 
   const fetchPosts = async () => {
     try {
-      const response = await apiClient.get(`/api/party`);
-      if (response.status === "success") {
-        setPosts(response.data);
-      } else {
-        console.error("API 요청 실패:", response.message);
+      const response = await apiClient.post("/api/party");
+      setPosts(response.data.data);
+      console.log("받은 데이터:", response.data.data);
+    } catch (error) {
+      setError("데이터를 가져오는 중 오류가 발생했습니다.");
+      console.error("Error fetching posts:", error);
+    }
+  };
+
+  const ApiPartyPostId = async (partyPostId) => {
+    try {
+      const response = await apiClient.post(`/api/party/${partyPostId}`);
+      if (response.data.status === "success") {
+        setPosts(response.data.data);
+        console.log("받은 데이터:", response.data.data);
       }
     } catch (error) {
       setError("데이터를 가져오는 중 오류가 발생했습니다.");
+      console.error("Error fetching posts:", error);
     }
   };
 
   useEffect(() => {
     fetchPosts();
-  }, []); // type 값이 변경될 때마다 호출
+  }, []); // 컴포넌트 마운트 시 한 번만 실행
 
   return (
     <Container>
       <Between>
         <Title>나의 파티 요청 리스트</Title>
-        <SerchInput placeholder="검색" />
+        <SearchInput placeholder="검색" />
       </Between>
       <FavoriteList>
-        {mockData.data.map((item) => (
-          <FavoriteItem key={item.partyId}>
-            <FavoriteInform>
-              <FavoriteInformTitle>{item.partyTitle}</FavoriteInformTitle>
-              <DivTrashIcon>
-                <FaRegTrashAlt className="trash-icon" />
-              </DivTrashIcon>
-            </FavoriteInform>
-            <DivRegistrant>등록자: {item.partyId}</DivRegistrant>
-            <PExplanation>파티 등록일: {item.gameDate}</PExplanation>
-          </FavoriteItem>
-        ))}
+        {posts && posts.length > 0 ? (
+          posts.map((item) => (
+            <FavoriteItem key={item.partyId}>
+              <FavoriteInform>
+                <FavoriteInformTitle>{item.partyTitle}</FavoriteInformTitle>
+                <DivTrashIcon>
+                  <FaRegTrashAlt className="trash-icon" />
+                </DivTrashIcon>
+              </FavoriteInform>
+              <DivRegistrant>등록자: {item.partyId}</DivRegistrant>
+              <PExplanation>파티 등록일: {item.gameDate}</PExplanation>
+            </FavoriteItem>
+          ))
+        ) : (
+          <p>즐겨찾기 목록이 비어있습니다.</p>
+        )}
       </FavoriteList>
     </Container>
   );
@@ -112,8 +127,9 @@ const Title = styled.h2`
   font-weight: 600;
   font-size: 2em;
   padding: 0.7em;
+  margin-left: -0.7em;
 `;
-const SerchInput = styled.input`
+const SearchInput = styled.input`
   background-color: aliceblue;
   width: 200px;
   height: 30px;
@@ -128,7 +144,6 @@ const Between = styled.div`
   align-items: center;
   padding: 0 5em;
   max-width: 120em;
-  margin: 0 5em;
 `;
 const FavoriteList = styled.ul`
   background-color: white;

@@ -12,7 +12,7 @@ const MyFavorite = () => {
   const fetchPosts = async () => {
     try {
       // API 호출
-      const response = await fetch("http://localhost:8080/api/posts", {
+      const response = await fetch("http://localhost:8080", {
         method: "GET", // HTTP 요청 메서드 (GET 방식)
         headers: {
           "Content-Type": "application/json", // 요청 본문의 데이터 형식

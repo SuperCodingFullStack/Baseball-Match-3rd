@@ -5,13 +5,13 @@ import apiClient from "../../../pages/Login/apiClient";
 // 인터셉터가 설정된 apiClient가져오기  자기 파일기준 상대경로 작성 위치는  페이지의 로그인에 있습니다
 
 // MyFavorite 컴포넌트 정의
-const MyFavorite = ({}) => {
+const MyWrite = ({}) => {
   const [posts, setPosts] = useState([]);
   const [error, setError] = useState(null);
 
   const fetchPosts = async () => {
     try {
-      const response = await apiClient.get("/api/post/myList/liked");
+      const response = await apiClient.get(`/api/post/myList/written`);
       setPosts(response.data.data);
       console.log("받은 데이터:", response.data.data);
     } catch (error) {
@@ -27,34 +27,33 @@ const MyFavorite = ({}) => {
   return (
     <Container>
       <Between>
-        <Title>내가 좋아요한 게시글</Title>
-        <SearchInput placeholder="검색" />
+        <Title>게시글 목록</Title>
+        <SerchInput placeholder="검색" />
       </Between>
       <FavoriteList>
         {posts && posts.length > 0 ? (
           posts.map((post) => (
-            <FavoriteItem key={post.postId}>
+            <FavoriteItem key={post.id}>
               <FavoriteInform>
-                {/* <FavoriteInformTitle>{post.teamName}</FavoriteInformTitle> */}
+                <FavoriteInformTitle>{post.teamName}</FavoriteInformTitle>
                 <FavoriteInformButton>구단정보보기</FavoriteInformButton>
                 <FaRegTrashAlt />
               </FavoriteInform>
-              {/* <DivRegistrant>등록자: {post.id}</DivRegistrant> */}
-              <PExplanation>{post.title}</PExplanation>
+              <PExplanation>게시글 제목 : {post.title}</PExplanation>
               <PExplanation>
-                {new Date(post.createdDate).toLocaleString()}
+                게시글 등록일 : {new Date(post.createdDate).toLocaleString()}
               </PExplanation>
             </FavoriteItem>
           ))
         ) : (
-          <p>즐겨찾기 목록이 비어있습니다.</p>
+          <p>게시글 목록이 비어있습니다.</p>
         )}
       </FavoriteList>
     </Container>
   );
 };
 
-export default MyFavorite;
+export default MyWrite;
 
 const Container = styled.div`
   position: absolute;
@@ -79,7 +78,8 @@ const Title = styled.h2`
   margin-left: -0.7em;
 `;
 
-const SearchInput = styled.input`
+const SerchInput = styled.input`
+  left: 50em;
   background-color: aliceblue;
   width: 200px;
   height: 30px;
@@ -105,6 +105,12 @@ const FavoriteItem = styled.li`
   border: 1px solid #e1e1e1;
   margin: 50px;
   padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
 `;
 const FavoriteInform = styled.div`
   display: flex;

@@ -1,17 +1,17 @@
-import React, { useState } from "react";
-import styled from "styled-components";
-import MainInput from "./MainInput";
-import { linkSection } from "./LinkSection";
-import useEmail from "../../hooks/useEmail";
-import usePassword from "../../hooks/usePassword";
-import usePasswordCheck from "../../hooks/usePasswordCheck";
-import ProfileInput from "./ProfileInput";
-import useNickname from "../../hooks/useNickname";
-import { useSelector } from "react-redux";
-import usePhone from "../../hooks/usePhone";
-import PhoneAndAddressInput from "./PhoneAndAddressInput";
-import { useAddress } from "../../hooks/useAddress";
-import axios from "axios";
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import MainInput from './MainInput';
+import { linkSection } from './LinkSection';
+import useEmail from '../../hooks/useEmail';
+import usePassword from '../../hooks/usePassword';
+import usePasswordCheck from '../../hooks/usePasswordCheck';
+import ProfileInput from './ProfileInput';
+import useNickname from '../../hooks/useNickname';
+import { useSelector } from 'react-redux';
+import usePhone from '../../hooks/usePhone';
+import PhoneAndAddressInput from './PhoneAndAddressInput';
+import { useAddress } from '../../hooks/useAddress';
+import axios from 'axios';
 
 const SectionAll = styled.div``;
 
@@ -91,42 +91,6 @@ const MainContent = () => {
 
   const FormSubmitHandler = async (e) => {
     e.preventDefault();
-
-    if (emailNest && !error) {
-      fd.append("username", email);
-    }
-    if (!pwError && !pwChkError) {
-      fd.append("password", password);
-    }
-    if (nicknameNest && !nicknameError) {
-      fd.append("nickname", nickname);
-    }
-    if (isPhoneAuth && !phoneError) {
-      fd.append("phone", phone);
-    }
-    if (isAddressAuth && !addressError) {
-      fd.append("address", address);
-    }
-
-    try {
-      const response = axios.post("http://localhost:8080/api/user/signUp", {
-        method: "POST",
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        body: {
-          username: fd.get("username"),
-          password: fd.get("password"),
-          nickname: fd.get("nickname"),
-          phone: fd.get("phone"),
-          address: fd.get("address"),
-          profileImg: "test.jpg",
-        },
-      });
-      console.log(response.data);
-    } catch (error) {
-      console.log("데이터 받아오기 실패");
-    }
   };
 
   return (

@@ -4,7 +4,11 @@ import { FaChevronRight } from "react-icons/fa6";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import Modal from "./Modal";
 
-const FooterSection = ({ handleCreateRoom }) => {
+const FooterSection = ({
+  handleCreateRoom,
+  handleRoomDeleteClick,
+  showCheckboxes,
+}) => {
   const [modalOpen, setModalOpen] = useState(false);
   const handleCreateRoomClick = () => {
     setModalOpen(true);
@@ -19,8 +23,11 @@ const FooterSection = ({ handleCreateRoom }) => {
   return (
     <FooterWrapper>
       <FooterBtnWrap>
-        <RoomDeleteBtn>
+        <RoomDeleteBtn onClick={handleRoomDeleteClick}>
           <RiDeleteBin6Line size={18} />
+          <span style={{ marginLeft: "8px" }}>
+            {showCheckboxes ? "삭제 완료" : "채팅방 삭제"}
+          </span>
         </RoomDeleteBtn>
         <CreateButton onClick={handleCreateRoomClick}>
           채팅방 만들기

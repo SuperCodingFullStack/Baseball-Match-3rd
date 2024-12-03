@@ -1,47 +1,37 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
-const Modal = ({ isOpen, onClose, onCreate }) => {
-  const [roomName, setRoomName] = useState("");
-
-  const handleInputChange = (e) => {
-    setRoomName(e.target.value);
-  };
-
-  const handleSubmit = () => {
-    if (roomName.trim()) {
-      onCreate(roomName); // 채팅방 생성
-      setRoomName(""); // 입력 필드 초기화
-      onClose(); // 모달 닫기
-    }
-  };
-
+const DeleteModal = ({ isOpen, onClose, seletedChat, handleDeleteChats }) => {
   if (!isOpen) return null; // 모달이 열리지 않으면 아무것도 렌더링하지 않음
 
+  const handleDelte = () => {
+    handleDeleteChats(seletedChat.id);
+    onClose();
+  };
   return (
     <ModalOverlay>
       <ModalContainer>
         <ModalHeader>
-          <h2>채팅방 만들기</h2>
+          <h2>채팅방 삭제</h2>
         </ModalHeader>
         <ModalBody>
-          <Input
-            type="text"
-            placeholder="채팅방 이름을 입력하세요"
-            value={roomName}
-            onChange={handleInputChange}
-          />
+          <p>해당 채팅방을 삭제하시겠습니까?</p>
+          <ul>
+            {seletedChat.map((chat) => (
+              <li>{chat.roomName}</li>
+            ))}
+          </ul>
         </ModalBody>
         <ModalFooter>
           <CancleButton onClick={onClose}>취소</CancleButton>
-          <SubButton onClick={handleSubmit}>보내기</SubButton>
+          <DeleteButton onClick={handleDelte}>삭제</DeleteButton>
         </ModalFooter>
       </ModalContainer>
     </ModalOverlay>
   );
 };
 
-export default Modal;
+export default DeleteModal;
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -53,7 +43,6 @@ const ModalOverlay = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 10;
 `;
 
 const ModalContainer = styled.div`
@@ -62,7 +51,6 @@ const ModalContainer = styled.div`
   padding: 20px;
   width: 300px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  z-index: 10;
 `;
 
 const ModalHeader = styled.div`
@@ -74,14 +62,7 @@ const ModalBody = styled.div`
   margin-bottom: 20px;
   display: flex;
   justify-content: center;
-`;
-
-const Input = styled.input`
-  width: 100%;
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  flex-direction: column;
 `;
 
 const ModalFooter = styled.div`
@@ -102,7 +83,7 @@ const CancleButton = styled.button`
   }
 `;
 
-const SubButton = styled.button`
+const DeleteButton = styled.button`
   padding: 8px 16px;
   font-size: 14px;
   cursor: pointer;

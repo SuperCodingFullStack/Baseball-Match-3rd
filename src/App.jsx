@@ -10,6 +10,7 @@ import TeamInfo from "./components/CrawlingPage/TeamInfo";
 import WebSocketComponent from "./components/WebSocket/WebSocketComponent";
 import Login from "./pages/Login/Login";
 import ChatSidebar from "./components/WebSocket/Sidebar/ChatSidebar";
+import ChatComponent from "./components/WebSocket/ChatComponent";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           <Route path="/api/teamInfo/:teamName" element={<TeamInfo />} />
           <Route path="/portfolio" element={<WebSocketComponent />} />
           <Route path="/side" element={<ChatSidebar />} />
+          <Route path="/chat" element={<ChatComponent />} />
         </Routes>
       </BrowserRouter>
     </>

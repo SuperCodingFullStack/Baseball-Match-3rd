@@ -1,22 +1,18 @@
 export const linkSection = [
   {
-    section: "내즐겨찾기",
-    // id: myFavorite,
+    section: "내가 좋아요한 게시글",
+    id: "myFavorite",
   },
   {
     section: "파티 요청",
-    // id: requestParty,
+    id: "requestParty",
   },
   {
     section: "참여중인 파티목록",
-    // id: prticipatingPartyList,
+    id: "participatingPartyList",
   },
   {
     section: "게시글 목록",
-    // id: myPostList,
-  },
-  {
-    section: "친구추가",
-    // id: myPostList,
+    id: "myPostList",
   },
 ];

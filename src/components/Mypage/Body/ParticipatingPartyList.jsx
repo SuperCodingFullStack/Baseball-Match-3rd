@@ -5,15 +5,14 @@ import apiClient from "../../../pages/Login/apiClient";
 // 인터셉터가 설정된 apiClient가져오기  자기 파일기준 상대경로 작성 위치는  페이지의 로그인에 있습니다
 
 // MyFavorite 컴포넌트 정의
-const MyFavorite = ({}) => {
+const ParticipatingPartyList = ({}) => {
   const [posts, setPosts] = useState([]);
   const [error, setError] = useState(null);
 
   const fetchPosts = async () => {
     try {
-      const response = await apiClient.get("/api/post/myList/liked");
-      setPosts(response.data.data);
-      console.log("받은 데이터:", response.data.data);
+      const response = await apiClient.get(`/api/posts/myList/liked`);
+      setPosts(response.data);
     } catch (error) {
       setError("데이터를 가져오는 중 오류가 발생했습니다.");
       console.error("Error fetching posts:", error);
@@ -27,19 +26,19 @@ const MyFavorite = ({}) => {
   return (
     <Container>
       <Between>
-        <Title>내가 좋아요한 게시글</Title>
-        <SearchInput placeholder="검색" />
+        <Title>참여중인 파티목록</Title>
+        <SerchInput placeholder="검색" />
       </Between>
       <FavoriteList>
         {posts && posts.length > 0 ? (
           posts.map((post) => (
-            <FavoriteItem key={post.postId}>
+            <FavoriteItem key={post.id}>
               <FavoriteInform>
-                {/* <FavoriteInformTitle>{post.teamName}</FavoriteInformTitle> */}
+                <FavoriteInformTitle>{post.teamName}</FavoriteInformTitle>
                 <FavoriteInformButton>구단정보보기</FavoriteInformButton>
                 <FaRegTrashAlt />
               </FavoriteInform>
-              {/* <DivRegistrant>등록자: {post.id}</DivRegistrant> */}
+              <DivRegistrant>등록자: {post.id}</DivRegistrant>
               <PExplanation>{post.title}</PExplanation>
               <PExplanation>
                 {new Date(post.createdDate).toLocaleString()}
@@ -47,14 +46,14 @@ const MyFavorite = ({}) => {
             </FavoriteItem>
           ))
         ) : (
-          <p>즐겨찾기 목록이 비어있습니다.</p>
+          <p>참여중인 파티목록이 비어있습니다.</p>
         )}
       </FavoriteList>
     </Container>
   );
 };
 
-export default MyFavorite;
+export default ParticipatingPartyList;
 
 const Container = styled.div`
   position: absolute;
@@ -79,7 +78,7 @@ const Title = styled.h2`
   margin-left: -0.7em;
 `;
 
-const SearchInput = styled.input`
+const SerchInput = styled.input`
   background-color: aliceblue;
   width: 200px;
   height: 30px;

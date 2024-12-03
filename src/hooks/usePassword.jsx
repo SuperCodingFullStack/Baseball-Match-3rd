@@ -1,26 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { passwdCheck } from "../utils/passwdCheck";
+import { useDebouncedValue } from "./useDebouncedValue";
 
-const usePassword = (isTouched) => {
+const usePassword = () => {
   const [password, setPassword] = useState("");
   const [pwError, setPwError] = useState(false);
   const [pwMsg, setPwMsg] = useState("");
+  const debouncedPassword = useDebouncedValue(password, 200);
 
   useEffect(() => {
-    if (isTouched) {
-      validatePw();
-    }
-  }, [password]);
-
-  const validatePw = () => {
-    const passwordResponse = passwdCheck(password);
-    if (passwordResponse.isError) {
-      setPwError(true);
-    } else {
-      setPwError(false);
-    }
-    setPwMsg(passwordResponse.msg);
-  };
+    const validatePassword = () => {
+      const res = passwdCheck(password);
+      setPwError(res.isError);
+      setPwMsg(res.msg);
+    };
+    if (debouncedPassword) validatePassword();
+  }, [password, debouncedPassword]);
 
   const passwordChange = (value, maxLength) => {
     setPassword(value);
@@ -29,7 +24,7 @@ const usePassword = (isTouched) => {
     }
   };
 
-  return { password, validatePw, passwordChange, pwError, pwMsg };
+  return { password, passwordChange, pwError, pwMsg };
 };
 
 export default usePassword;

@@ -6,16 +6,17 @@ const useEmail = () => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
-  const debouncedEmail = useDebouncedValue(email, 300);
+  const debouncedEmail = useDebouncedValue(email, 200);
 
   useEffect(() => {
-    const validateEmail = async () => {
-      const res = await emailCheck(email);
+    const validateEmail = () => {
+      const res = emailCheck(email);
       setError(res.error);
       setErrorMsg(res.msg);
     };
+
     if (debouncedEmail) validateEmail();
-  }, [debouncedEmail]);
+  }, [debouncedEmail, email]);
 
   const emailChangeHandler = (val, maxLength) => {
     setEmail(val);

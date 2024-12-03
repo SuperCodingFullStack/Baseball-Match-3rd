@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import PostList from "./PostList";
 import apiClient from "../Login/apiClient";
+import NoDataPage from "../NoDataPage";
 
 const LikedPosts = () => {
   const [lists, setLists] = useState([]);
@@ -81,7 +82,9 @@ const LikedPosts = () => {
           </div>
         </>
       ) : (
-        <div>데이터가 없습니다.</div>
+        <NoDataPage
+        title="내가 좋아요 한 게시글"
+        info="내가 좋아요 한 게시글이 없습니다." />
       )}
     </div>
   );

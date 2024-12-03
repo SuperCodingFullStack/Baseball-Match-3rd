@@ -27,6 +27,22 @@ const DropdownPost = () => {
     navigate("/postWrite");}
   };
 
+  const handleMyPostBtnClick = () => {
+    if(!isLoggedIn){
+      alert("로그인 후 이용 가능한 페이지입니다.");
+      navigate("/login");}
+      else {
+    navigate("/myPosts");}
+  };
+
+  const handleLikePostBtnClick = () => {
+    if(!isLoggedIn){
+      alert("로그인 후 이용 가능한 페이지입니다.");
+      navigate("/login");}
+      else {
+    navigate("/myLikePosts");}
+  };
+
   return (
     <PostContainer>
       <WritePost>
@@ -38,10 +54,10 @@ const DropdownPost = () => {
         게시판
       </Board>
       <MyPost>
-        <StyledIcon as={LuClipboardEdit} /> 내가 쓴 게시물
+        <StyledIcon as={LuClipboardEdit} onClick={handleMyPostBtnClick}/> 내가 작성한 게시글
       </MyPost>
       <LikePost>
-        <StyledIcon as={IoHeartOutline} /> 좋아요 한 게시물
+        <StyledIcon as={IoHeartOutline} onClick={handleLikePostBtnClick}/> 좋아요 한 게시물
       </LikePost>
     </PostContainer>
   );

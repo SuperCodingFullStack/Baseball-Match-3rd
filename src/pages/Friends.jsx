@@ -51,7 +51,7 @@ height: 100%;
 const Title = styled.h1`
 margin:3rem;
 font-weight:600;
-font-size:2.5rem;
+font-size:2rem;
 `;
 
 const FriendsContainer = styled.div`

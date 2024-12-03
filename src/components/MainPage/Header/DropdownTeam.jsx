@@ -11,8 +11,10 @@ import {
   SAMSUNG,
   SSG,
 } from "../../../constants";
+import { getTeamLogo } from "../../../utils/getTeamLogo";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
+
 
 const DropdownTeam = ({ onSelectTeam }) => {
   const navigate = useNavigate();

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import PostList from "./PostList";
 import apiClient from "../Login/apiClient";
+import NoDataPage from "../NoDataPage";
 
 const MyPosts = () => {
   const [lists, setLists] = useState([]);
@@ -80,7 +81,9 @@ const MyPosts = () => {
           </div>
         </>
       ) : (
-        <div>데이터가 없습니다.</div>
+        <NoDataPage
+        title="내가 작성한 게시글"
+        info="내가 작성한 게시글이 없습니다." />
       )}
     </div>
   );

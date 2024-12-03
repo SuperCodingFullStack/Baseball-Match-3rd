@@ -1,9 +1,9 @@
-import React from "react";
-import styled from "styled-components";
-import { linkSection } from "./linkSection";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-import { activeIdActions } from "../../Store/Slice/ActiveIdSlice";
+import React from 'react';
+import styled from 'styled-components';
+import { linkSection } from './linkSection';
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { activeIdActions } from '../../Store/Slice/ActiveIdSlice';
 
 const Headering = styled.header`
   background-color: #202734;
@@ -30,11 +30,12 @@ const Links = styled.ul`
       padding-bottom: 16px;
       display: block;
       opacity: 0.4;
+      font-family: 'Pretendard', sans-serif;
       &.active {
         opacity: 1;
         position: relative;
         &:after {
-          content: "";
+          content: '';
           position: absolute;
           left: 0;
           width: 2px;
@@ -59,7 +60,7 @@ const SignHeader = () => {
           <li key={ls.id}>
             <a
               href={`#${ls.id}`}
-              className={`${activeId === ls.id ? "active" : ""}`}
+              className={`${activeId === ls.id ? 'active' : ''}`}
               onClick={() => {
                 dispatch(activeIdActions.changeActive(ls.id));
               }}

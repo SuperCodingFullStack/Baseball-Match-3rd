@@ -47,19 +47,6 @@ const ProfileInput = () => {
 
   const changeHandler = async () => {
     const selected = event.target.files[0];
-    try {
-      const response = fetch(`http://localhost:8080/api/user/upload`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          file: selected,
-        }),
-      });
-    } catch (err) {
-      console.error(err);
-    }
   };
 
   return (

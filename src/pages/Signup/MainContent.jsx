@@ -77,6 +77,9 @@ const MainContent = () => {
 
   const { phone, phoneChangeHandler, phoneError, phoneErrorMsg } = usePhone();
 
+  const { address, addressChangeHandler, addressError, addressErrorMsg } =
+    useAddress();
+
   const fd = new FormData();
 
   const FormSubmitHandler = async (e) => {

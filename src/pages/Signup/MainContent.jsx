@@ -75,17 +75,7 @@ const MainContent = () => {
   const { nickname, nicknameChangeHandler, nicknameError, nicknameErrorMsg } =
     useNickname();
 
-  const {
-    phone,
-    phoneCode,
-    phoneCodeChangeHandler,
-    phoneChangeHandler,
-    phoneError,
-    phoneErrorMsg,
-  } = usePhone(isTouched);
-
-  const { address, addressChangeHandler, addressError, addressErrorMsg } =
-    useAddress(isTouched);
+  const { phone, phoneChangeHandler, phoneError, phoneErrorMsg } = usePhone();
 
   const fd = new FormData();
 

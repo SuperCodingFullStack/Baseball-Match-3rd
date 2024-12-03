@@ -103,10 +103,10 @@ const Post_list__author_likes = styled.div`
   align-items: center;
 `;
 
-export default PostList;
-
 const LogoImage = styled.img`
   width: 150px;
   height: 150px;
   object-fit: contain;
 `;
+
+export default PostList;

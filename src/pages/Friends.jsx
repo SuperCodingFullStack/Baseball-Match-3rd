@@ -49,9 +49,9 @@ height: 100%;
 `;
 
 const Title = styled.h1`
-margin:3rem;
+margin:2rem;
 font-weight:600;
-font-size:2.5rem;
+font-size:1.7rem;
 `;
 
 const FriendsContainer = styled.div`
@@ -64,7 +64,7 @@ const FriendsList = styled.ul`
 border:1px solid #ddd;
 list-style: none;
 width: 500px;
-margin-left:3rem;
+margin-left:2rem;
 margin-bottom:2rem;
 background:white;
 border-radius: 8px;

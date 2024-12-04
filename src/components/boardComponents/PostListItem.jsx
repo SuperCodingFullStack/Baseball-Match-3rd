@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { BiSolidEditAlt } from "react-icons/bi";
 import { IoIosList, IoMdHeartEmpty } from "react-icons/io";
 import { HiOutlineChatBubbleBottomCenterText } from "react-icons/hi2";
-import getTeamLogo from "../../utils/getTeamLogo";
+import {getTeamLogo} from "../../utils/getTeamLogo";
 
 const PostListItem = ({ data, onEdit, onView }) => {
      // 로고 이미지 가져오는거
@@ -128,6 +128,21 @@ const PartyList = styled.div`
 
 const ParticipantsMember = styled.p`
   font-weight: bold;
+`;
+
+const ProgressBarContainer = styled.div`
+  width: 100%;
+  height: 10px;
+  background-color: #ddd; 
+  border-radius: 8px; 
+  overflow: hidden;
+`;
+
+const ProgressBar = styled.div`
+  height: 100%;
+  width: ${(props) => props.percentage}%;
+  background-color: ${(props) => (props.percentage < 60 ? '#ff6b6b' : '#92C8F8FF')};
+  transition: width 0.3s ease-in-out; 
 `;
 
 const PostInfo = styled.div`

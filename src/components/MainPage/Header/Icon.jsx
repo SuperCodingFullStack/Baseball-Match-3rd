@@ -23,6 +23,7 @@ const Icon = () => {
       const localTime = new Date(expirationDate).toLocaleString();
       console.log("토큰 만료 시간:", localTime);
     }
+
     if (token) {
       try {
         const expirationDate = new Date(Cookies.get("Authorization-expiration")); // 쿠키에 저장한 만료 시간 가져오기
@@ -33,11 +34,15 @@ const Icon = () => {
         } else {
           Cookies.remove("Authorization"); 
           setIsLoggedIn(false); 
+          window.location.reload();
+          alert("토큰이 만료되어 로그아웃 되었습니다.");
         }
       } catch (error) {
         console.error("토큰 디코딩 오류:", error);
         Cookies.remove("Authorization"); 
         setIsLoggedIn(false);
+        window.location.reload();
+          alert("토큰이 만료되어 로그아웃 되었습니다.");
       }
     } else {
       setIsLoggedIn(false); 

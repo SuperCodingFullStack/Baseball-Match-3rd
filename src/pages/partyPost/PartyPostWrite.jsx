@@ -3,6 +3,7 @@ import styled from "styled-components";
 import apiClient from "../Login/apiClient";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Header from "../../components/MainPage/Header/Header";
 
 const PartyPostWrite = () => {
   const navigate = useNavigate(); // 네비이용
@@ -11,15 +12,15 @@ const PartyPostWrite = () => {
   const [showGamesList, setShowGamesList] = useState(false); // 모달
   // api 보낼 양식
   const [formData, setFormData] = useState({
-    gameId: "게임아이디",
-    title: "글 제목",
-    content: "글 내용",
-    MaxPeopleNum: "최대인원",
+    gameId: "",
+    title: "",
+    content: "",
+    MaxPeopleNum: "",
   });
 
   // 내가 보고 싶은 날짜
   const [surchGameInfo, setSurchGameInfo] = useState({
-    matchDate: "이벤트로 선택한 날짜",
+    matchDate: "",
   });
 
   // 게임 목록을 가져오는 함수
@@ -54,7 +55,7 @@ const PartyPostWrite = () => {
   }, []);
 
   // 게임 정보 검색 입력 처리 함수
-  const handleSurchGameInfo = useCallback((e) => {
+  const handleSearchGameInfo = useCallback((e) => {
     const { name, value } = e.target;
     setSurchGameInfo((prevData) => ({
       ...prevData,
@@ -105,10 +106,10 @@ const PartyPostWrite = () => {
     if (showGamesList) {
       return (
         <Select onChange={handleSelectGame}>
-          <option value="">게임을 선택하세요</option>
+          <option value="">게임을 선택해주세요.</option>
           {games.map((game) => (
             <option key={game.id} value={game.id}>
-              {game.homeTeamName} vs {game.awayTeamName} ({game.matchDate}:
+              {game.homeTeamName} vs {game.awayTeamName} ({game.matchDate}-
               {game.matchTime})
             </option>
           ))}
@@ -134,54 +135,31 @@ const PartyPostWrite = () => {
     return null;
   }, [selectedGame]);
 
+  // 필수 입력 필드 확인 함수
+  const isFormValid = useMemo(() => {
+    return (
+      formData.title.trim() !==""
+    );
+  }, [surchGameInfo.matchDate, formData.MaxPeopleNum, formData.title]);
+
   return (
+    <>
+    <Header />
+    <Body>
+      <Title>글 작성하기</Title>
     <Container>
       <Form onSubmit={handleSubmit}>
-        {/* 제목 입력 */}
-        <FormGroup>
-          <Label htmlFor="title">제목</Label>
-          <Input
-            type="text"
-            id="title"
-            name="title"
-            onChange={handleChange}
-            required
-          />
-        </FormGroup>
-
-        {/* 내용 입력 */}
-        <FormGroup>
-          <Label htmlFor="content">내용</Label>
-          <Textarea
-            id="content"
-            name="content"
-            onChange={handleChange}
-            required
-          />
-        </FormGroup>
-
-        {/* 최대 인원 수 입력 */}
-        <FormGroup>
-          <Label htmlFor="maxPeopleNum">최대 인원 수</Label>
-          <Input
-            type="number"
-            id="maxPeopleNum"
-            name="maxPeopleNum"
-            onChange={handleChange}
-            min="2"
-            required
-          />
-        </FormGroup>
 
         {/* 경기 정보 선택 */}
-        <div className="game-selection">
-          <Label>경기 정보</Label>
+        <Game className="game-selection">
+          <Label>경기 일자를 선택해주세요.</Label>
           <DateInputContainer>
             <Input
               type="date"
               name="matchDate"
               placeholder="경기 일자"
-              onChange={handleSurchGameInfo}
+              onChange={handleSearchGameInfo}
+              required
             />
             <SearchButton
               type="button"
@@ -196,102 +174,172 @@ const PartyPostWrite = () => {
 
           {/* 선택된 경기 표시 */}
           {memoizedSelectedGame}
-        </div>
+        </Game>
+
+        {/* 최대 인원 수 입력 */}
+        <FormGroup>
+          <Label htmlFor="maxPeopleNum">최대 인원 수</Label>
+          <Input
+            type="number"
+            id="maxPeopleNum"
+            name="maxPeopleNum"
+            onChange={handleChange}
+            min="2"
+            required
+          />
+        </FormGroup>
+
+        {/* 제목 입력 */}
+        <FormGroup>
+          <Label htmlFor="title">제목</Label>
+          <Input
+            type="text"
+            id="title"
+            name="title"
+            onChange={handleChange}
+            placeholder="제목을 입력해주세요."
+            required
+          />
+        </FormGroup>
+
+        {/* 내용 입력 */}
+        <FormGroup>
+          <Label htmlFor="content">내용</Label>
+          <Textarea
+            id="content"
+            name="content"
+            onChange={handleChange}
+            placeholder="내용을 입력해주세요."
+          />
+        </FormGroup>
 
         {/* 제출 버튼 */}
-        <SubmitButton type="submit">글작성하기</SubmitButton>
+        <SubmitButton type="submit" disabled={!isFormValid}>글작성하기</SubmitButton>
       </Form>
     </Container>
+    </Body>
+    </>
   );
 };
 
 export default PartyPostWrite;
 
 // 스타일 컴포넌트 정의
+const Body = styled.div`
+background: #f1f5f9;
+  width:100vw;
+  height: 100vh;
+  position:absolute;
+  top:90px;
+`;
+
+const Title = styled.h1`
+  margin:2rem;
+  font-weight:600;
+  font-size:1.7rem;
+`;
+
 const Container = styled.div`
-  display: flex;
-  justify-content: center;
-  padding: 20px;
-  background-color: #f4f4f4;
+  padding-bottom:2rem;
+  background:white;
+  margin: 1.8rem;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius:3px;
 `;
 
 const Form = styled.form`
-  width: 100%;
-  max-width: 600px;
-  background-color: #ffffff;
-  padding: 20px;
+  padding: 2rem;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display:flex;
+  flex-direction:column;
+  gap:1.5rem;
 `;
 
-const FormGroup = styled.div`
-  margin-bottom: 15px;
+const Game = styled.div`
+display:flex;
+flex-direction:column;
+gap:0.8rem;
 `;
 
 const Label = styled.label`
-  display: block;
-  margin-bottom: 5px;
   font-weight: bold;
+  font-size:1.2rem;
 `;
 
 const Input = styled.input`
-  width: 100%;
-  padding: 8px;
+  width: 20%;
+  padding: 0.6rem;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 8px;
   box-sizing: border-box;
+  &:focus {
+  outline:none;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4);
+  }
+`;
+
+const FormGroup = styled.div`
+  display:flex;
+  flex-direction:column;
+  gap: 0.3rem;
 `;
 
 const Textarea = styled.textarea`
-  width: 100%;
-  padding: 8px;
+  width: 97%;
+  padding: 0.8rem;
   border: 1px solid #ccc;
-  border-radius: 4px;
-  height: 100px;
-  resize: vertical;
+  border-radius: 8px;
+  height: 120px;
+  font-size:1rem;
+  &:focus {
+  outline:none;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4);
+  }
 `;
 
 const DateInputContainer = styled.div`
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
+  gap: 0.5rem;
 `;
 
 const SearchButton = styled.button`
-  font-size: 12px;
-  padding: 8px 16px;
-  background-color: #007bff;
+  font-size: 1rem;
+  padding: 0.6rem 1.2rem;
+  background-color: #3b82f6;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.3s;
   &:hover {
-    background-color: #0056b3;
+    background-color: #2563eb;
   }
 `;
 
 const Select = styled.select`
-  width: 100%;
-  padding: 8px;
+  width: 20%;
+  padding: 0.6rem;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 8px;
   box-sizing: border-box;
-  margin-bottom: 10px;
+   &:focus {
+  outline:none;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4);
+  }
 `;
 
 const SelectedGame = styled.div`
-  margin-top: 15px;
-  padding: 10px;
-  background-color: #e9f5f0;
+  // margin-top: 1rem;
+  // padding: 1rem;
+  // background-color: #e9f5f0;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 8px;
 `;
 
 const SubmitButton = styled.button`
-  width: 100%;
-  padding: 10px;
+  width: 10%;
+  padding: 0.6rem 1.2rem;
   background-color: #28a745;
   color: white;
   border: none;
@@ -300,5 +348,9 @@ const SubmitButton = styled.button`
   transition: background-color 0.3s;
   &:hover {
     background-color: #218838;
+  }
+     &:disabled {
+    background-color: #d1d5db;
+    cursor: not-allowed;
   }
 `;

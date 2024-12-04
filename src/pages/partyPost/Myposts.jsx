@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 
 const MyPosts = () => {
   const navigate = useNavigate();
-  const itemsPerPage = 6;
+  const itemsPerPage = 10;
   const [lists, setLists] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
@@ -171,6 +171,7 @@ const Title = styled.h1`
 
 //흰색 배경
 const Container = styled.div`
+padding-bottom:2rem;
   background:white;
   margin: 1.8rem;
 `;

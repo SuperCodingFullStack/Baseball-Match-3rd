@@ -126,11 +126,11 @@ const partyPost = () => {
           <Title>{post.title}</Title>
           <Content>{post.content}</Content>
           <MapSection>
-            <Map
+            {/* <Map
               latitude={parseFloat(post.latitude)}
               longitude={parseFloat(post.longitude)}
-            />
-            {/* <div>임시 지도</div> */}
+            /> */}
+            <div>임시 지도</div>
           </MapSection>
           <StatsContainer>
             <LikeContainer>

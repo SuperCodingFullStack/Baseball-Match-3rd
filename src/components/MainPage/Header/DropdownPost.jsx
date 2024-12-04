@@ -12,11 +12,7 @@ const DropdownPost = () => {
   const isLoggedIn = !!Cookies.get("Authorization");
 
   const handleBoardBtnClick = () => {
-    if(!isLoggedIn){
-      alert("로그인 후 이용 가능한 페이지입니다.");
-      navigate("/login");}
-      else {
-    navigate("/partyPosts");}
+    navigate("/partyPosts");
   };
   
   const handlePostWriteBtnClick = () => {

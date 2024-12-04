@@ -21,7 +21,8 @@ const Friends = () => {
          <Header />
          <Body>
             <Title>친구 목록</Title>
-            <FriendsContainer>
+            <Container>
+              <FriendsContainer>
             <FriendsList>
                 {/* {friends.map((friend,index) => ( */}
             <FriendItem>
@@ -35,6 +36,7 @@ const Friends = () => {
             <ChatButton>채팅하기</ChatButton>
             </FriendsList>
             </FriendsContainer>
+            </Container>
             </Body>  
         </>
     );
@@ -45,7 +47,7 @@ background: #f1f5f9;
 position:absolute;
 top:90px;
 width:100vw;
-height: 100%;
+height: 100vh;
 `;
 
 const Title = styled.h1`
@@ -54,18 +56,23 @@ font-weight:600;
 font-size:1.7rem;
 `;
 
+const Container = styled.div`
+// padding-bottom:2rem;
+  background:white;
+  margin: 1.8rem;
+`;
+
 const FriendsContainer = styled.div`
+padding:2rem;
 display:grid;
 grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
 gap:2rem;
 `;
 
-const FriendsList = styled.ul`
+const FriendsList = styled.div`
 border:1px solid #ddd;
 list-style: none;
 width: 500px;
-margin-left:2rem;
-margin-bottom:2rem;
 background:white;
 border-radius: 8px;
 box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -74,7 +81,7 @@ justify-content:space-between;
 padding:0.6rem;
 `;
 
-const FriendItem = styled.li`
+const FriendItem = styled.div`
 display:flex;
 flex-direction:row; 
 align-items:center;

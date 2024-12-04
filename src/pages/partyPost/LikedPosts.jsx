@@ -1,23 +1,22 @@
 import React, { useState, useEffect } from "react";
-import PostList from "./PostList";
 import apiClient from "../Login/apiClient";
-import NoDataPage from "../NoDataPage";
+import Header from "../../components/MainPage/Header/Header";
+import PostList from "../../components/boardComponents/PostList";
+import styled from "styled-components";
 
 const LikedPosts = () => {
   const [lists, setLists] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(0); // 현재 페이지 상태
-  const [totalPages, setTotalPages] = useState(1); // 전체 페이지 수 상태
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 10;
 
   useEffect(() => {
-    const fetchLikedPosts = async (page = 0) => {
+    const fetchLikedPosts = async (page=0) => {
       try {
         const response = await apiClient.get(
           `/api/post/likedPosts?page=${page}`
         );
         if (response.data.status === "success") {
           setLists(response.data.data.partyPosts || []);
-          setTotalPages(response.data.data.totalPages || 1); // API 응답에서 전체 페이지 수 설정
         } else {
           throw new Error(response.data.message);
         }
@@ -28,66 +27,55 @@ const LikedPosts = () => {
       }
     };
 
-    fetchLikedPosts(currentPage);
-  }, [currentPage]); // currentPage가 변경될 때마다 실행
+    fetchLikedPosts();
+  }, []); 
 
-  // 페이지 변경 처리 함수
-  const handlePageChange = (newPage) => {
-    if (newPage >= 0 && newPage < totalPages) {
-      setCurrentPage(newPage);
-      setIsLoading(true);
-    }
-  };
+  const handlePageChange = (newPage) => setCurrentPage(newPage);
+  const handleView = (id) => navigate(`/partyPost/${id}`);
+  const handleEdit = (id) => navigate(`/modification/${id}`);
+  const title = "내가 좋아요 한 게시글";
+  const info = "내가 좋아요 한 게시글이 없습니다."
 
   return (
     <div>
-      {isLoading ? (
-        <div>로딩 중...</div>
-      ) : lists.length > 0 ? (
-        <>
-          {lists.map((data) => (
-            <PostList
-              key={data.id}
-              id={data.id}
-              myTeamImg={data.myTeamImg}
-              opposingTeamImg={data.opposingTeam}
-              title={data.title}
-              matchDate={data.matchDate}
-              matchTime={data.matchTime}
-              max={data.maxPeopleNum}
-              current={data.currentPeopleNum}
-              like={data.likeCount}
-              createAt={new Date(data.createAt).toLocaleString()}
-              name={data.userNickname}
-            />
-          ))}
-
-          {/* 페이지네이션 컨트롤 */}
-          <div className="pagination-controls">
-            <button
-              disabled={currentPage <= 0}
-              onClick={() => handlePageChange(currentPage - 1)}
-            >
-              이전 페이지
-            </button>
-            <span>
-              페이지 {currentPage + 1} / {totalPages}
-            </span>
-            <button
-              disabled={currentPage >= totalPages - 1}
-              onClick={() => handlePageChange(currentPage + 1)}
-            >
-              다음 페이지
-            </button>
-          </div>
-        </>
-      ) : (
-        <NoDataPage
-        title="내가 좋아요 한 게시글"
-        info="내가 좋아요 한 게시글이 없습니다." />
-      )}
+      <Header />
+      <Body>
+      <Title>내가 좋아요 한 게시글</Title>
+      <Container>
+      <PostList
+        lists={lists}
+        currentPage={currentPage}
+        itemsPerPage={itemsPerPage}
+        onEdit={handleEdit}
+        onView={handleView}
+        onPageChange={handlePageChange}
+        title={title}
+        info={info}
+      />
+      </Container>
+      </Body>
     </div>
   );
 };
+
+const Body = styled.div`
+  background: #f1f5f9;
+  width:100vw;
+  height: 100vh;
+  position:absolute;
+  top:90px;
+`;
+
+const Title = styled.h1`
+  margin:2rem;
+  font-weight:600;
+  font-size:1.7rem;
+`;
+
+const Container = styled.div`
+padding-bottom:2rem;
+  background:white;
+  margin: 1.8rem;
+`;
 
 export default LikedPosts;

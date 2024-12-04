@@ -1,6 +1,10 @@
-import React from "react";
-import { useDispatch } from "react-redux";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
+import { isNestActions } from "../../Store/slice/isNestSlice";
+import axios from "axios";
+import DaumPostcodeEmbed from "react-daum-postcode";
+
 const Inputing = styled.div`
   font-family: "Pretendard", sans-serif;
   display: grid;
@@ -38,6 +42,16 @@ const Titler = styled.div`
       margin-left: 5px;
     }
   }
+  > p {
+    font-size: 12px;
+    margin-left: 20px;
+    &.error {
+      color: rgb(239, 68, 68);
+    }
+    &.ok {
+      color: blue;
+    }
+  }
 `;
 
 const RealInputs = styled.div`
@@ -57,28 +71,8 @@ const RealInputs = styled.div`
     &.selected {
       border: 1px solid #1d4ed8;
     }
-  }
-`;
-
-const RealInputs2 = styled.div`
-  display: flex;
-  align-items: center;
-  grid-column: 1 / 4;
-  grid-row: 3 / 4;
-  > input {
-    width: 400px;
-    padding: 12px 16px;
-    outline: none;
-    border: 1px solid rgb(229, 231, 235);
-    background-color: rgb(249, 250, 251);
     &:disabled {
       opacity: 0.45;
-    }
-    &.error {
-      border: 1px solid rgb(239, 68, 68);
-    }
-    &.selected {
-      border: 1px solid #1d4ed8;
     }
   }
 `;
@@ -90,9 +84,15 @@ const PhoneAndAddressInput = ({
   valueData,
   onChangeHandler,
   isError,
+  errorMsg,
   isTouched,
   setIsTouched,
 }) => {
+  const [disable, setDisable] = useState(false);
+  const [isAddressModal, setAddressModal] = useState(false);
+
+  const isPhoneAuth = useSelector((state) => state.isNest.isPhoneAuth);
+
   const onFocusHandler = () => {
     setIsTouched(true);
   };
@@ -101,7 +101,41 @@ const PhoneAndAddressInput = ({
 
   const firstNestHandler = (e) => {
     e.preventDefault();
+
+    if (title === "핸드폰 인증") {
+      dispatch(isNestActions.setPhoneAuthTrue());
+    }
+    if (title === "주소 인증") {
+      setAddressModal(true);
+      document.getElementById("root").classList.add("dim");
+    }
   };
+
+  const completeHandler = (data) => {
+    let fullAddress = data.address;
+    let extraAddress = "";
+
+    if (data.addressType === "R") {
+      if (data.bname) {
+        extraAddress += data.bname;
+      }
+    }
+    if (data.buildingName) {
+      extraAddress += extraAddress
+        ? `, ${data.buildingName}`
+        : data.buildingName;
+    }
+    fullAddress += extraAddress ? ` ${extraAddress}` : "";
+
+    onChangeHandler(fullAddress);
+    document.getElementById("root").classList.remove("dim");
+  };
+
+  useEffect(() => {
+    if (title === "핸드폰 인증" && isPhoneAuth && !isError) {
+      setDisable(true);
+    }
+  }, [isPhoneAuth, isError]);
 
   return (
     <Inputing>
@@ -110,6 +144,7 @@ const PhoneAndAddressInput = ({
           {title}
           <b>*</b>
         </h2>
+        <p className={`${isError ? "error" : "ok"}`}>{errorMsg}</p>
       </Titler>
       <RealInputs>
         <input
@@ -119,15 +154,26 @@ const PhoneAndAddressInput = ({
           }}
           value={valueData}
           onFocus={onFocusHandler}
+          disabled={disable || title === "주소 인증"}
         />
       </RealInputs>
-      <button onClick={firstNestHandler} disabled={!isTouched}>
-        {firstNest}
+      <button onClick={firstNestHandler} disabled={!isTouched || disable}>
+        {title === "핸드폰 인증" && isPhoneAuth ? secondNest : firstNest}
       </button>
-      <RealInputs2>
-        <input type="text" disabled />
-      </RealInputs2>
-      <button disabled>{secondNest}</button>
+      {title === "주소 인증" && isAddressModal && (
+        <DaumPostcodeEmbed
+          onComplete={completeHandler}
+          autoClose={true}
+          style={{
+            position: "fixed",
+            top: "50%",
+            left: "50%",
+            transform: `translate(-50%,-50%)`,
+            zIndex: "10",
+            width: "50%",
+          }}
+        />
+      )}
     </Inputing>
   );
 };

@@ -5,6 +5,7 @@ const isNestSlice = createSlice({
   initialState: {
     isEmailNest: false,
     isNicknameNest: false,
+    isPhoneAuth: false,
   },
   reducers: {
     setEmailNestTrue(state) {
@@ -18,6 +19,9 @@ const isNestSlice = createSlice({
     },
     setNicknameNestFalse(state) {
       state.isNicknameNest = false;
+    },
+    setPhoneAuthTrue(state) {
+      state.isPhoneAuth = true;
     },
   },
 });

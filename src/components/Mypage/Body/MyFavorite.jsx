@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { FaRegTrashAlt } from "react-icons/fa"; //쓰레기통
 import apiClient from "../../../pages/Login/apiClient";
+
 // 인터셉터가 설정된 apiClient가져오기  자기 파일기준 상대경로 작성 위치는  페이지의 로그인에 있습니다
 
 // MyFavorite 컴포넌트 정의
@@ -63,22 +64,12 @@ const Container = styled.div`
   width: 100%;
   background-color: #f7f9fc;
 `;
-
-const Between = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 5em;
-  max-width: 120em;
-`;
-
 const Title = styled.h2`
   font-weight: 600;
   font-size: 2em;
   padding: 0.7em;
   margin-left: -0.7em;
 `;
-
 const SearchInput = styled.input`
   background-color: aliceblue;
   width: 200px;
@@ -88,13 +79,20 @@ const SearchInput = styled.input`
   border-radius: 5px;
   margin-right: 50px;
 `;
-
+const Between = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 5em;
+  max-width: 120em;
+`;
 const FavoriteList = styled.ul`
   background-color: white;
   width: 120em;
   height: 900px;
   display: flex;
-  margin: 5em;
+  margin: 2em;
+  margin-left: 6em;
   flex-wrap: wrap;
 `;
 const FavoriteItem = styled.li`
@@ -129,3 +127,19 @@ const DivRegistrant = styled.div`
   font-weight: 700;
 `;
 const PExplanation = styled.p``;
+
+const DivTrashIcon = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  .trash-icon {
+    cursor: pointer;
+    padding: 5px;
+    width: 1.2em;
+    height: 1.2em;
+    &:hover {
+      color: #ff6b6b;
+    }
+  }
+`;

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { FaRegTrashAlt } from "react-icons/fa"; //쓰레기통
 import apiClient from "../../../pages/Login/apiClient";
+import NoDataPage from "../../../pages/NoDataPage";
 // 인터셉터가 설정된 apiClient가져오기  자기 파일기준 상대경로 작성 위치는  페이지의 로그인에 있습니다
 
 // MyFavorite 컴포넌트 정의
@@ -11,7 +12,7 @@ const ParticipatingPartyList = ({}) => {
 
   const fetchPosts = async () => {
     try {
-      const response = await apiClient.get(`/api/posts/myList/liked`);
+      const response = await apiClient.get(`/api/post/myList/written`);
       setPosts(response.data);
     } catch (error) {
       setError("데이터를 가져오는 중 오류가 발생했습니다.");
@@ -46,7 +47,7 @@ const ParticipatingPartyList = ({}) => {
             </FavoriteItem>
           ))
         ) : (
-          <p>참여중인 파티목록이 비어있습니다.</p>
+          <NoDataPage title="게시글 목록" info="게시글이 없습니다." />
         )}
       </FavoriteList>
     </Container>

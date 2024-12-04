@@ -2,56 +2,10 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { FaRegTrashAlt } from "react-icons/fa"; //쓰레기통
 import apiClient from "../../../pages/Login/apiClient";
+import MyPageIfNoDate from "../../../pages/MyPageIfNoDate";
 // 인터셉터가 설정된 apiClient가져오기  자기 파일기준 상대경로 작성 위치는  페이지의 로그인에 있습니다
 
 // 목데이터 수정
-const mockData = {
-  status: "success",
-  message: "직관 신청 목록 조회가 완료되었습니다.",
-  data: [
-    {
-      partyId: 10,
-      partPostId: 3,
-      partyTitle: "11/13(수) 롯데 vs 한화 경기 같이 보러가실분",
-      gameDate: "2024-11-13",
-      gameTime: "18:30:00",
-      userNick: "고감자",
-      stadiumName: "부산 사직 야구장",
-      state: "수락",
-    },
-    {
-      partyId: 15,
-      partPostId: 5,
-      partyTitle: "11/30(토) 롯데 vs nc 경기 같이 보러가실분",
-      gameDate: "2024-11-30",
-      gameTime: "17:00:00",
-      userNick: "썩은 감자",
-      stadiumName: "부산 사직 야구장",
-      state: "미수락",
-    },
-    {
-      partyId: 25,
-      partPostId: 12,
-      partyTitle: "11/15(금) 롯데 vs 두산 경기 같이 보러가실분",
-      gameDate: "2024-11-15",
-      gameTime: "18:30:00",
-      userNick: "나는 감자",
-      stadiumName: "부산 사직 야구장",
-      state: "수락",
-    },
-    {
-      partyId: 25,
-      partPostId: 12,
-      partyTitle: "11/15(금) 롯데 vs 두산 경기 같이 보러가실분",
-      gameDate: "2024-11-15",
-      gameTime: "18:30:00",
-      userNick: "나는 감자",
-      stadiumName: "부산 사직 야구장",
-      state: "수락",
-    },
-  ],
-  timestamp: "2024-11-09T01:14:16.653015",
-};
 
 // MyFavorite 컴포넌트 정의
 const MyPartyRequest = () => {
@@ -107,7 +61,10 @@ const MyPartyRequest = () => {
             </FavoriteItem>
           ))
         ) : (
-          <p>즐겨찾기 목록이 비어있습니다.</p>
+          <MyPageIfNoDate
+            title="나의 파티 요청 리스트"
+            info="파티 요청이 없습니다."
+          />
         )}
       </FavoriteList>
     </Container>
@@ -150,7 +107,8 @@ const FavoriteList = styled.ul`
   width: 120em;
   height: 900px;
   display: flex;
-  margin: 5em;
+  margin: 2em;
+  margin-left: 6em;
   flex-wrap: wrap;
 `;
 const FavoriteItem = styled.li`

@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { getTeamLogo } from "../../../utils/getTeamLogo";
 import { FaRegTrashAlt } from "react-icons/fa"; //쓰레기통
 import apiClient from "../../../pages/Login/apiClient";
+import MyPageIfNoDate from "../../../pages/MyPageIfNoDate";
+
 // 인터셉터가 설정된 apiClient가져오기  자기 파일기준 상대경로 작성 위치는  페이지의 로그인에 있습니다
 
 // MyFavorite 컴포넌트 정의
@@ -18,6 +21,11 @@ const MyWrite = ({}) => {
       setError("데이터를 가져오는 중 오류가 발생했습니다.");
       console.error("Error fetching posts:", error);
     }
+  };
+
+  const TeamLogo = ({ teamName }) => {
+    const logoSrc = getTeamLogo(teamName);
+    return <LogoImage src={logoSrc} alt={`${teamName} logo`} />;
   };
 
   useEffect(() => {
@@ -38,6 +46,11 @@ const MyWrite = ({}) => {
                 <FavoriteInformTitle>{post.teamName}</FavoriteInformTitle>
                 <FavoriteInformButton>구단정보보기</FavoriteInformButton>
                 <FaRegTrashAlt />
+                <PostGameImg>
+                  <TeamLogo teamName={data.myTeamImg} />
+                  <p>VS</p>
+                  <TeamLogo teamName={data.opposingTeam} />
+                </PostGameImg>
               </FavoriteInform>
               <PExplanation>게시글 제목 : {post.title}</PExplanation>
               <PExplanation>
@@ -46,7 +59,7 @@ const MyWrite = ({}) => {
             </FavoriteItem>
           ))
         ) : (
-          <p>게시글 목록이 비어있습니다.</p>
+          <MyPageIfNoDate title="게시글 목록" info="게시글이 없습니다." />
         )}
       </FavoriteList>
     </Container>
@@ -135,3 +148,18 @@ const DivRegistrant = styled.div`
   font-weight: 700;
 `;
 const PExplanation = styled.p``;
+
+const PostGameImg = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  p {
+    font-weight: 600;
+    font-size: 0.8rem;
+  }
+`;
+const LogoImage = styled.img`
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+`;

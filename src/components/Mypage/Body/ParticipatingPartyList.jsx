@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { FaRegTrashAlt } from "react-icons/fa"; //쓰레기통
 import apiClient from "../../../pages/Login/apiClient";
-import NoDataPage from "../../../pages/NoDataPage";
+
+import MyPageIfNoDate from "../../../pages/MyPageIfNoDate";
 // 인터셉터가 설정된 apiClient가져오기  자기 파일기준 상대경로 작성 위치는  페이지의 로그인에 있습니다
 
 // MyFavorite 컴포넌트 정의
@@ -24,6 +25,17 @@ const ParticipatingPartyList = ({}) => {
     fetchPosts();
   }, []); // type 값이 변경될 때마다 호출
 
+  if (!posts.length) {
+    return (
+      <Container>
+        <MyPageIfNoDate
+          title="내가 참가중인 파티"
+          info="참가중 파티가 없습니다."
+        />
+      </Container>
+    );
+  }
+
   return (
     <Container>
       <Between>
@@ -31,24 +43,20 @@ const ParticipatingPartyList = ({}) => {
         <SerchInput placeholder="검색" />
       </Between>
       <FavoriteList>
-        {posts && posts.length > 0 ? (
-          posts.map((post) => (
-            <FavoriteItem key={post.id}>
-              <FavoriteInform>
-                <FavoriteInformTitle>{post.teamName}</FavoriteInformTitle>
-                <FavoriteInformButton>구단정보보기</FavoriteInformButton>
-                <FaRegTrashAlt />
-              </FavoriteInform>
-              <DivRegistrant>등록자: {post.id}</DivRegistrant>
-              <PExplanation>{post.title}</PExplanation>
-              <PExplanation>
-                {new Date(post.createdDate).toLocaleString()}
-              </PExplanation>
-            </FavoriteItem>
-          ))
-        ) : (
-          <NoDataPage title="게시글 목록" info="게시글이 없습니다." />
-        )}
+        {posts.map((post) => (
+          <FavoriteItem key={post.id}>
+            <FavoriteInform>
+              <FavoriteInformTitle>{post.teamName}</FavoriteInformTitle>
+              <FavoriteInformButton>구단정보보기</FavoriteInformButton>
+              <FaRegTrashAlt />
+            </FavoriteInform>
+            <DivRegistrant>등록자: {post.id}</DivRegistrant>
+            <PExplanation>{post.title}</PExplanation>
+            <PExplanation>
+              {new Date(post.createdDate).toLocaleString()}
+            </PExplanation>
+          </FavoriteItem>
+        ))}
       </FavoriteList>
     </Container>
   );

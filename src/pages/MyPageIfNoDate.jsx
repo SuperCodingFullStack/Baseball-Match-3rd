@@ -4,6 +4,7 @@ import styled from "styled-components";
 const NoDataPage = ({ title, info }) => {
   return (
     <>
+      <Title>{title}</Title>
       <Body>
         <PostContainer>
           <NoDataImg src="/public/assets/nodata.svg" />

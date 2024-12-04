@@ -15,8 +15,7 @@ import LikedPosts from "./pages/partyPost/LikedPosts";
 import Friends from "./pages/Friends";
 import ChatSidebar from "./components/WebSocket/Sidebar/ChatSidebar";
 import ChatComponent from "./components/WebSocket/ChatComponent";
-import Setting from "./components/Settings/Setting";
-
+// import Setting from "./components/Settings/Setting";
 function App() {
   return (
     <>
@@ -38,7 +37,7 @@ function App() {
           <Route path="/friends" element={<Friends />} />
           <Route path="/side" element={<ChatSidebar />} />
           <Route path="/chat" element={<ChatComponent />} />
-          <Route path="/settings" element={<Setting />} />
+          {/* <Route path="/settings" element={<Setting />} /> */}
         </Routes>
       </BrowserRouter>
     </>

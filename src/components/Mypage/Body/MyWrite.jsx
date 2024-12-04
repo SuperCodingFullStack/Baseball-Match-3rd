@@ -10,58 +10,83 @@ import MyPageIfNoDate from "../../../pages/MyPageIfNoDate";
 // MyFavorite 컴포넌트 정의
 const MyWrite = ({}) => {
   const [posts, setPosts] = useState([]);
+  const [myTeamImg, setMyTeamImg] = useState("");
+  const [opposingTeam, setOpposingTeam] = useState("");
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const fetchPosts = async () => {
-    try {
-      const response = await apiClient.get(`/api/post/myList/written`);
-      setPosts(response.data.data);
-      console.log("받은 데이터:", response.data.data);
-    } catch (error) {
-      setError("데이터를 가져오는 중 오류가 발생했습니다.");
-      console.error("Error fetching posts:", error);
-    }
-  };
+  useEffect(() => {
+    const fetchAllData = async () => {
+      setIsLoading(true);
+      try {
+        // 첫 번째 API 호출
+        const postsResponse = await apiClient.get("/api/post/myList/written");
+        setPosts(postsResponse.data.data);
+
+        // 두 번째 API 호출
+        const myPostsResponse = await apiClient.get("/api/post/myPosts");
+        if (myPostsResponse.data.status === "success") {
+          setMyTeamImg(myPostsResponse.data.data.partyPosts.teamName || "");
+          setOpposingTeam(
+            myPostsResponse.data.data.partyPosts.opposingTeam || ""
+          );
+        }
+      } catch (error) {
+        setError(
+          error.response?.data?.message ||
+            "데이터를 가져오는 중 오류가 발생했습니다."
+        );
+        console.error("Error fetching posts:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchAllData();
+  }, []);
 
   const TeamLogo = ({ teamName }) => {
     const logoSrc = getTeamLogo(teamName);
     return <LogoImage src={logoSrc} alt={`${teamName} logo`} />;
   };
 
-  useEffect(() => {
-    fetchPosts();
-  }, []); // type 값이 변경될 때마다 호출
-
   return (
     <Container>
-      <Between>
-        <Title>게시글 목록</Title>
-        <SerchInput placeholder="검색" />
-      </Between>
-      <FavoriteList>
-        {posts && posts.length > 0 ? (
-          posts.map((post) => (
-            <FavoriteItem key={post.id}>
-              <FavoriteInform>
-                <FavoriteInformTitle>{post.teamName}</FavoriteInformTitle>
-                <FavoriteInformButton>구단정보보기</FavoriteInformButton>
-                <FaRegTrashAlt />
-                <PostGameImg>
-                  <TeamLogo teamName={data.myTeamImg} />
-                  <p>VS</p>
-                  <TeamLogo teamName={data.opposingTeam} />
-                </PostGameImg>
-              </FavoriteInform>
-              <PExplanation>게시글 제목 : {post.title}</PExplanation>
-              <PExplanation>
-                게시글 등록일 : {new Date(post.createdDate).toLocaleString()}
-              </PExplanation>
-            </FavoriteItem>
-          ))
-        ) : (
-          <MyPageIfNoDate title="게시글 목록" info="게시글이 없습니다." />
-        )}
-      </FavoriteList>
+      {isLoading ? (
+        <div>로딩 중...</div>
+      ) : (
+        <>
+          <Between>
+            <Title>게시글 목록</Title>
+            <SerchInput placeholder="검색" />
+          </Between>
+          <FavoriteList>
+            {posts && posts.length > 0 ? (
+              posts.map((post) => (
+                <FavoriteItem key={post.id}>
+                  <FavoriteInform>
+                    <FavoriteInformTitle>{post.teamName}</FavoriteInformTitle>
+                    <FavoriteInformButton>구단정보보기</FavoriteInformButton>
+                    <FaRegTrashAlt />
+                    <PostGameImg>
+                      <TeamLogo teamName={post.teamName} />
+                      <p>VS</p>
+                      <TeamLogo teamName={post.opposingTeam} />
+                    </PostGameImg>
+                  </FavoriteInform>
+                  <PExplanation>게시글 제목 : {post.title}</PExplanation>
+                  <PExplanation>
+                    게시글 등록일 :{" "}
+                    {new Date(post.createdDate).toLocaleString()}
+                  </PExplanation>
+                </FavoriteItem>
+              ))
+            ) : (
+              <MyPageIfNoDate title="게시글 목록" info="게시글이 없습니다." />
+            )}
+          </FavoriteList>
+        </>
+      )}
     </Container>
   );
 };

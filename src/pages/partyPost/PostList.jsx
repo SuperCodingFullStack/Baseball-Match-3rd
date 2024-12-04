@@ -15,6 +15,7 @@ const PostList = ({
   createAt,
   name,
   move,
+  stadium,
 }) => {
   console.log("PostList Props:", {
     id,
@@ -29,6 +30,7 @@ const PostList = ({
     createAt,
     name,
     move,
+    stadium,
   });
   // 로고 이미지 가져오는거
   const TeamLogo = ({ teamName }) => {
@@ -47,7 +49,7 @@ const PostList = ({
         </Post_list__team_images>
         <Post_list__details>
           <div className="post-list__title">{title}</div>
-          <div className="post-list__location">경기장소 사직야구장</div>
+          <div className="post-list__location">{stadium}</div>
           <div className="post-list__match-date">
             {matchDate}
             {matchTime}

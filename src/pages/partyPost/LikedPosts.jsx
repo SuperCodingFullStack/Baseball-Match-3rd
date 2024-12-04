@@ -3,8 +3,10 @@ import apiClient from "../Login/apiClient";
 import Header from "../../components/MainPage/Header/Header";
 import PostList from "../../components/boardComponents/PostList";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 const LikedPosts = () => {
+  const navigate = useNavigate();
   const [lists, setLists] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 10;

@@ -33,16 +33,18 @@ const Icon = () => {
           setIsLoggedIn(true);
         } else {
           Cookies.remove("Authorization"); 
+          sessionStorage.setItem("isLoggedOut", "true");
           setIsLoggedIn(false); 
-          window.location.reload();
-          alert("토큰이 만료되어 로그아웃 되었습니다.");
+          alert("토큰이 만료되어 로그아웃 되었습니다. 다시 로그인 해주세요.");
+          window.location.replace('/login');
         }
       } catch (error) {
         console.error("토큰 디코딩 오류:", error);
         Cookies.remove("Authorization"); 
+        sessionStorage.setItem("isLoggedOut", "true");
         setIsLoggedIn(false);
-        window.location.reload();
-          alert("토큰이 만료되어 로그아웃 되었습니다.");
+        alert("토큰이 만료되어 로그아웃 되었습니다. 다시 로그인 해주세요.");
+        window.location.replace('/login');
       }
     } else {
       setIsLoggedIn(false); 
@@ -50,8 +52,12 @@ const Icon = () => {
   };
 
   useEffect(() => {
-    checkLoginStatus(); // 페이지가 로드될 때 로그인 상태를 확인
-  }, []); 
+    if (sessionStorage.getItem("isLoggedOut") === "true") {
+      alert("로그아웃되었습니다. 다시 로그인 해주세요.");
+      sessionStorage.removeItem("isLoggedOut"); 
+    }
+    checkLoginStatus(); 
+  }, []);
 
 
   const handleMypageBtnClick = () => {

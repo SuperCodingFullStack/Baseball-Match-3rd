@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { FaCheckCircle } from "react-icons/fa";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { isNestActions } from "../../Store/slice/isNestSlice";
 
 const Modals = styled.div`
   padding: 40px;
@@ -58,8 +59,49 @@ const ModalButtons = styled.div`
   }
 `;
 
-const ConfirmModal = ({ title }) => {
+const ConfirmModal = ({
+  title,
+  setIsModal,
+  modalMessage,
+  setModalMessage,
+  modalError,
+  setModalError,
+}) => {
   const dispatch = useDispatch();
+
+  const onBack = () => {
+    if (title === "아이디") {
+      setIsModal(false);
+      document.getElementById("root").classList.remove("dim");
+      setModalMessage("");
+      setModalError(false);
+      dispatch(isNestActions.setEmailNestFalse());
+    }
+    if (title === "닉네임") {
+      setIsModal(false);
+      document.getElementById("root").classList.remove("dim");
+      setModalMessage("");
+      setModalError(false);
+      dispatch(isNestActions.setNicknameNestFalse());
+    }
+  };
+
+  const onSelect = () => {
+    if (title === "아이디") {
+      setIsModal(false);
+      document.getElementById("root").classList.remove("dim");
+      setModalMessage("");
+      setModalError(false);
+      dispatch(isNestActions.setEmailNestTrue());
+    }
+    if (title === "닉네임") {
+      setIsModal(false);
+      document.getElementById("root").classList.remove("dim");
+      setModalMessage("");
+      setModalError(false);
+      dispatch(isNestActions.setNicknameNestTrue());
+    }
+  };
 
   return (
     <Modals>
@@ -68,11 +110,24 @@ const ConfirmModal = ({ title }) => {
           <FaCheckCircle />
         </ModalIcon>
         <ModalMsgs>
-          <p></p>
-          <strong></strong>
+          <p>{modalMessage}</p>
+          <strong>
+            {modalError
+              ? "다음에 다시 선택하세요."
+              : "이걸로 선택하시겠습니까?"}
+          </strong>
         </ModalMsgs>
       </ModalMessage>
-      <ModalButtons></ModalButtons>
+      <ModalButtons>
+        {modalError ? (
+          <button onClick={onBack}>돌아가기</button>
+        ) : (
+          <>
+            <button onClick={onBack}>취소합니다.</button>
+            <button onClick={onSelect}>이걸로 선택합니다.</button>
+          </>
+        )}
+      </ModalButtons>
     </Modals>
   );
 };

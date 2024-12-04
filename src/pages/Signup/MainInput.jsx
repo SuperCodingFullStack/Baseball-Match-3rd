@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
-import axios from "axios";
 import styled from "styled-components";
 import ConfirmModal from "./ConfirmModal";
-import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import { useSelector, useDispatch } from "react-redux";
 
 const Inputs = styled.div`
   font-family: "Pretendard", sans-serif;
@@ -72,6 +72,9 @@ const RealInput = styled.div`
     &.selected {
       border: 1px solid #1d4ed8;
     }
+    &:disabled {
+      opacity: 0.45;
+    }
   }
 `;
 
@@ -108,9 +111,61 @@ const MainInput = ({
   setIsTouched,
   Nest,
 }) => {
-  const dispatch = useDispatch();
+  const [isModal, setIsModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [modalError, setModalError] = useState("");
+  const [disable, setDisable] = useState(false);
 
-  const nestHandler = () => {};
+  const isEmailNest = useSelector((state) => state.isNest.isEmailNest);
+  const isNicknameNest = useSelector((state) => state.isNest.isNicknameNest);
+
+  const nestHandler = async (e) => {
+    e.preventDefault();
+
+    if (title === "아이디") {
+      setIsModal(true);
+      document.getElementById("root").classList.add("dim");
+      // 백엔드 중복검사 코드
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/api/user/username?username=${valueData}`
+        );
+        setModalError(response.data.status !== "success");
+        setModalMessage(response.data.data);
+      } catch (err) {
+        setModalError(true);
+        setModalMessage(err);
+      }
+    }
+    if (title === "닉네임") {
+      setIsModal(true);
+      document.getElementById("root").classList.add("dim");
+      // 백엔드 중복검사 코드
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/api/user/nickname?nickname=${valueData}`
+        );
+        setModalError(response.data.status !== "success");
+        setModalMessage(response.data.data);
+      } catch (err) {
+        setModalError(true);
+        setModalMessage(err);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (title === "아이디") {
+      if (isEmailNest) {
+        setDisable(true);
+      }
+    }
+    if (title === "닉네임") {
+      if (isNicknameNest) {
+        setDisable(true);
+      }
+    }
+  }, [isEmailNest, isNicknameNest]);
 
   return (
     <Inputs>
@@ -133,13 +188,36 @@ const MainInput = ({
           onFocus={() => {
             setIsTouched(true);
           }}
-          onBlur={() => {
-            setIsTouched(false);
-          }}
           value={valueData}
+          disabled={disable}
         />
       </RealInput>
-      {isNested && <button onClick={nestHandler}>{Nest}</button>}
+      {isNested && (
+        <button
+          onClick={nestHandler}
+          disabled={
+            !isTouched ||
+            !valueData ||
+            isError ||
+            (title === "아이디" && isEmailNest)
+          }
+        >
+          {isEmailNest ? "확인완료" : Nest}
+        </button>
+      )}
+      {isNested &&
+        isModal &&
+        ReactDOM.createPortal(
+          <ConfirmModal
+            title={title}
+            setIsModal={setIsModal}
+            modalMessage={modalMessage}
+            setModalMessage={setModalMessage}
+            modalError={modalError}
+            setModalError={setModalError}
+          />,
+          document.getElementById("root")
+        )}
       <Condition className={`${isReverse ? "reverse" : ""}`}>
         <p>{conditionText}</p>
         <span>

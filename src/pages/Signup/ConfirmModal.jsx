@@ -1,8 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import { FaCheckCircle } from "react-icons/fa";
-import { isNestActions } from "../../Store/slice/isNestSlice";
-import { isModalActions } from "../../Store/slice/isModalSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 const Modals = styled.div`
@@ -63,46 +61,6 @@ const ModalButtons = styled.div`
 const ConfirmModal = ({ title }) => {
   const dispatch = useDispatch();
 
-  const emailNestError = useSelector((state) => state.isNest.emailNestError);
-  const emailNestMessage = useSelector(
-    (state) => state.isNest.emailNestMessage
-  );
-
-  const onCancel = () => {
-    if (title === "아이디") {
-      dispatch(isModalActions.setEmailModalFalse());
-      document.getElementById("root").classList.remove("dim");
-    }
-    if (title === "닉네임") {
-      dispatch(isModalActions.setNicknameModalFalse());
-      document.getElementById("root").classList.remove("dim");
-    }
-  };
-
-  const onSelect = () => {
-    if (title === "아이디") {
-      dispatch(isModalActions.setEmailModalFalse());
-      document.getElementById("root").classList.remove("dim");
-      dispatch(isNestActions.setEmailNest());
-    }
-    if (title === "닉네임") {
-      dispatch(isModalActions.setNicknameModalFalse());
-      document.getElementById("root").classList.remove("dim");
-      dispatch(isNestActions.setNicknameNest());
-    }
-  };
-
-  const onClose = () => {
-    if (title === "아이디") {
-      dispatch(isModalActions.setEmailModalFalse());
-      document.getElementById("root").classList.remove("dim");
-    }
-    if (title === "닉네임") {
-      dispatch(isModalActions.setNicknameModalFalse());
-      document.getElementById("root").classList.remove("dim");
-    }
-  };
-
   return (
     <Modals>
       <ModalMessage>
@@ -110,24 +68,11 @@ const ConfirmModal = ({ title }) => {
           <FaCheckCircle />
         </ModalIcon>
         <ModalMsgs>
-          <p>{emailNestMessage}</p>
-          <strong>
-            {emailNestError
-              ? "다시 입력해주십시오"
-              : "이걸로 선택하시겠습니까?"}
-          </strong>
+          <p></p>
+          <strong></strong>
         </ModalMsgs>
       </ModalMessage>
-      <ModalButtons>
-        {!emailNestError ? (
-          <>
-            <button onClick={onCancel}>아니오, 취소합니다.</button>
-            <button onClick={onSelect}>예, 선택할래요.</button>
-          </>
-        ) : (
-          <button onClick={onClose}>닫기</button>
-        )}
-      </ModalButtons>
+      <ModalButtons></ModalButtons>
     </Modals>
   );
 };

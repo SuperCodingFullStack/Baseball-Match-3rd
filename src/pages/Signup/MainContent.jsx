@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import MainInput from './MainInput';
-import { linkSection } from './LinkSection';
-import useEmail from '../../hooks/useEmail';
-import usePassword from '../../hooks/usePassword';
-import usePasswordCheck from '../../hooks/usePasswordCheck';
-import ProfileInput from './ProfileInput';
-import useNickname from '../../hooks/useNickname';
-import { useSelector } from 'react-redux';
-import usePhone from '../../hooks/usePhone';
-import PhoneAndAddressInput from './PhoneAndAddressInput';
-import { useAddress } from '../../hooks/useAddress';
-import axios from 'axios';
+import React, { useState } from "react";
+import styled from "styled-components";
+import MainInput from "./MainInput";
+import { linkSection } from "./linkSection";
+import useEmail from "../../hooks/useEmail";
+import usePassword from "../../hooks/usePassword";
+import usePasswordCheck from "../../hooks/usePasswordCheck";
+import ProfileInput from "./ProfileInput";
+import useNickname from "../../hooks/useNickname";
+import { useSelector } from "react-redux";
+import usePhone from "../../hooks/usePhone";
+import PhoneAndAddressInput from "./PhoneAndAddressInput";
+import { useAddress } from "../../hooks/useAddress";
+import axios from "axios";
 
 const SectionAll = styled.div``;
 
@@ -60,11 +60,6 @@ const FormButton = styled.button`
 const MainContent = () => {
   const [isTouched, setIsTouched] = useState(false);
 
-  const emailNest = useSelector((state) => state.isNest.emailNest);
-  const nicknameNest = useSelector((state) => state.isNest.nicknameNest);
-  const isPhoneAuth = useSelector((state) => state.phoneAuth.isPhoneAuth);
-  const isAddressAuth = useSelector((state) => state.phoneAuth.isAddressAuth);
-
   const { email, emailChangeHandler, error, errorMsg } = useEmail();
 
   const { password, passwordChange, pwError, pwMsg } = usePassword();
@@ -80,15 +75,9 @@ const MainContent = () => {
   const { address, addressChangeHandler, addressError, addressErrorMsg } =
     useAddress();
 
-  const fd = new FormData();
-
-  const FormSubmitHandler = async (e) => {
-    e.preventDefault();
-  };
-
   return (
     <SectionAll>
-      <SectionForm onSubmit={FormSubmitHandler}>
+      <SectionForm>
         <IdAndPassword id={linkSection[0].id}>
           <MainInput
             title="아이디"

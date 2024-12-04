@@ -1,12 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import ReactDOM from "react-dom";
+import axios from "axios";
 import styled from "styled-components";
 import ConfirmModal from "./ConfirmModal";
-import { useDispatch } from "react-redux";
-import { isModalActions } from "../../Store/slice/isModalSlice";
-import { useSelector } from "react-redux";
-import axios from "axios";
-import { isNestActions } from "../../Store/slice/isNestSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const Inputs = styled.div`
   font-family: "Pretendard", sans-serif;
@@ -113,61 +110,7 @@ const MainInput = ({
 }) => {
   const dispatch = useDispatch();
 
-  const emailModal = useSelector((state) => state.isModal.emailModal);
-  const nicknameModal = useSelector((state) => state.isModal.nicknameModal);
-  const emailNest = useSelector((state) => state.isNest.emailNest);
-  const nicknameNest = useSelector((state) => state.isNest.nicknameNest);
-
-  const nestHandler = async (e) => {
-    e.preventDefault();
-
-    if (title === "아이디") {
-      try {
-        const response = await axios.get(
-          `http://localhost:8080/api/user/username?username=${valueData}`
-        );
-        const { data } = response;
-        dispatch(
-          isNestActions.setEmailNestMessage({
-            error: data.status !== "success",
-            message: data.data,
-          })
-        );
-      } catch (err) {
-        dispatch(
-          isNestActions.setEmailNestMessage({
-            error: true,
-            message: "데이터 받아오기에 실패했습니다.",
-          })
-        );
-      }
-
-      document.getElementById("root").classList.add("dim");
-      dispatch(isModalActions.setEmailModal());
-    }
-    if (title === "닉네임") {
-      try {
-        const response = await axios.get(
-          `http://localhost:8080/api/user/nickname?nickname=${valueData}`
-        );
-        dispatch(
-          isNestActions.setNicknameNestMessage({
-            error: response.data.status !== "success",
-            message: response.data.data,
-          })
-        );
-      } catch (err) {
-        dispatch(
-          isNestActions.setEmailNestMessage({
-            error: true,
-            message: "데이터 패치에 실패했습니다.",
-          })
-        );
-      }
-      document.getElementById("root").classList.add("dim");
-      dispatch(isModalActions.setNicknameModal());
-    }
-  };
+  const nestHandler = () => {};
 
   return (
     <Inputs>
@@ -190,29 +133,13 @@ const MainInput = ({
           onFocus={() => {
             setIsTouched(true);
           }}
+          onBlur={() => {
+            setIsTouched(false);
+          }}
           value={valueData}
         />
       </RealInput>
-      {isNested ? (
-        <button
-          onClick={nestHandler}
-          disabled={
-            isError ||
-            (!isTouched && !valueData) ||
-            valueData.trim() === "" ||
-            emailNest ||
-            nicknameNest
-          }
-        >
-          {Nest}
-        </button>
-      ) : null}
-      {isNested &&
-        (emailModal || nicknameModal) &&
-        ReactDOM.createPortal(
-          <ConfirmModal title={title} />,
-          document.getElementById("root")
-        )}
+      {isNested && <button onClick={nestHandler}>{Nest}</button>}
       <Condition className={`${isReverse ? "reverse" : ""}`}>
         <p>{conditionText}</p>
         <span>

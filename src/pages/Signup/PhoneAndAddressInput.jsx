@@ -1,10 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
-import { isPhoneAuthActions } from "../../Store/slice/isPhoneAuthSlice";
-import { useSelector } from "react-redux";
-import axios from "axios";
-
 const Inputing = styled.div`
   font-family: "Pretendard", sans-serif;
   display: grid;
@@ -103,17 +99,8 @@ const PhoneAndAddressInput = ({
 
   const dispatch = useDispatch();
 
-  const firstNestHandler = async (e) => {
+  const firstNestHandler = (e) => {
     e.preventDefault();
-
-    if (isTouched && !isError) {
-      if (title === "핸드폰 번호") {
-        dispatch(isPhoneAuthActions.setIsPhoneAuth());
-      }
-      if (title === "주소") {
-        dispatch(isPhoneAuthActions.setIsAddressAuth());
-      }
-    }
   };
 
   return (

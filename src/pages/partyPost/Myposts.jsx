@@ -1,53 +1,28 @@
 import React, { useState, useEffect } from "react";
 import apiClient from "../Login/apiClient";
-import NoDataPage from "../NoDataPage";
-import styled from "styled-components";
-import { getTeamLogo } from "../../utils/getTeamLogo";
-import { BiSolidEditAlt } from "react-icons/bi";
-import { IoIosList, IoMdHeartEmpty } from "react-icons/io";
-import { HiOutlineChatBubbleBottomCenterText } from "react-icons/hi2";
 import Header from "../../components/MainPage/Header/Header";
-import { useNavigate } from "react-router-dom";
+import PostList from "../../components/boardComponents/PostList";
+import styled from "styled-components";
 
 const MyPosts = () => {
-  const navigate = useNavigate();
-  const itemsPerPage = 6;
   const [lists, setLists] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(0);
-  // const [totalPages, setTotalPages] = useState(1);
-  const totalPages = Math.ceil(lists.length / itemsPerPage);
+  const itemsPerPage = 10;
 
-  const move = (id) => {
-    navigate(`/partyPost/${id}`);
-  };
-
-  // 수정 페이지로 이동
-  const moveToEditPage = (id) => {
-    navigate(`/modification/${id}`);
-  };
-
-  // API 요청 함수
-  const fetchMyPosts = async () => {
-    try {
-      const response = await apiClient.get(`/api/post/myPosts`);
-      if (response.data.status === "success") {
-        setLists(response.data.data.partyPosts || []);
-      } else {
-        throw new Error(response.data.message);
-      }
-    } catch (e) {
-      console.error("데이터 가져오기 실패:", e);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // 초기 렌더링 시 데이터 가져오기
   useEffect(() => {
+    const fetchMyPosts = async () => {
+      try {
+        const response = await apiClient.get(`/api/post/myPosts`);
+        setLists(response.data.data.partyPosts || []);
+      } catch (error) {
+        console.error("데이터 가져오기 실패:", error);
+      }
+    };
+
     fetchMyPosts();
   }, []);
 
+<<<<<<< HEAD
   // 로고 이미지 가져오는거
   const TeamLogo = ({ teamName }) => {
     const logoSrc = getTeamLogo(teamName);
@@ -167,11 +142,36 @@ const MyPosts = () => {
           info="내가 작성한 게시글이 없습니다."
         />
       )}
+=======
+  const handlePageChange = (newPage) => setCurrentPage(newPage);
+  const handleView = (id) => navigate(`/partyPost/${id}`);
+  const handleEdit = (id) => navigate(`/modification/${id}`);
+  const title = "내가 작성한 게시글";
+  const info = "내가 작성한 게시글이 없습니다."
+
+  return (
+    <div>
+      <Header />
+      <Body>
+      <Title>내가 작성한 게시글</Title>
+      <Container>
+      <PostList
+        lists={lists}
+        currentPage={currentPage}
+        itemsPerPage={itemsPerPage}
+        onEdit={handleEdit}
+        onView={handleView}
+        onPageChange={handlePageChange}
+        title={title}
+        info={info}
+      />
+      </Container>
+      </Body>
+>>>>>>> 7bdc14ca47fbd53ec3e8a8ded401417b8c958ca2
     </div>
   );
 };
 
-// 하늘색 배경
 const Body = styled.div`
   background: #f1f5f9;
   width: 100vw;
@@ -186,8 +186,8 @@ const Title = styled.h1`
   font-size: 1.7rem;
 `;
 
-//흰색 배경
 const Container = styled.div`
+<<<<<<< HEAD
   background: white;
   margin: 1.8rem;
 `;
@@ -320,3 +320,13 @@ const Pagination = styled.div`
 `;
 
 export default MyPosts;
+=======
+padding-bottom:2rem;
+  background:white;
+  margin: 1.8rem;
+`;
+
+
+
+export default MyPosts;
+>>>>>>> 7bdc14ca47fbd53ec3e8a8ded401417b8c958ca2

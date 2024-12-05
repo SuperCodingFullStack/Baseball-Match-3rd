@@ -110,7 +110,7 @@ const KakaoAuth = styled.div`
     z-index: 4;
     margin-bottom: 20px;
     &::after {
-      content: '';
+      content: "";
       position: absolute;
       left: 0;
       top: 50%;
@@ -120,7 +120,7 @@ const KakaoAuth = styled.div`
       background-color: #313131;
     }
     &::before {
-      content: '';
+      content: "";
       position: absolute;
       width: 30%;
       right: 0;
@@ -128,6 +128,7 @@ const KakaoAuth = styled.div`
       transform: translateY(-50%);
       height: 1px;
       background-color: #313131;
+    }
   }
 `;
 

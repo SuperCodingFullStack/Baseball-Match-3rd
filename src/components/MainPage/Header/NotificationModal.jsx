@@ -35,7 +35,6 @@ const NotificationModal = ({ isOpen, onClose, notifications, setNotifications, m
         <NotificationList>
           {notifications.length > 0 ? (
             notifications.map((notification) => {
-              console.log("Notification: ", notification);
               return (
                 <NotificationItem
                   key={notification.id}

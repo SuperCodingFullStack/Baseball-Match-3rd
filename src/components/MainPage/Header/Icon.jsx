@@ -137,7 +137,7 @@ const Icon = () => {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         notifications={notifications}
-        markAsRead={markAsRead}
+        markAsRead={(id) => { markAsRead(id);}}
       />
       <Profile
         ref={profileRef}

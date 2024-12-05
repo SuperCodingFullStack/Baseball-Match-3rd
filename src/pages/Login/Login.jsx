@@ -222,7 +222,7 @@ const Login = () => {
         
         //세션 만료 시간 설정
         const expirationDate = new Date();
-        expirationDate.setMinutes(expirationDate.getMinutes() + 2); // 현재 시간에 30분
+        expirationDate.setMinutes(expirationDate.getMinutes() + 30); // 현재 시간에 30분
 
         Cookies.set('Authorization', jwtToken, {
           path: '/',

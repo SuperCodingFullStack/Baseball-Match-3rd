@@ -42,10 +42,10 @@ const useNotifications = () => {
       addNotification({
         id: newNotification.id,
         message: newNotification.content,
-        isRead: newNotification.readStatus === "READ",
-        type: newNotification.type || "알림",
-        sender: newNotification.sender,
-        timestamp: newNotification.createdAt,
+        isRead: false,
+        type: newNotification.notificationType || "알림",
+        sender: newNotification.senderName,
+        timestamp: new Date(newNotification.createdAt).getTime(),
       });
     };
 
@@ -76,10 +76,18 @@ const useNotifications = () => {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const data = await response.json(); // JSON 파싱
-        console.log(data); // 응답 내용 확인
-        if (Array.isArray(data)) {
-          setNotifications(data);
+        const result = await response.json(); // JSON 파싱
+        console.log(result); // 응답 내용 확인
+        if (Array.isArray(result.data)) {
+          const transformedData = result.data.map((item) => ({
+            id: item.id,
+            message: item.content,
+            isRead: false,
+            type: item.notificationType || "알림",
+            sender: item.senderName,
+            timestamp: new Date(item.createdAt).getTime(),
+          }));
+          setNotifications(transformedData);
         } else {
           console.error("Expected array but received:", data);
           setNotifications([]);

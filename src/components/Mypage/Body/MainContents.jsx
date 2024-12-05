@@ -22,7 +22,7 @@ const MainContents = () => {
       case "myPostList":
         return <MyWrite />;
       default:
-        return <MyFavorite />;
+        return <MyWrite />;
     }
   };
 

@@ -5,7 +5,7 @@ import { IoIosList, IoMdHeartEmpty } from "react-icons/io";
 import { HiOutlineChatBubbleBottomCenterText } from "react-icons/hi2";
 import {getTeamLogo} from "../../utils/getTeamLogo";
 
-const PostListItem = ({ data, onEdit, onView }) => {
+const PostListItem = ({ data, onEdit, onView, showEditBtn }) => {
      // 로고 이미지 가져오는거
    const TeamLogo = ({ teamName }) => {
     const logoSrc = getTeamLogo(teamName);
@@ -29,7 +29,8 @@ const PostListItem = ({ data, onEdit, onView }) => {
     <PostListBox onClick={() => onView(data.id)} key={data.id}>
       <BoxHeader>
         <PostTitle>{data.title}</PostTitle>
-        <EditBtn
+        {showEditBtn && (
+          <EditBtn
           onClick={(e) => {
             e.stopPropagation(); // 클릭 이벤트 버블링 방지
             onEdit(data.id);
@@ -37,6 +38,7 @@ const PostListItem = ({ data, onEdit, onView }) => {
         >
           <BiSolidEditAlt />
         </EditBtn>
+        )}
       </BoxHeader>
       <PostCreatedAt>{new Date(data.createAt).toLocaleString()}</PostCreatedAt>
       <PostGameImg>

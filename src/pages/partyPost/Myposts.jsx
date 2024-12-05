@@ -40,6 +40,7 @@ const MyPosts = () => {
         lists={lists}
         currentPage={currentPage}
         itemsPerPage={itemsPerPage}
+        showEditBtn={true}
         onEdit={handleEdit}
         onView={handleView}
         onPageChange={handlePageChange}

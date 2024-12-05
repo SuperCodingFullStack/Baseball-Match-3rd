@@ -3,11 +3,12 @@ import styled from "styled-components";
 import { FaBars } from "react-icons/fa6";
 import Sidebar from "./Sidebar";
 
-const ChatHeader = ({ roomName, roomId }) => {
+const ChatHeader = ({ roomName, selectedChatId }) => {
   const [sideBarShow, setSideBarShow] = useState(false);
   const toggleSidebar = () => {
     setSideBarShow(!sideBarShow);
   };
+
   return (
     <>
       <Header>
@@ -29,7 +30,7 @@ const ChatHeader = ({ roomName, roomId }) => {
       <Sidebar
         isVisible={sideBarShow}
         toggleSidebar={toggleSidebar}
-        roomId={roomId}
+        selectedChatId={selectedChatId}
       />
     </>
   );
@@ -62,7 +63,7 @@ const HeaderTop = styled.div`
 
 const InfoArea = styled.div`
   display: flex;
-  flex-direction: column; /* 세로로 배치 */
+  flex-direction: column;
   justify-content: center;
   align-items: flex-start;
 `;

@@ -10,10 +10,8 @@ const ChatComponent = ({ userId }) => {
   const [chats, setChats] = useState([]);
 
   const handleSelectChat = (chatId) => {
-    console.log("선택한 채팅방 : ", chatId);
-    setSelectedChatId(chatId); // 선택된 채팅방 ID로 상태 업데이트
+    setSelectedChatId(chatId);
   };
-  console.log("Selected Chat ID in ChatComponent:", selectedChatId);
   return (
     <PageWrapper>
       <Header />

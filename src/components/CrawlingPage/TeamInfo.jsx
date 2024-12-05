@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import Header from "../MainPage/Header/Header";
 import axios from "axios";
+import Map from "../board/Map";
 
 const TeamInfo = () => {
   const { teamName } = useParams(); // URL 파라미터에서 teamName을 가져옵니다.
@@ -85,11 +86,10 @@ const TeamInfo = () => {
                   <Ranking ranking={team.ranking}>{team.ranking}</Ranking>
                   <td colSpan="7" style={{ backgroundColor: "white" }}></td>
                   <MapContainer>
-                    {/* 여기에 지도를 넣으세요 */}
-                    <img
-                      src="/path/to/map.png"
-                      alt="Map"
-                      style={{ width: "100%", height: "auto" }}
+                    <Map
+                      latitude={parseFloat(team.latitude)}
+                      longitude={parseFloat(team.longitude)}
+                      style={{ width: "100%", height: "100%" }}
                     />
                   </MapContainer>
                 </tr>
@@ -284,8 +284,7 @@ const MapContainer = styled.div`
   width: 47%;
   height: 61%;
   background-color: rgba(128, 128, 128, 0.5);
-  z-index: 2; /* 테이블 셀보다 위에 표시 */
-  pointer-events: none; /* 마우스 이벤트를 차단하여 아래 테이블과의 상호작용 유지 */
+  z-index: 2;
 `;
 
 export default TeamInfo;

@@ -1,21 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { Stomp } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import Cookies from "js-cookie";
 import axios from "axios";
 import ChatHeader from "./ChatHeader";
+import { jwtDecode } from "jwt-decode";
 
 const MainChatComponent = ({ selectedChatId, chats }) => {
-  const [stompClient, setStompClient] = useState(null);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [roomName, setRoomName] = useState("");
-
-  console.log("Selected Chat ID: ", selectedChatId);
+  const stompClient = useRef(null);
 
   useEffect(() => {
-    console.log("Fetching room name for Chat ID:", selectedChatId);
     if (selectedChatId) {
       const fetchRoomName = async () => {
         try {
@@ -24,7 +22,7 @@ const MainChatComponent = ({ selectedChatId, chats }) => {
           );
           console.log("API Response:", response);
           if (response.data && response.data.data.roomName) {
-            console.log("Room Name:", response.data.data.roomName); // roomName만 따로 로그
+            console.log("Room Name:", response.data.data.roomName);
             setRoomName(response.data.data.roomName);
           }
         } catch (error) {
@@ -46,65 +44,82 @@ const MainChatComponent = ({ selectedChatId, chats }) => {
   }, [selectedChatId]);
 
   useEffect(() => {
-    console.log("Selected Chat ID: ", selectedChatId);
-    if (!selectedChatId) return; // 채팅방이 선택되지 않으면 아무것도 하지 않음
+    if (selectedChatId && roomName) {
+      const socket = new WebSocket("ws://localhost:8080/portfolio");
+      stompClient.current = Stomp.over(socket);
 
-    const socket = new WebSocket("ws://localhost:8080/portfolio"); // WebSocket 엔드포인트
-    const stompClient = Stomp.over(socket);
+      stompClient.current.connect({}, (frame) => {
+        console.log("Connected:", frame);
 
-    stompClient.connect({}, (frame) => {
-      console.log("Connected: " + frame);
-      stompClient.subscribe(`/topic/${roomName}`, (response) => {
-        // 수정된 부분
-        const incomingMessage = JSON.parse(response.body);
-        setMessages((prevMessages) => [...prevMessages, incomingMessage]);
+        stompClient.subscribe(`/topic/${roomName}`, (messageOutput) => {
+          console.log("수신된 message:", messageOutput.body);
+          setMessages((prevMessages) => [
+            ...prevMessages,
+            JSON.parse(messageOutput.body),
+          ]);
+        });
       });
 
-      setStompClient(stompClient);
-    });
+      return () => {
+        if (stompClient.current) {
+          stompClient.current.disconnect();
+        }
+      };
+    }
+  }, [selectedChatId, roomName]);
 
-    return () => {
-      if (stompClient) {
-        stompClient.disconnect(() => {
-          console.log("Disconnected");
-        });
-      }
-    };
-  }, [selectedChatId, roomName]); // 채팅방이 변경될 때마다 웹소켓 연결을 새로 설정
+  const [tempDisplay, setTempDisplay] = useState([]);
 
   const sendMessage = () => {
-    if (stompClient && message) {
+    if (stompClient.current && message) {
       const token = Cookies.get("Authorization");
-      const userId = Cookies.get("userId");
-      const nickName = Cookies.get("nickname");
+      const decodedToken = jwtDecode(token);
+      const nickname = decodedToken.sub;
 
       const messagePayload = {
         roomName: roomName,
-        senderId: userId,
-        sender: nickName,
+        senderId: nickname,
         message: message,
       };
 
-      stompClient.send(
-        `/app/chat/${roomName}`, // 수정된 부분
-        {
-          Authorization: `Bearer ${token}`, // JWT 토큰을 헤더에 포함
+      setMessages((prevMessages) => ({
+        ...prevMessages,
+        [roomName]: [
+          ...(prevMessages[roomName] || []),
+          `${messagePayload.senderId}: ${messagePayload.message}`,
+        ],
+      }));
+      console.log("JWT 토큰:", token);
+
+      stompClient.send({
+        destination: `/topic/${roomName}`, // 동적으로 roomName을 대체
+        headers: {
+          Authorization: `${token}`, // JWT 토큰
         },
-        JSON.stringify(messagePayload)
-      );
+        body: JSON.stringify(messagePayload),
+      });
+
       setMessage("");
+    } else {
+      console.error(
+        "STOMP 클라이언트가 연결되지 않았거나 메시지가 비어 있습니다."
+      );
     }
   };
 
   return (
     <ChatWrapper>
-      <ChatHeader roomName={roomName} roomId={selectedChatId} />
+      <ChatHeader roomName={roomName} selectedChatId={selectedChatId} />
       <MessageArea>
-        {messages.map((msg, index) => (
-          <MessageBubble key={index} isSender={msg.sender === "User1"}>
-            <strong>{msg.sender}:</strong> {msg.message}
-          </MessageBubble>
-        ))}
+        {messages[roomName]?.map((msg, index) => {
+          const [sender, messageContent] = msg.split(": ");
+          return (
+            <MessageItem key={index}>
+              <SenderName>{sender}</SenderName>
+              <MessageBubble>{messageContent}</MessageBubble>
+            </MessageItem>
+          );
+        })}
       </MessageArea>
       <InputWrapper>
         <MessageInput
@@ -112,6 +127,11 @@ const MainChatComponent = ({ selectedChatId, chats }) => {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder="메시지를 입력하세요"
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && message.trim() !== "") {
+              sendMessage();
+            }
+          }}
         />
         <SendButton onClick={sendMessage}>전송</SendButton>
       </InputWrapper>
@@ -139,17 +159,32 @@ const MessageArea = styled.div`
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-end;
   gap: 10px;
 `;
 
 const MessageBubble = styled.div`
   padding: 10px;
   border-radius: 10px;
-  max-width: 70%;
+  max-width: 100%;
   word-wrap: break-word;
-  background-color: ${(props) => (props.isSender ? "#0B9B88" : "#e5e5e5")};
-  color: ${(props) => (props.isSender ? "#fff" : "#000")};
-  align-self: ${(props) => (props.isSender ? "flex-end" : "flex-start")};
+  background-color: ${(props) => (props.isSender ? "#0B9B88" : "#67fc99")};
+  color: ${(props) => (props.isSender ? "#000" : "#877c78")};
+  align-self: ${(props) => (props.isSender ? "flex-start" : "flex-end")};
+`;
+
+const SenderName = styled.div`
+  color: #555;
+  align-self: flex-end;
+  margin-bottom: 5px;
+`;
+
+const MessageItem = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-bottom: 10px;
 `;
 
 const InputWrapper = styled.div`
@@ -169,7 +204,7 @@ const MessageInput = styled.input`
 `;
 
 const SendButton = styled.button`
-  background-color: #0b9b88;
+  background-color: gray;
   border: none;
   padding: 10px 20px;
   color: white;
@@ -177,6 +212,6 @@ const SendButton = styled.button`
   cursor: pointer;
   font-size: 14px;
   &:hover {
-    background-color: #077e67;
+    background-color: #67fc99;
   }
 `;

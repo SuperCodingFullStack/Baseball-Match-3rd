@@ -3,25 +3,25 @@ import styled from "styled-components";
 import { BiSolidEditAlt } from "react-icons/bi";
 import { IoIosList, IoMdHeartEmpty } from "react-icons/io";
 import { HiOutlineChatBubbleBottomCenterText } from "react-icons/hi2";
-import {getTeamLogo} from "../../utils/getTeamLogo";
+import { getTeamLogo } from "../../utils/getTeamLogo";
 
 const PostListItem = ({ data, onEdit, onView, showEditBtn }) => {
-     // 로고 이미지 가져오는거
-   const TeamLogo = ({ teamName }) => {
+  // 로고 이미지 가져오는거
+  const TeamLogo = ({ teamName }) => {
     const logoSrc = getTeamLogo(teamName);
     return <LogoImage src={logoSrc} alt={`${teamName} logo`} />;
   };
 
-   // 모집 인원 percentageBar
-   const RecruitmentProgress = ({ current, max }) => {
-    const percentage = Math.round((current / max ) * 100);
+  // 모집 인원 percentageBar
+  const RecruitmentProgress = ({ current, max }) => {
+    const percentage = Math.round((current / max) * 100);
 
     return (
-      <div style={{width: '300px'}}>
-      <ProgressBarContainer>
-            <ProgressBar percentage={percentage} />
-          </ProgressBarContainer>
-          </div>
+      <div style={{ width: "300px" }}>
+        <ProgressBarContainer>
+          <ProgressBar percentage={percentage} />
+        </ProgressBarContainer>
+      </div>
     );
   };
 
@@ -31,13 +31,13 @@ const PostListItem = ({ data, onEdit, onView, showEditBtn }) => {
         <PostTitle>{data.title}</PostTitle>
         {showEditBtn && (
           <EditBtn
-          onClick={(e) => {
-            e.stopPropagation(); // 클릭 이벤트 버블링 방지
-            onEdit(data.id);
-          }}
-        >
-          <BiSolidEditAlt />
-        </EditBtn>
+            onClick={(e) => {
+              e.stopPropagation(); // 클릭 이벤트 버블링 방지
+              onEdit(data.id);
+            }}
+          >
+            <BiSolidEditAlt />
+          </EditBtn>
         )}
       </BoxHeader>
       <PostCreatedAt>{new Date(data.createAt).toLocaleString()}</PostCreatedAt>
@@ -57,7 +57,9 @@ const PostListItem = ({ data, onEdit, onView, showEditBtn }) => {
       </Party>
       <RecruitmentProgress current={data.currentPeopleNum} max={data.maxPeopleNum} />
       <PostInfo>
-        <MatchDate>{data.matchDate}</MatchDate>
+        <MatchDate>
+          {data.matchDate}-{data.stadium}
+        </MatchDate>
         <LikeAndComments>
           <Icon>
             <IoMdHeartEmpty />
@@ -135,16 +137,16 @@ const ParticipantsMember = styled.p`
 const ProgressBarContainer = styled.div`
   width: 100%;
   height: 10px;
-  background-color: #ddd; 
-  border-radius: 8px; 
+  background-color: #ddd;
+  border-radius: 8px;
   overflow: hidden;
 `;
 
 const ProgressBar = styled.div`
   height: 100%;
   width: ${(props) => props.percentage}%;
-  background-color: ${(props) => (props.percentage < 60 ? '#ff6b6b' : '#92C8F8FF')};
-  transition: width 0.3s ease-in-out; 
+  background-color: ${(props) => (props.percentage < 60 ? "#ff6b6b" : "#92C8F8FF")};
+  transition: width 0.3s ease-in-out;
 `;
 
 const PostInfo = styled.div`

@@ -1,14 +1,15 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../../components/MainPage/Header/Header";
-// import PostList from "./PostList";
+import PostList from "./PostList";
 import PostListItem from "../../components/boardComponents/PostListItem";
 import styled from "styled-components";
 import axios from "axios";
 import NoDataPage from "../NoDataPage";
+import Cookies from "js-cookie";
 
 // PostList 컴포넌트 최적화
-// const MemoizedPostList = React.memo(PostList);
+const MemoizedPostList = React.memo(PostList);
 
 const PartyPostLists = () => {
   const title = "게시판";
@@ -111,8 +112,14 @@ const PartyPostLists = () => {
   }, [gameId]);
 
   const navigate = useNavigate();
+  const isLoggedIn = !!Cookies.get("Authorization");
   const createPostBtnClick = () => {
-    navigate("/postWrite");
+    if (!isLoggedIn) {
+      alert("로그인 후 이용 가능합니다.");
+      navigate("/login");
+    } else {
+      navigate("/postWrite");
+    }
   };
   const movePost = (id) => {
     navigate(`/partyPost/${id}`);
@@ -192,23 +199,23 @@ const PartyPostLists = () => {
               <div>로딩 중...</div>
             ) : lists.length > 0 ? (
               lists.map((data) => (
-                // <MemoizedPostList
-                //   key={data.id}
-                //   id={data.id}
-                //   title={data.title}
-                //   move={movePost}
-                //   myTeamImg={data.myTeamImg}
-                //   opposingTeamImg={data.opposingTeam}
-                //   matchTime={data.matchTime}
-                //   matchDate={data.matchDate}
-                //   max={data.maxPeopleNum}
-                //   current={data.currentPeopleNum}
-                //   like={data.likeCount}
-                //   createAt={data.createAt}
-                //   name={data.userNickname}
-                //   stadium={data.stadium}
-                // />
-                <PostListItem key={data.id} data={data} onView={movePost} showEditBtn={false} />
+                <React.Fragment key={data.id}>
+                  <MemoizedPostList
+                    id={data.id}
+                    title={data.title}
+                    myTeamImg={data.myTeamImg}
+                    opposingTeamImg={data.opposingTeam}
+                    matchTime={data.matchTime}
+                    matchDate={data.matchDate}
+                    max={data.maxPeopleNum}
+                    current={data.currentPeopleNum}
+                    like={data.likeCount}
+                    createAt={data.createAt}
+                    name={data.userNickname}
+                    stadium={data.stadium}
+                  />
+                  <PostListItem data={data} onView={movePost} />
+                </React.Fragment>
               ))
             ) : (
               <NoDataPage title={title} info={info} />

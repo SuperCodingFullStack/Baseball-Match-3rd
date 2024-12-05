@@ -10,6 +10,7 @@ const MonthlyCalendar = () => {
   const [games, setGames] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isEmptyMonth, setIsEmptyMonth] = useState(false);
 
   const daysInMonth = currentMonth.daysInMonth();
   const firstDayOfWeek = currentMonth.startOf("month").day();
@@ -30,6 +31,13 @@ const MonthlyCalendar = () => {
       );
 
       if (!response.ok) {
+        if(response.status === 400) {
+          console.error("해당 달에는 경기 일정이 없습니다.");
+          setIsEmptyMonth(true);
+      setGames([]);
+      setLoading(false);
+      return;
+        }
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const data = await response.json();
@@ -55,12 +63,17 @@ const MonthlyCalendar = () => {
             stadium: game.stadium,
           };
         });
+
         if (formattedGames.length > 0) {
           setGames(formattedGames);
+          setIsEmptyMonth(false);
           setLoading(false);
           return true;
         }
       }
+
+      setIsEmptyMonth(true);
+      setGames([]);
       console.error(
         `데이터가 없습니다. 이전달 (${monthToCheck
           .subtract(1, "month")
@@ -69,6 +82,8 @@ const MonthlyCalendar = () => {
       return await fetchGameData(monthToCheck.subtract(1, "month"));
     } catch (error) {
       console.error("Error fetching game data: ", error);
+      setIsEmptyMonth(true);
+      setGames([]);
       setLoading(false);
     }
   },[]);
@@ -114,6 +129,7 @@ const MonthlyCalendar = () => {
           <FaAngleRight />
         </button>
       </Header>
+
       <Grid>
         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day, index) => (
           <DayHeader key={index} index={index}>
@@ -153,6 +169,16 @@ const MonthlyCalendar = () => {
           );
         })}
       </Grid>
+
+{isEmptyMonth && (
+  <NoDataModal className="modal-overlay">
+  {/* <ModalContent className="modal-content"> */}
+    <p>해당 달에는 경기 일정이 없습니다.</p>
+    {/* <button onClick={() => setIsEmptyMonth(false)}>확인</button> */}
+  {/* </ModalContent> */}
+</NoDataModal>
+)}
+
       {selectedDate && (
         <GameModal
           date={selectedDate}
@@ -252,6 +278,20 @@ const PlusButton = styled.button`
   font-size: 15px;
   background: rgba(0, 0, 0, 0);
   color: #67fc99;
+`;
+
+const NoDataModal = styled.div`
+  position: absolute; 
+  top: 100%;
+  left: 50%;
+  transform: translate(-50%, -50%); 
+  background-color: rgba(255, 255, 255, 0.9); 
+  padding: 20px 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  font-size: 2rem;
+  z-index: 5; 
 `;
 
 export default MonthlyCalendar;

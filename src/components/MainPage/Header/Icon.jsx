@@ -13,7 +13,52 @@ import Cookies from "js-cookie";
 const Icon = () => {
   const navigate = useNavigate();
 
-  const isLoggedIn = !!Cookies.get("Authorization");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // 로그인 상태 확인 함수
+  const checkLoginStatus = () => {
+    const token = Cookies.get("Authorization");
+    const expirationDate = Cookies.get("Authorization-expiration");
+    if (expirationDate) {
+      const localTime = new Date(expirationDate).toLocaleString();
+      console.log("토큰 만료 시간:", localTime);
+    }
+
+    if (token) {
+      try {
+        const expirationDate = new Date(Cookies.get("Authorization-expiration")); // 쿠키에 저장한 만료 시간 가져오기
+        const currentTime = new Date();
+  
+        if (expirationDate > currentTime) {
+          setIsLoggedIn(true);
+        } else {
+          Cookies.remove("Authorization"); 
+          sessionStorage.setItem("isLoggedOut", "true");
+          setIsLoggedIn(false); 
+          alert("토큰이 만료되어 로그아웃 되었습니다. 다시 로그인 해주세요.");
+          window.location.replace('/login');
+        }
+      } catch (error) {
+        console.error("토큰 디코딩 오류:", error);
+        Cookies.remove("Authorization"); 
+        sessionStorage.setItem("isLoggedOut", "true");
+        setIsLoggedIn(false);
+        alert("토큰이 만료되어 로그아웃 되었습니다. 다시 로그인 해주세요.");
+        window.location.replace('/login');
+      }
+    } else {
+      setIsLoggedIn(false); 
+    }
+  };
+
+  useEffect(() => {
+    if (sessionStorage.getItem("isLoggedOut") === "true") {
+      alert("로그아웃되었습니다. 다시 로그인 해주세요.");
+      sessionStorage.removeItem("isLoggedOut"); 
+    }
+    checkLoginStatus(); 
+  }, []);
+
 
   const handleMypageBtnClick = () => {
     if (!isLoggedIn) {
@@ -29,6 +74,7 @@ const Icon = () => {
   const handleLoginBtnClick = () => {
     navigate("/login");
   };
+
   const handleChatBtnClick = () => {
     if (!isLoggedIn) {
       alert("로그인 후 이용 가능한 페이지입니다.");
@@ -93,7 +139,7 @@ const Icon = () => {
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         notifications={notifications}
-        markAsRead={markAsRead}
+        markAsRead={(id) => { markAsRead(id);}}
       />
       <Profile
         ref={profileRef}

@@ -35,7 +35,6 @@ const NotificationModal = ({ isOpen, onClose, notifications, setNotifications, m
         <NotificationList>
           {notifications.length > 0 ? (
             notifications.map((notification) => {
-              console.log("Notification: ", notification);
               return (
                 <NotificationItem
                   key={notification.id}
@@ -47,9 +46,7 @@ const NotificationModal = ({ isOpen, onClose, notifications, setNotifications, m
                     <Type>[{notification.type}]</Type>
                   </NotificationHeader>
                   <Message>{notification.message}</Message>
-                  <Time>
-                    {new Date(notification.timestamp).toLocaleString()}
-                  </Time>
+                  <Time>{new Date(notification.timestamp).toLocaleString()}</Time>
                 </NotificationItem>
               );
             })
@@ -185,8 +182,8 @@ const Time = styled.div`
 const NoNotificationsMessage = styled.p`
   font-weight: 600;
   text-align: center;
-  margin:1rem;
-  color:red;
+  margin: 1rem;
+  color: red;
 `;
 
 export default NotificationModal;

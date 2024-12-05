@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import apiClient from "../Login/apiClient";
 import Header from "../../components/MainPage/Header/Header";
-import PostList from "../../components/boardComponents/PostList";
+import PostLists from "../../components/boardComponents/PostLists";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 const MyPosts = () => {
+  const navigate = useNavigate();
   const [lists, setLists] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 10;
@@ -34,10 +36,11 @@ const MyPosts = () => {
       <Body>
         <Title>내가 작성한 게시글</Title>
         <Container>
-          <PostList
+          <PostLists
             lists={lists}
             currentPage={currentPage}
             itemsPerPage={itemsPerPage}
+            showEditBtn={true}
             onEdit={handleEdit}
             onView={handleView}
             onPageChange={handlePageChange}

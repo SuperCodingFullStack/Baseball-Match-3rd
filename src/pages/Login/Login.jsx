@@ -220,16 +220,29 @@ const Login = () => {
       if (token) {
         const jwtToken = token.split(" ")[1]; // "Bearer"를 제거하고 JWT만 추출
         console.log("우리가 잘받아서 뜯은 토큰은 ", jwtToken);
+
+        //세션 만료 시간 설정
+        const expirationDate = new Date();
+        expirationDate.setMinutes(expirationDate.getMinutes() + 30); // 현재 시간에 30분
+
         Cookies.set("Authorization", jwtToken, {
           path: "/",
           secure: true,
           sameSite: "Strict",
+          expires: expirationDate,
         }); // 쿠키에 저장
         /*
           path: '/': 이 쿠키는 모든 경로에서 접근 가능합니다.
           secure: true: 쿠키는 HTTPS 연결을 통해서만 전송됩니다.
           sameSite: 'Strict': 쿠키가 다른 사이트에서의 요청에 포함되지 않도록 설정합니다. 이는 CSRF 공격을 방지하는 데 도움이 됩니다.
           */
+
+        // 만료 시간 별도 저장
+        Cookies.set("Authorization-expiration", expirationDate.toISOString(), {
+          path: "/",
+          secure: true,
+          sameSite: "Strict",
+        });
       }
 
       console.log("Login successful");

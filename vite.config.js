@@ -10,4 +10,7 @@ export default defineConfig({
   define: {
     global: {},
   },
+  optimizeDeps: {
+    include: ["jwt-decode"], // jwt-decode 추가
+  },
 });

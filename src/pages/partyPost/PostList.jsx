@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { getTeamLogo } from "../../utils/getTeamLogo";
+// import { getTeamLogo } from "../../utils/getTeamLogo";
 
 const PostList = ({
   id,
@@ -33,14 +33,14 @@ const PostList = ({
     stadium,
   });
   // 로고 이미지 가져오는거
-  const TeamLogo = ({ teamName }) => {
-    const logoSrc = getTeamLogo(teamName);
-    return <LogoImage src={logoSrc} alt={`${teamName} logo`} />;
-  };
+  // const TeamLogo = ({ teamName }) => {
+  //   const logoSrc = getTeamLogo(teamName);
+  //   return <LogoImage src={logoSrc} alt={`${teamName} logo`} />;
+  // };
 
   return (
     <>
-      <Post onClick={() => move(id)}>
+      {/* <Post onClick={() => move(id)}>
         <Post_list__team_images>
           <TeamLogo teamName={myTeamImg} />
 
@@ -69,7 +69,7 @@ const PostList = ({
             <div className="post-list__time-passed">{createAt}</div>
           </Post_list__author_likes>
         </div>
-      </Post>
+      </Post> */}
     </>
   );
 };

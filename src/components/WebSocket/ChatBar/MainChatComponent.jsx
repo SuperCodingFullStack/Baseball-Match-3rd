@@ -5,7 +5,7 @@ import SockJS from "sockjs-client";
 import Cookies from "js-cookie";
 import axios from "axios";
 import ChatHeader from "./ChatHeader";
-import { jwtDecode } from "jwt-decode";
+import jwtDecode from "jwt-decode";
 
 const MainChatComponent = ({ selectedChatId, chats }) => {
   const [message, setMessage] = useState("");
@@ -17,9 +17,7 @@ const MainChatComponent = ({ selectedChatId, chats }) => {
     if (selectedChatId) {
       const fetchRoomName = async () => {
         try {
-          const response = await axios.get(
-            `http://localhost:8080/api/chatroom/${selectedChatId}`
-          );
+          const response = await axios.get(`http://localhost:8080/api/chatroom/${selectedChatId}`);
           console.log("API Response:", response);
           if (response.data && response.data.data.roomName) {
             console.log("Room Name:", response.data.data.roomName);
@@ -53,10 +51,7 @@ const MainChatComponent = ({ selectedChatId, chats }) => {
 
         stompClient.subscribe(`/topic/${roomName}`, (messageOutput) => {
           console.log("수신된 message:", messageOutput.body);
-          setMessages((prevMessages) => [
-            ...prevMessages,
-            JSON.parse(messageOutput.body),
-          ]);
+          setMessages((prevMessages) => [...prevMessages, JSON.parse(messageOutput.body)]);
         });
       });
 
@@ -84,10 +79,7 @@ const MainChatComponent = ({ selectedChatId, chats }) => {
 
       setMessages((prevMessages) => ({
         ...prevMessages,
-        [roomName]: [
-          ...(prevMessages[roomName] || []),
-          `${messagePayload.senderId}: ${messagePayload.message}`,
-        ],
+        [roomName]: [...(prevMessages[roomName] || []), `${messagePayload.senderId}: ${messagePayload.message}`],
       }));
       console.log("JWT 토큰:", token);
 
@@ -101,9 +93,7 @@ const MainChatComponent = ({ selectedChatId, chats }) => {
 
       setMessage("");
     } else {
-      console.error(
-        "STOMP 클라이언트가 연결되지 않았거나 메시지가 비어 있습니다."
-      );
+      console.error("STOMP 클라이언트가 연결되지 않았거나 메시지가 비어 있습니다.");
     }
   };
 

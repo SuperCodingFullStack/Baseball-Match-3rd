@@ -1,9 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { FaCheckCircle } from "react-icons/fa";
+import { useDispatch } from "react-redux";
 import { isNestActions } from "../../Store/slice/isNestSlice";
-import { isModalActions } from "../../Store/slice/isModalSlice";
-import { useDispatch, useSelector } from "react-redux";
 
 const Modals = styled.div`
   padding: 40px;
@@ -60,46 +59,47 @@ const ModalButtons = styled.div`
   }
 `;
 
-const ConfirmModal = ({ title }) => {
+const ConfirmModal = ({
+  title,
+  setIsModal,
+  modalMessage,
+  setModalMessage,
+  modalError,
+  setModalError,
+}) => {
   const dispatch = useDispatch();
 
-  const emailNestError = useSelector((state) => state.isNest.emailNestError);
-  const emailNestMessage = useSelector(
-    (state) => state.isNest.emailNestMessage
-  );
-
-  const onCancel = () => {
+  const onBack = () => {
     if (title === "아이디") {
-      dispatch(isModalActions.setEmailModalFalse());
+      setIsModal(false);
       document.getElementById("root").classList.remove("dim");
+      setModalMessage("");
+      setModalError(false);
+      dispatch(isNestActions.setEmailNestFalse());
     }
     if (title === "닉네임") {
-      dispatch(isModalActions.setNicknameModalFalse());
+      setIsModal(false);
       document.getElementById("root").classList.remove("dim");
+      setModalMessage("");
+      setModalError(false);
+      dispatch(isNestActions.setNicknameNestFalse());
     }
   };
 
   const onSelect = () => {
     if (title === "아이디") {
-      dispatch(isModalActions.setEmailModalFalse());
+      setIsModal(false);
       document.getElementById("root").classList.remove("dim");
-      dispatch(isNestActions.setEmailNest());
+      setModalMessage("");
+      setModalError(false);
+      dispatch(isNestActions.setEmailNestTrue());
     }
     if (title === "닉네임") {
-      dispatch(isModalActions.setNicknameModalFalse());
+      setIsModal(false);
       document.getElementById("root").classList.remove("dim");
-      dispatch(isNestActions.setNicknameNest());
-    }
-  };
-
-  const onClose = () => {
-    if (title === "아이디") {
-      dispatch(isModalActions.setEmailModalFalse());
-      document.getElementById("root").classList.remove("dim");
-    }
-    if (title === "닉네임") {
-      dispatch(isModalActions.setNicknameModalFalse());
-      document.getElementById("root").classList.remove("dim");
+      setModalMessage("");
+      setModalError(false);
+      dispatch(isNestActions.setNicknameNestTrue());
     }
   };
 
@@ -110,22 +110,22 @@ const ConfirmModal = ({ title }) => {
           <FaCheckCircle />
         </ModalIcon>
         <ModalMsgs>
-          <p>{emailNestMessage}</p>
+          <p>{modalMessage}</p>
           <strong>
-            {emailNestError
-              ? "다시 입력해주십시오"
+            {modalError
+              ? "다음에 다시 선택하세요."
               : "이걸로 선택하시겠습니까?"}
           </strong>
         </ModalMsgs>
       </ModalMessage>
       <ModalButtons>
-        {!emailNestError ? (
-          <>
-            <button onClick={onCancel}>아니오, 취소합니다.</button>
-            <button onClick={onSelect}>예, 선택할래요.</button>
-          </>
+        {modalError ? (
+          <button onClick={onBack}>돌아가기</button>
         ) : (
-          <button onClick={onClose}>닫기</button>
+          <>
+            <button onClick={onBack}>취소합니다.</button>
+            <button onClick={onSelect}>이걸로 선택합니다.</button>
+          </>
         )}
       </ModalButtons>
     </Modals>

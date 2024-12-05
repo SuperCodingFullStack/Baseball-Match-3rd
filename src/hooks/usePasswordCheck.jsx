@@ -21,7 +21,7 @@ const usePasswordCheck = (password) => {
       }
     };
     if (debouncedPasswdCheck) validatePwCheck();
-  }, [passwordCheck, debouncedPasswdCheck]);
+  }, [passwordCheck, debouncedPasswdCheck, password]);
 
   const pwChkHandler = (value, maxLength) => {
     setPasswordCheck(value);

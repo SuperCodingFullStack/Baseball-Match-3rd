@@ -35,15 +35,13 @@ const SearchSection = ({ roomName, handleSearchChange, searchChatRooms }) => {
 
 export default SearchSection;
 
-// Styled Components for SearchSection
-
 const SearchWrap = styled.section`
   margin-bottom: 20px;
   border: 1px solid #efeff0;
 `;
 
 const SearchList = styled.h3`
-  display: none; /* 시각적 숨김 */
+  display: none;
 `;
 
 const SearchArea = styled.div`
@@ -82,7 +80,7 @@ const SearchButton = styled.button`
   background: none;
   cursor: pointer;
   color: #303038;
-  font-size: 20px; /* 아이콘 크기 조절 */
+  font-size: 20px;
 
   &:hover {
     color: #007bff;
@@ -95,7 +93,7 @@ const DeleteButton = styled.button`
   cursor: pointer;
   margin-top: 3px;
   margin-right: -15px;
-  font-size: 23px; /* 아이콘 크기 조절 */
+  font-size: 23px;
   color: #929294;
 
   &:hover {

@@ -50,11 +50,11 @@ const ChatSidebar = ({ userId, onSelectChat }) => {
         setSearchedChats([...searchedChats, ...pastChats]);
       } else {
         console.error("잘못된 데이터 형식:", result);
-        setSearchedChats([]); // 오류 시 빈 배열 설정
+        setSearchedChats([]);
       }
     } catch (error) {
       console.error("채팅방 검색 중 오류 발생:", error);
-      setSearchedChats([]); // 오류 시 빈 결과 반환
+      setSearchedChats([]);
     }
   };
 
@@ -97,29 +97,26 @@ const ChatSidebar = ({ userId, onSelectChat }) => {
 
   const handleSelectChat = (chatId) => {
     onSelectChat(chatId);
-    console.log("선택된 채팅방 Id: ", chatId);
   };
   const [searchValue, setSearchValue] = useState("");
-  const [showCheckboxes, setShowCheckboxes] = useState(false); // 체크박스 표시 여부
-  const [selectedChatIds, setSelectedChatIds] = useState([]); // 선택된 채팅방 ID
-  const [selectedChatId, setSelectedChatId] = useState(null); // 선택된 채팅방 ID (MainChatComponent에 전달)
+  const [showCheckboxes, setShowCheckboxes] = useState(false);
+  const [selectedChatIds, setSelectedChatIds] = useState([]);
+  const [selectedChatId, setSelectedChatId] = useState(null);
 
   const handleCheckboxClick = (chatId) => {
-    setSelectedChatIds(
-      (prev) =>
-        prev.includes(chatId)
-          ? prev.filter((id) => id !== chatId)
-          : [...prev, chatId] // 선택 추가
+    setSelectedChatIds((prev) =>
+      prev.includes(chatId)
+        ? prev.filter((id) => id !== chatId)
+        : [...prev, chatId]
     );
   };
 
   const handleRoomDeleteClick = () => {
     if (showCheckboxes && selectedChatIds.length > 0) {
-      // 선택된 채팅방 삭제
       selectedChatIds.forEach((roomId) => handleDeleteRoom(roomId));
-      setSelectedChatIds([]); // 선택 목록 초기화
+      setSelectedChatIds([]);
     }
-    setShowCheckboxes(!showCheckboxes); // 체크박스 표시/숨기기 전환
+    setShowCheckboxes(!showCheckboxes);
   };
 
   return (

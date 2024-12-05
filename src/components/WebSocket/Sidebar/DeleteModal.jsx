@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 
 const DeleteModal = ({ isOpen, onClose, seletedChat, handleDeleteChats }) => {
-  if (!isOpen) return null; // 모달이 열리지 않으면 아무것도 렌더링하지 않음
+  if (!isOpen) return null;
 
   const handleDelte = () => {
     handleDeleteChats(seletedChat.id);

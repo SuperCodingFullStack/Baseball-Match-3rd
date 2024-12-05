@@ -8,7 +8,6 @@ const ListSection = ({
   selectedChatIds,
   showCheckboxes,
 }) => {
-  console.log(chats);
   const [selectedChatId, setSelectedChatId] = useState(null);
 
   const onChatSelect = (chatId) => {
@@ -34,7 +33,7 @@ const ListSection = ({
             <InfoArea className="info_area">
               <TextWrap className="text_wrap">
                 <NameArea className="name_area">
-                  <Name>{chat.roomName}</Name> {/* roomName만 표시 */}
+                  <Name>{chat.roomName}</Name>
                   <DateArea>{chat.createdDate}</DateArea>
                 </NameArea>
                 <Message className="text_area">{chat.message}</Message>
@@ -96,7 +95,7 @@ const TextWrap = styled.div`
 
 const NameArea = styled.div`
   display: flex;
-  justify-content: space-between; /* name과 date를 한 줄로 배치 */
+  justify-content: space-between;
   width: 100%;
 `;
 

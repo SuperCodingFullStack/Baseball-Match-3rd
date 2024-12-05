@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import KakaoLoginButton from './KaKaoLoginButton';
-import Cookies from 'js-cookie';
-import axios from 'axios';
-import styled from 'styled-components';
-import LoginLogo from '../../assets/logo.png';
+import React, { useState, useEffect } from "react";
+import KakaoLoginButton from "./KaKaoLoginButton";
+import Cookies from "js-cookie";
+import axios from "axios";
+import styled from "styled-components";
+import LoginLogo from "../../assets/logo.png";
 
 const LoginWrapper = styled.div`
   height: 100vh;
@@ -30,7 +30,7 @@ const Logo = styled.div`
     width: 30px;
   }
   span {
-    font-family: 'Red Hat Display', sans-serif;
+    font-family: "Red Hat Display", sans-serif;
     font-size: 20px;
     font-weight: bold;
   }
@@ -45,7 +45,7 @@ const IdAndPassword = styled.div`
 
 const IdorPw = styled.div`
   position: relative;
-  font-family: 'Red Hat Display', sans-serif;
+  font-family: "Red Hat Display", sans-serif;
   input {
     width: 100%;
     border-radius: 4px;
@@ -78,7 +78,7 @@ const RememberSearch = styled.div`
 `;
 
 const Checkbox = styled.div`
-  font-family: 'Red Hat Display', sans-serif;
+  font-family: "Red Hat Display", sans-serif;
   display: flex;
   align-items: center;
 `;
@@ -136,37 +136,37 @@ const Login = () => {
 
   function signUpUser() {
     const userData = {
-      username: 'aaaa1234@naver.com',
-      password: '@a1234',
-      nickname: 'testUser',
-      phone: '010-1234-1234',
-      address: '우리주소',
-      profileImg: '필수지만 일단 난 모르오',
+      username: "aaaa1234@naver.com",
+      password: "@a1234",
+      nickname: "testUser",
+      phone: "010-1234-1234",
+      address: "우리주소",
+      profileImg: "필수지만 일단 난 모르오",
     };
 
-    fetch('http://localhost:8080/api/user/signUp', {
-      method: 'POST',
+    fetch("http://localhost:8080/api/user/signUp", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json', // 서버가 JSON 형식을 받는다면 이 헤더 필요
+        "Content-Type": "application/json", // 서버가 JSON 형식을 받는다면 이 헤더 필요
       },
       body: JSON.stringify(userData), // 객체를 JSON 문자열로 변환하여 전송
     })
       .then((response) => response.json()) // 응답을 JSON 형식으로 변환
       .then((data) => {
-        console.log('회원가입 성공:', data);
+        console.log("회원가입 성공:", data);
       })
       .catch((error) => {
-        console.error('회원가입 실패:', error);
+        console.error("회원가입 실패:", error);
       });
   }
 
   // 상태 변수로 username과 password 관리
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [isChecked, setIsChecked] = useState(false);
 
   useEffect(() => {
-    const rememberUserName = Cookies.get('RememberId');
+    const rememberUserName = Cookies.get("RememberId");
     if (rememberUserName) {
       setUsername(rememberUserName);
     }
@@ -174,19 +174,19 @@ const Login = () => {
   // 처음 마운트 됐을 때 실행
 
   useEffect(() => {
-    console.log('Username changed:', username);
+    console.log("Username changed:", username);
   }, [username]); // username이 변경될 때마다 로그 출력
 
   useEffect(() => {
-    console.log('Password changed:', password);
+    console.log("Password changed:", password);
   }, [password]); // password가 변경될 때마다 로그 출력
 
   // 체크박스의 체크 여부
   useEffect(() => {
-    console.log('isChecked : ' + isChecked);
+    console.log("isChecked : " + isChecked);
     if (isChecked) {
-      if (username !== '') {
-        Cookies.set('RememberId', username);
+      if (username !== "") {
+        Cookies.set("RememberId", username);
       }
     }
   }, [isChecked]);
@@ -195,7 +195,7 @@ const Login = () => {
 
   // 로그인 함수
   const requestLogin = async () => {
-    console.log('요청할 때 들어가는 id', username, '비번', password);
+    console.log("요청할 때 들어가는 id", username, "비번", password);
     try {
       const data = await axios.post(
         `http://localhost:8080/api/user/login`,
@@ -205,24 +205,24 @@ const Login = () => {
         },
         {
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           withCredentials: true, // 인증 정보를 포함시키기 위해 'true' 설정
         }
       );
       // 응답 전체 확인
-      console.log('서버 응답 전체:', data);
+      console.log("서버 응답 전체:", data);
 
-      const token = data.headers['authorization']; // JWT 추출
-      console.log('받아오는 토큰', token);
+      const token = data.headers["authorization"]; // JWT 추출
+      console.log("받아오는 토큰", token);
 
       if (token) {
-        const jwtToken = token.split(' ')[1]; // "Bearer"를 제거하고 JWT만 추출
-        console.log('우리가 잘받아서 뜯은 토큰은 ', jwtToken);
-        Cookies.set('Authorization', jwtToken, {
-          path: '/',
+        const jwtToken = token.split(" ")[1]; // "Bearer"를 제거하고 JWT만 추출
+        console.log("우리가 잘받아서 뜯은 토큰은 ", jwtToken);
+        Cookies.set("Authorization", jwtToken, {
+          path: "/",
           secure: true,
-          sameSite: 'Strict',
+          sameSite: "Strict",
         }); // 쿠키에 저장
         /*
           path: '/': 이 쿠키는 모든 경로에서 접근 가능합니다.
@@ -231,9 +231,9 @@ const Login = () => {
           */
       }
 
-      console.log('Login successful');
+      console.log("Login successful");
     } catch (error) {
-      console.error('Login failed', error);
+      console.error("Login failed", error);
     }
   };
 

@@ -4,14 +4,43 @@ import { IoHeartOutline } from "react-icons/io5";
 import { IoClipboardOutline } from "react-icons/io5";
 import { LuClipboardEdit } from "react-icons/lu";
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
 const DropdownPost = () => {
   const navigate = useNavigate();
+
+  const isLoggedIn = !!Cookies.get("Authorization");
+
   const handleBoardBtnClick = () => {
-    navigate("/partyPosts");
+    if(!isLoggedIn){
+      alert("로그인 후 이용 가능한 페이지입니다.");
+      navigate("/login");}
+      else {
+    navigate("/partyPosts");}
   };
+  
   const handlePostWriteBtnClick = () => {
-    navigate("/postWrite");
+    if(!isLoggedIn){
+      alert("로그인 후 이용 가능한 페이지입니다.");
+      navigate("/login");}
+      else {
+    navigate("/postWrite");}
+  };
+
+  const handleMyPostBtnClick = () => {
+    if(!isLoggedIn){
+      alert("로그인 후 이용 가능한 페이지입니다.");
+      navigate("/login");}
+      else {
+    navigate("/myPosts");}
+  };
+
+  const handleLikePostBtnClick = () => {
+    if(!isLoggedIn){
+      alert("로그인 후 이용 가능한 페이지입니다.");
+      navigate("/login");}
+      else {
+    navigate("/myLikePosts");}
   };
 
   return (
@@ -25,10 +54,10 @@ const DropdownPost = () => {
         게시판
       </Board>
       <MyPost>
-        <StyledIcon as={LuClipboardEdit} /> 내가 쓴 게시물
+        <StyledIcon as={LuClipboardEdit} onClick={handleMyPostBtnClick}/> 내가 작성한 게시글
       </MyPost>
       <LikePost>
-        <StyledIcon as={IoHeartOutline} /> 좋아요 한 게시물
+        <StyledIcon as={IoHeartOutline} onClick={handleLikePostBtnClick}/> 좋아요 한 게시물
       </LikePost>
     </PostContainer>
   );

@@ -2,68 +2,57 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 import { getTeamLogo } from "../../../../utils/getTeamLogo";
 
-const SlideContent = ({ date, games }) => {
+const SlideContent = ({ game, date }) => {
   return (
     <SlideContainer>
       <Title>경기 결과</Title>
       <Date>{date}</Date>
-      {games.map((game, index) => (
-        <Result key={index}>
-          <MatchDetails>
-            <Team>
-              <HomeTeamImg
-                src={getTeamLogo(game.homeTeam)}
-                alt={game.HomeTeam}
-              />
-              <HomeTeam>{game.homeTeam}</HomeTeam>
-            </Team>
-            <Score>
-              <DynamicScore
-                $isWinning={
-                  parseInt(game.homeTeamScore) > parseInt(game.awayTeamScore)
-                }
-              >
-                {game.homeTeamScore}
-              </DynamicScore>
-              :
-              <DynamicScore
-                $isWinning={
-                  parseInt(game.awayTeamScore) > parseInt(game.homeTeamScore)
-                }
-              >
-                {game.awayTeamScore}
-              </DynamicScore>
-            </Score>
-            <Team>
-              <AwayTeamImg
-                src={getTeamLogo(game.awayTeam)}
-                alt={game.awayTeam}
-              />
-              <AwayTeam>{game.awayTeam}</AwayTeam>
-            </Team>
-          </MatchDetails>
-          <Stadium>{game.stadium}</Stadium>
-        </Result>
-      ))}
+      <Result key={game.gameId}>
+        <MatchDetails>
+          <Team>
+            <HomeTeamImg src={getTeamLogo(game.homeTeam)} alt={game.HomeTeam} />
+            <HomeTeam>{game.homeTeam}</HomeTeam>
+          </Team>
+          <Score>
+            <DynamicScore
+              $isWinning={
+                parseInt(game.homeTeamScore) > parseInt(game.awayTeamScore)
+              }
+            >
+              {game.homeTeamScore}
+            </DynamicScore>
+            :
+            <DynamicScore
+              $isWinning={
+                parseInt(game.awayTeamScore) > parseInt(game.homeTeamScore)
+              }
+            >
+              {game.awayTeamScore}
+            </DynamicScore>
+          </Score>
+          <Team>
+            <AwayTeamImg src={getTeamLogo(game.awayTeam)} alt={game.awayTeam} />
+            <AwayTeam>{game.awayTeam}</AwayTeam>
+          </Team>
+        </MatchDetails>
+        <Stadium>{game.stadium}</Stadium>
+      </Result>
     </SlideContainer>
   );
 };
 
 SlideContent.propTypes = {
   date: PropTypes.string.isRequired,
-  games: PropTypes.arrayOf(
-    PropTypes.shape({
-      matchDate: PropTypes.string.isRequired,
-      matchTime: PropTypes.string.isRequired,
-      homeTeam: PropTypes.isRequired,
-      homeTeamScore: PropTypes.string.isRequired,
-      awayTeam: PropTypes.string.isRequired,
-      awayTeamScore: PropTypes.string.isRequired,
-      stadium: PropTypes.string.isRequired,
-      gameSort: PropTypes.string,
-      tv: PropTypes.string,
-    })
-  ).isRequired,
+  game: PropTypes.shape({
+    gameId: PropTypes.number.isRequired,
+    matchDate: PropTypes.string.isRequired,
+    matchTime: PropTypes.string.isRequired,
+    homeTeam: PropTypes.string.isRequired,
+    homeTeamScore: PropTypes.string.isRequired,
+    awayTeam: PropTypes.string.isRequired,
+    awayTeamScore: PropTypes.string.isRequired,
+    stadium: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
 const SlideContainer = styled.div`

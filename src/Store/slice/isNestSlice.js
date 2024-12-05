@@ -3,18 +3,29 @@ import { createSlice } from "@reduxjs/toolkit";
 const isNestSlice = createSlice({
   name: "isNest",
   initialState: {
-    emailNest: false,
-    nicknameNest: false,
+    isEmailNest: false,
+    isNicknameNest: false,
+    isPhoneAuth: false,
   },
   reducers: {
-    setEmailNest(state) {
-      state.emailNest = true;
+    setEmailNestTrue(state) {
+      state.isEmailNest = true;
     },
-    setNicknameNest(state) {
-      state.nicknameNest = true;
+    setEmailNestFalse(state) {
+      state.isEmailNest = false;
+    },
+    setNicknameNestTrue(state) {
+      state.isNicknameNest = true;
+    },
+    setNicknameNestFalse(state) {
+      state.isNicknameNest = false;
+    },
+    setPhoneAuthTrue(state) {
+      state.isPhoneAuth = true;
     },
   },
 });
 
 export default isNestSlice;
+
 export const isNestActions = isNestSlice.actions;

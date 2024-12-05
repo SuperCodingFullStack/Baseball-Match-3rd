@@ -15,7 +15,9 @@ function Alam() {
   // 백엔드에서 알림 갯수를 가져오는 함수
   const fetchNotificationCount = async () => {
     try {
-      const response = await fetch("/api/notifications/count"); // API 엔드포인트
+      const response = await fetch(
+        "http://localhost:8080/api/notifications/count"
+      ); // API 엔드포인트
       const data = await response.json();
       setNotificationCount(data.count); // 응답에서 알림 갯수를 설정
     } catch (error) {

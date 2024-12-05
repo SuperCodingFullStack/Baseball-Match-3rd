@@ -1,38 +1,36 @@
 import React, { useState, useEffect } from "react";
+import { useDebouncedValue } from "./useDebouncedValue";
 import { emailCheck } from "../utils/emailCheck";
 
 const useEmail = () => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState(false);
-  const [msg, setMsg] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
+  const debouncedEmail = useDebouncedValue(email, 200);
 
-  const validateEmail = async () => {
-    try {
-      const res = await emailCheck(email);
-      if (res.error) {
-        setError(true);
-      } else {
-        setError(false);
-      }
-      setMsg(res.msg);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  useEffect(() => {
+    const validateEmail = () => {
+      const res = emailCheck(email);
+      setError(res.error);
+      setErrorMsg(res.msg);
+    };
 
-  const onChangeHandler = (value, maxLength) => {
-    setEmail(value);
-    if (value.length >= maxLength) {
-      setEmail(value.slice(0, maxLength));
+    if (debouncedEmail) validateEmail();
+  }, [debouncedEmail, email]);
+
+  const emailChangeHandler = (val, maxLength) => {
+    setEmail(val);
+    if (val.length >= maxLength) {
+      setEmail(val.slice(0, maxLength));
     }
   };
 
   return {
     email,
-    setEmail: onChangeHandler,
-    validateEmail,
+    emailChangeHandler,
     error,
-    msg,
+    errorMsg,
+    debouncedEmail,
   };
 };
 

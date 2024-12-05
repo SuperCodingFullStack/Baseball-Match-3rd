@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { getTeamLogo } from "../../utils/getTeamLogo";
 
 const PostList = ({
   id,
@@ -15,13 +16,34 @@ const PostList = ({
   name,
   move,
 }) => {
+  console.log("PostList Props:", {
+    id,
+    myTeamImg,
+    opposingTeamImg,
+    title,
+    matchTime,
+    matchDate,
+    max,
+    current,
+    like,
+    createAt,
+    name,
+    move,
+  });
+  // 로고 이미지 가져오는거
+  const TeamLogo = ({ teamName }) => {
+    const logoSrc = getTeamLogo(teamName);
+    return <LogoImage src={logoSrc} alt={`${teamName} logo`} />;
+  };
+
   return (
     <>
       <Post onClick={() => move(id)}>
         <Post_list__team_images>
-          <img src={myTeamImg} alt="우리팀 이미지" />
+          <TeamLogo teamName={myTeamImg} />
+
           <img src="vs이미지주소" alt="vs" />
-          <img src={opposingTeamImg} alt="상대팀 이미지" />
+          <TeamLogo teamName={opposingTeamImg} />
         </Post_list__team_images>
         <Post_list__details>
           <div className="post-list__title">{title}</div>
@@ -79,6 +101,12 @@ const Post_list__author_likes = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+`;
+
+const LogoImage = styled.img`
+  width: 150px;
+  height: 150px;
+  object-fit: contain;
 `;
 
 export default PostList;

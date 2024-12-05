@@ -1,44 +1,110 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect,useRef } from "react";
 import dayjs from "dayjs";
 import styled from "styled-components";
 import GameModal from "./GameModal";
-import { FaAngleLeft, FaAngleRight } from "react-icons/fa6";
+import { FaAngleLeft, FaAngleRight, FaPlus } from "react-icons/fa6";
+import { useCallback } from "react";
 
 const MonthlyCalendar = () => {
   const [currentMonth, setCurrentMonth] = useState(dayjs().startOf("month"));
   const [games, setGames] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const daysInMonth = currentMonth.daysInMonth();
   const firstDayOfWeek = currentMonth.startOf("month").day();
 
+  const calendarRef = useRef(null);
+  const scrollPosition = useRef(0);
+
+  const fetchGameData = useCallback(async (monthToCheck) => {
+    if (monthToCheck.month < 1) {
+      console.log("더 이상 이전 달 데이터가 없습니다.");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/gameInfo/${dayjs(monthToCheck).format("MM")}`
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json();
+
+      if (data && data.status === "success" && Array.isArray(data.data)) {
+        const formattedGames = data.data.map((game) => {
+          const currentYear = dayjs().year();
+          const matchDateWithoutDay = game.matchDate.split(" ")[0];
+          const [month, day] = matchDateWithoutDay.split(".");
+          const formattedDate = dayjs(
+            `${currentYear}-${month}-${day}`,
+            "YYYY-MM-DD"
+          );
+
+          return {
+            date: formattedDate,
+            team: `${game.homeTeam} vs ${game.awayTeam}`,
+            homeTeam: game.homeTeam,
+            homeTeamScore: game.homeTeamScore,
+            awayTeam: game.awayTeam,
+            awayTeamScore: game.awayTeamScore,
+            matchTime: game.matchTime,
+            stadium: game.stadium,
+          };
+        });
+        if (formattedGames.length > 0) {
+          setGames(formattedGames);
+          setLoading(false);
+          return true;
+        }
+      }
+      console.error(
+        `데이터가 없습니다. 이전달 (${monthToCheck
+          .subtract(1, "month")
+          .format("MMMM")})로 이동합니다.`
+      );
+      return await fetchGameData(monthToCheck.subtract(1, "month"));
+    } catch (error) {
+      console.error("Error fetching game data: ", error);
+      setLoading(false);
+    }
+  },[]);
+
   useEffect(() => {
-    // fetch(`/api/games?month=${currentMonth.format("YYYY-MM")}`)
-    //   .then((res) => res.json())
-    //   .then((data) => setGames(data));
-    const sampleGames = [
-      { date: currentMonth.date(2).format("YYYY-MM-DD"), team: "롯데 vs 기아" },
-      { date: currentMonth.date(2).format("YYYY-MM-DD"), team: "Team B" },
-      { date: currentMonth.date(2).format("YYYY-MM-DD"), team: "Team C" },
-      { date: currentMonth.date(2).format("YYYY-MM-DD"), team: "Team D" },
-      { date: currentMonth.date(2).format("YYYY-MM-DD"), team: "Team E" },
-      { date: currentMonth.date(5).format("YYYY-MM-DD"), team: "Team C" },
-      { date: currentMonth.date(15).format("YYYY-MM-DD"), team: "Team D" },
-      { date: currentMonth.date(15).format("YYYY-MM-DD"), team: "Team E" },
-      { date: currentMonth.date(20).format("YYYY-MM-DD"), team: "Team F" },
-    ];
-    setGames(sampleGames);
-  }, [currentMonth]);
+    const fetchData = async () => {
+      setLoading(true);
+      await fetchGameData(currentMonth);
+    };
+    fetchData();
+  }, [currentMonth, fetchGameData]);
 
-  const handlePrevMonth = () =>
+  const handlePrevMonth = () => {
+    scrollPosition.current = calendarRef.current.scrollTop;
     setCurrentMonth(currentMonth.subtract(1, "month"));
-  const handleNextMonth = () => setCurrentMonth(currentMonth.add(1, "month"));
+  };
+  const handleNextMonth = () => {
+    scrollPosition.current = calendarRef.current.scrollTop;
+    setCurrentMonth(currentMonth.add(1, "month"));
+  };
 
-  const openModal = (date) => setSelectedDate(date);
+  const openModal = (date) => setSelectedDate(dayjs(date));
   const closeModal = () => setSelectedDate(null);
 
+  useEffect(() => {
+    if (calendarRef.current){
+      calendarRef.current.scrollTop = scrollPosition.current;
+    }
+  }, [currentMonth]);
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
   return (
-    <Container>
+    <Container ref={calendarRef}>
       <Header>
         <button onClick={handlePrevMonth}>
           <FaAngleLeft />
@@ -61,13 +127,23 @@ const MonthlyCalendar = () => {
 
         {[...Array(daysInMonth)].map((_, i) => {
           const date = currentMonth.date(i + 1);
-          const dayGames = games.filter(
-            (game) => game.date === date.format("YYYY-MM-DD")
+          const dayGames = games.filter((game) =>
+            dayjs(game.date).isSame(date, "day")
           );
+          const isToday = date.isSame(dayjs(), "day");
+
           return (
-            <Cell key={date}>
-              <DateLabel>{i + 1}</DateLabel>
-              <PlusButton onClick={() => openModal(date)}>+</PlusButton>
+            <Cell
+              key={date}
+              style={{ borderColor: isToday ? "#af02f9" : "#ddd" }}
+            >
+              <DayInfo>
+                <DateLabel>{i + 1}</DateLabel>
+                {isToday && <Today>Today</Today>}
+                <PlusButton onClick={() => openModal(date)}>
+                  <FaPlus />
+                </PlusButton>
+              </DayInfo>
               <GamesSummary>
                 {dayGames.slice(0, 5).map((game, index) => (
                   <GameIcon key={index}>{game.team}</GameIcon>
@@ -78,7 +154,13 @@ const MonthlyCalendar = () => {
         })}
       </Grid>
       {selectedDate && (
-        <GameModal date={selectedDate} games={games} onClose={closeModal} />
+        <GameModal
+          date={selectedDate}
+          dayGames={games.filter((game) =>
+            dayjs(game.date).isSame(selectedDate, "day")
+          )}
+          onClose={closeModal}
+        />
       )}
     </Container>
   );
@@ -86,7 +168,7 @@ const MonthlyCalendar = () => {
 
 const Container = styled.div`
   width: 100%;
-  max-width: 1000px;
+  max-width: 1200px;
   margin: auto;
   margin-top: 3rem;
   padding: 1rem;
@@ -134,6 +216,8 @@ const Cell = styled.div`
   padding: 0.7rem;
   text-align: center;
   position: relative;
+  weight: 90px;
+  height: 110px;
 `;
 
 const DateLabel = styled.div`
@@ -141,22 +225,31 @@ const DateLabel = styled.div`
   font-weight: bold;
 `;
 
+const DayInfo = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+`;
+
+const Today = styled.p`
+  font-size: 15px;
+  color: #63028c;
+`;
+
 const GamesSummary = styled.div`
   margin-top: 5px;
 `;
 
 const GameIcon = styled.div`
-font-size:13px;
+font-size:14px;
 background:#f0f0f0;
-padding 2px 5px;
-margin: 2px 0
+padding 2px 4px;
+margin: 4px 0
 `;
 
 const PlusButton = styled.button`
   padding: 0;
-  position: absolute;
-  top: 5px;
-  right: 5px;
+  font-size: 15px;
   background: rgba(0, 0, 0, 0);
   color: #67fc99;
 `;

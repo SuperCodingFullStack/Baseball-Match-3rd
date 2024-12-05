@@ -1,25 +1,27 @@
 import React, { useState, useEffect } from "react";
+import { useDebouncedValue } from "./useDebouncedValue";
 
-const usePasswordCheck = (password, isTouched) => {
+const usePasswordCheck = (password) => {
   const [passwordCheck, setPasswordCheck] = useState("");
   const [pwChkError, setPwChkError] = useState(false);
   const [pwChkMsg, setPwChkMsg] = useState("");
+  const debouncedPasswdCheck = useDebouncedValue(passwordCheck, 200);
 
   useEffect(() => {
-    if (isTouched) {
-      validatePwChk();
-    }
-  }, [passwordCheck]);
-
-  const validatePwChk = () => {
-    if (passwordCheck.trim() === "" || passwordCheck !== password) {
-      setPwChkError(true);
-      setPwChkMsg("비밀번호가 비어있거나 일치하지 않습니다.");
-    } else {
-      setPwChkError(false);
-      setPwChkMsg("비밀번호가 일치합니다.");
-    }
-  };
+    const validatePwCheck = () => {
+      if (passwordCheck && passwordCheck === password) {
+        setPwChkError(false);
+        setPwChkMsg("비밀번호 확인이 완료 되었습니다.");
+      } else if (!passwordCheck) {
+        setPwChkError(true);
+        setPwChkMsg("입력해주세요.");
+      } else {
+        setPwChkError(true);
+        setPwChkMsg("비밀번호가 서로 일치하지 않습니다.");
+      }
+    };
+    if (debouncedPasswdCheck) validatePwCheck();
+  }, [passwordCheck, debouncedPasswdCheck, password]);
 
   const pwChkHandler = (value, maxLength) => {
     setPasswordCheck(value);
@@ -28,7 +30,7 @@ const usePasswordCheck = (password, isTouched) => {
     }
   };
 
-  return { passwordCheck, validatePwChk, pwChkHandler, pwChkError, pwChkMsg };
+  return { passwordCheck, pwChkHandler, pwChkError, pwChkMsg };
 };
 
 export default usePasswordCheck;

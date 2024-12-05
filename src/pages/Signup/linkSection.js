@@ -19,4 +19,8 @@ export const linkSection = [
     section: "프로필 사진 등록",
     id: "profile",
   },
+  {
+    section: "선호팀 선택",
+    id: "fav_team",
+  },
 ];

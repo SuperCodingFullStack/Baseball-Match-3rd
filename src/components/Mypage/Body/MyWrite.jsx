@@ -4,8 +4,10 @@ import { getTeamLogo } from "../../../utils/getTeamLogo";
 import apiClient from "../../../pages/Login/apiClient";
 import MyPageIfNoDate from "../../../pages/MyPageIfNoDate";
 import PostListLayout from "./PostListLayout";
+import { useNavigate } from "react-router-dom";
 
 const MyWrite = () => {
+  const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);

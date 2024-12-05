@@ -88,8 +88,8 @@ const PhoneAndAddressInput = ({
   isTouched,
   setIsTouched,
 }) => {
-  const [disable, setDisable] = useState(false);
-  const [isAddressModal, setAddressModal] = useState(false);
+  const [phoneDisable, setPhoneDisable] = useState(false);
+  const [isAddressModal, setIsAddressModal] = useState(false);
 
   const isPhoneAuth = useSelector((state) => state.isNest.isPhoneAuth);
 
@@ -106,7 +106,7 @@ const PhoneAndAddressInput = ({
       dispatch(isNestActions.setPhoneAuthTrue());
     }
     if (title === "주소 인증") {
-      setAddressModal(true);
+      setIsAddressModal(true);
       document.getElementById("root").classList.add("dim");
     }
   };
@@ -132,8 +132,17 @@ const PhoneAndAddressInput = ({
   };
 
   useEffect(() => {
-    if (title === "핸드폰 인증" && isPhoneAuth && !isError) {
-      setDisable(true);
+    if (title === "핸드폰 인증") {
+      if (!isTouched || !valueData || isError) {
+        setPhoneDisable(true);
+      } else {
+        setPhoneDisable(false);
+      }
+      if (isPhoneAuth) {
+        setPhoneDisable(true);
+      }
+    }
+    if (title === "주소 인증") {
     }
   }, [isPhoneAuth, isError]);
 
@@ -154,16 +163,18 @@ const PhoneAndAddressInput = ({
           }}
           value={valueData}
           onFocus={onFocusHandler}
-          disabled={disable || title === "주소 인증"}
+          disabled={title === "주소 인증" || isPhoneAuth}
         />
       </RealInputs>
-      <button onClick={firstNestHandler} disabled={!isTouched || disable}>
+      <button
+        onClick={firstNestHandler}
+        disabled={title === "핸드폰 인증" && phoneDisable}
+      >
         {title === "핸드폰 인증" && isPhoneAuth ? secondNest : firstNest}
       </button>
       {title === "주소 인증" && isAddressModal && (
         <DaumPostcodeEmbed
           onComplete={completeHandler}
-          autoClose={true}
           style={{
             position: "fixed",
             top: "50%",

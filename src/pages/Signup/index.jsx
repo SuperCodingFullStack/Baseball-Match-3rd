@@ -5,6 +5,7 @@ import SignBody from "./SignBody";
 import { useDispatch } from "react-redux";
 import { activeIdActions } from "../../Store/Slice/ActiveIdSlice";
 import { linkSection } from "./linkSection";
+import { useLocation } from "react-router-dom";
 
 const SignWrapper = styled.div``;
 
@@ -12,6 +13,8 @@ const Signup = () => {
   const dispatch = useDispatch();
 
   const signBodyRef = useRef(null);
+
+  const location = useLocation();
 
   const handleIntersection = (entries) => {
     entries.forEach((entry) => {
@@ -41,6 +44,10 @@ const Signup = () => {
       observer.disconnect();
     };
   }, []);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
 
   return (
     <SignWrapper>

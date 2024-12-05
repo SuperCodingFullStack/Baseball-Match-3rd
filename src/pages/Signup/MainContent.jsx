@@ -6,12 +6,14 @@ import useEmail from "../../hooks/useEmail";
 import usePassword from "../../hooks/usePassword";
 import usePasswordCheck from "../../hooks/usePasswordCheck";
 import ProfileInput from "./ProfileInput";
-import useNickname from "../../hooks/useNickname";
-import { useSelector } from "react-redux";
 import usePhone from "../../hooks/usePhone";
+import useNickname from "../../hooks/useNickname";
 import PhoneAndAddressInput from "./PhoneAndAddressInput";
 import { useAddress } from "../../hooks/useAddress";
+import FavTeam from "./FavTeam";
+import { useSelector } from "react-redux";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const SectionAll = styled.div``;
 
@@ -43,6 +45,10 @@ const Profile = styled.section`
   margin-bottom: 20px;
 `;
 
+const FavoriteTeam = styled.section`
+  margin-bottom: 20px;
+`;
+
 const FormButton = styled.button`
   width: 130px;
   background-color: rgb(191, 219, 254);
@@ -60,6 +66,10 @@ const FormButton = styled.button`
 const MainContent = () => {
   const [isTouched, setIsTouched] = useState(false);
 
+  const isEmailNest = useSelector((state) => state.isNest.isEmailNest);
+  const isNicknameNest = useSelector((state) => state.isNest.isNicknameNest);
+  const isPhoneAuth = useSelector((state) => state.isNest.isPhoneAuth);
+
   const { email, emailChangeHandler, error, errorMsg } = useEmail();
 
   const { password, passwordChange, pwError, pwMsg } = usePassword();
@@ -75,9 +85,82 @@ const MainContent = () => {
   const { address, addressChangeHandler, addressError, addressErrorMsg } =
     useAddress();
 
+  const navigate = useNavigate();
+
+  const fd = new FormData();
+
+  const signUpSubmitHandler = async (e) => {
+    e.preventDefault();
+
+    if (email && !error && isEmailNest) {
+      fd.append("username", email);
+    }
+    if (password && !pwError && !pwChkError) {
+      fd.append("password", password);
+    }
+    if (nickname && !nicknameError && isNicknameNest) {
+      fd.append("nickname", nickname);
+    }
+    if (phone && !phoneError && isPhoneAuth) {
+      const phoneRequest1 = phone.slice(0, 3);
+      const phoneRequest2 = phone.slice(3, 7);
+      const phoneRequest3 = phone.slice(7, phone.length);
+      const realPhoneRequest = `${phoneRequest1}-${phoneRequest2}-${phoneRequest3}`;
+      console.log(realPhoneRequest);
+      fd.append("phone", realPhoneRequest);
+    }
+    if (address) {
+      fd.append("address", address);
+    }
+
+    fd.append("profileImg", "test.jpg");
+
+    if (
+      email &&
+      !error &&
+      isEmailNest &&
+      password &&
+      !pwError &&
+      !pwChkError &&
+      nickname &&
+      !nicknameError &&
+      isNicknameNest &&
+      phone &&
+      !phoneError &&
+      isPhoneAuth &&
+      address
+    ) {
+      const obj = formDataToJson(fd);
+      try {
+        const response = await axios.post(
+          `http://localhost:8080/api/user/signUp`,
+          JSON.stringify(obj),
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        if (response.data.status === "success") {
+          navigate("/");
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  };
+
+  const formDataToJson = (fd) => {
+    const obj = {};
+    fd.forEach((value, key) => {
+      obj[key] = value;
+    });
+    return obj;
+  };
+
   return (
     <SectionAll>
-      <SectionForm>
+      <SectionForm onSubmit={signUpSubmitHandler}>
         <IdAndPassword id={linkSection[0].id}>
           <MainInput
             title="아이디"
@@ -169,6 +252,9 @@ const MainContent = () => {
         <Profile id={linkSection[4].id}>
           <ProfileInput />
         </Profile>
+        <FavoriteTeam id={linkSection[5].id}>
+          <FavTeam />
+        </FavoriteTeam>
         <FormButton type="submit">회원가입 완료</FormButton>
       </SectionForm>
     </SectionAll>

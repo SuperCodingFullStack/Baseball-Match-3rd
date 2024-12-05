@@ -154,6 +154,13 @@ const MainInput = ({
     }
   };
 
+  const buttonResult =
+    title === "아이디" && isEmailNest
+      ? "확인완료"
+      : title === "닉네임" && isNicknameNest
+      ? "확인완료"
+      : Nest;
+
   useEffect(() => {
     if (title === "아이디") {
       if (isEmailNest) {
@@ -199,10 +206,11 @@ const MainInput = ({
             !isTouched ||
             !valueData ||
             isError ||
-            (title === "아이디" && isEmailNest)
+            (title === "아이디" && isEmailNest) ||
+            (title === "닉네임" && isNicknameNest)
           }
         >
-          {isEmailNest ? "확인완료" : Nest}
+          {buttonResult}
         </button>
       )}
       {isNested &&

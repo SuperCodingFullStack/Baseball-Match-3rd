@@ -6,6 +6,7 @@ import Header from "../../components/MainPage/Header/Header";
 import { getTeamLogo } from "../../utils/getTeamLogo";
 import Comment from "./Comment";
 import { useNavigate, useParams } from "react-router-dom";
+import userImg from "../../assets/userImg.png";
 
 const partyPost = () => {
   const [post, setPost] = useState(null);
@@ -120,17 +121,18 @@ const partyPost = () => {
         <PostWrapper>
           <ImageSection>
             <TeamLogo teamName={post.myTeamImg} />
-            <VsImage src="vs이미지주소" alt="vs" />
+            <VsImage>vs</VsImage>
             <TeamLogo teamName={post.opposingTeam} />
           </ImageSection>
           <Title>{post.title}</Title>
           <Content>{post.content}</Content>
           <MapSection>
-            {/* <Map
+            <Map
               latitude={parseFloat(post.latitude)}
               longitude={parseFloat(post.longitude)}
-            /> */}
-            <div>임시 지도</div>
+              containerStyle={mapStyle}
+            />
+            {/* <div>임시 지도</div> */}
           </MapSection>
           <StatsContainer>
             <LikeContainer>
@@ -147,24 +149,28 @@ const partyPost = () => {
               <ViewCount>{post.hitCount}</ViewCount>
             </ViewsContainer>
             <div>
-              <div
-                onClick={() => navigate(`/modification/${postId}`)}
-                style={{ cursor: "pointer" }}
-              >
+              <EditButton onClick={() => navigate(`/modification/${postId}`)}>
                 수정하기
-              </div>
-              <div
-                onClick={() => setShowDeleteModal(true)}
-                style={{ cursor: "pointer" }}
-              >
+              </EditButton>
+              <DeleteButton onClick={() => setShowDeleteModal(true)}>
                 삭제하기
-              </div>
+              </DeleteButton>
             </div>
-            <div> 이곳은 파티참여버튼 입니다 만들어주세요</div>
+            <div
+              style={{
+                padding: "10px",
+                border: "1px solid #ccc",
+                display: "inline-block",
+                cursor: "pointer",
+                textAlign: "center",
+              }}
+            >
+              파티참여
+            </div>
           </StatsContainer>
           <ProfileSection>
             <ProfileImage>
-              <img src="프로필 이미지 주소" alt="프로필 이미지" />
+              <img src={userImg} alt="프로필 이미지" />
             </ProfileImage>
             <UserInfo>
               <Nickname>{post.userNickname}</Nickname>
@@ -204,12 +210,13 @@ const partyPost = () => {
 export default partyPost;
 
 // 스타일 컴포넌트
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 20px;
-  background-color: #f8f9fa;
+  background-color: #e9ecef;
   min-height: 100vh;
 `;
 
@@ -219,9 +226,10 @@ const PostWrapper = styled.div`
   width: 100%;
   max-width: 1200px;
   background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
   padding: 20px;
+  margin-bottom: 30px;
 `;
 
 const ImageSection = styled.div`
@@ -238,27 +246,32 @@ const LogoImage = styled.img`
   object-fit: contain;
 `;
 
-const VsImage = styled.img`
-  width: 80px;
-  height: 80px;
-  object-fit: contain;
+const VsImage = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 100px;
+  color: #495057;
+  font-weight: bold;
 `;
 
 const Title = styled.h1`
-  font-size: 2rem;
+  font-size: 2.5rem;
   margin-bottom: 15px;
   color: #343a40;
+  text-align: center;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 `;
 
-const Content = styled.p`
-  font-size: 1rem;
+const Content = styled.div`
+  font-size: 1.1rem;
   color: #495057;
-  line-height: 1.5;
+  line-height: 1.6;
   margin-bottom: 20px;
-`;
-
-const MapSection = styled.div`
-  margin-bottom: 20px;
+  text-align: justify;
+  min-height: 250px; // 기본 높이를 설정
+  padding: 15px;
+  border: 1px solid #495057;
 `;
 
 const StatsContainer = styled.div`
@@ -266,28 +279,36 @@ const StatsContainer = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  padding: 10px 0;
+  border-top: 1px solid #e0e0e0;
 `;
 
 const LikeContainer = styled.div`
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 10px;
 `;
 
 const LikeIcon = styled.span`
   font-size: 1.5rem;
   color: #e83e8c;
+  cursor: pointer;
+  transition: color 0.3s;
+  &:hover {
+    color: #c2185b;
+  }
 `;
 
 const LikeCount = styled.span`
   font-size: 1rem;
   color: #6c757d;
+  font-weight: bold;
 `;
 
 const ViewsContainer = styled.div`
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 10px;
 `;
 
 const ViewsLabel = styled.span`
@@ -296,24 +317,27 @@ const ViewsLabel = styled.span`
 `;
 
 const ViewCount = styled.span`
-  font-size: 1rem;
+  font-size: 1.2rem;
   font-weight: bold;
-  color: #6c757d;
+  color: #495057;
 `;
 
 const ProfileSection = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 20px;
   gap: 15px;
+  margin-bottom: 20px;
+  border-top: 1px solid #e0e0e0;
+  padding: 10px 0;
 `;
 
 const ProfileImage = styled.div`
   img {
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
     object-fit: cover;
+    border: 2px solid #ddd;
   }
 `;
 
@@ -323,13 +347,13 @@ const UserInfo = styled.div`
 `;
 
 const Nickname = styled.div`
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: bold;
   color: #343a40;
 `;
 
 const Location = styled.div`
-  font-size: 0.875rem;
+  font-size: 0.9rem;
   color: #6c757d;
 `;
 
@@ -356,12 +380,13 @@ const CommentCount = styled.div`
 const CommentList = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 15px;
 `;
 
 const LoadingText = styled.div`
   font-size: 1.25rem;
   color: #6c757d;
+  text-align: center;
 `;
 
 const FooterNav = styled.div`
@@ -374,17 +399,47 @@ const FooterNav = styled.div`
   text-align: center;
   box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
 `;
+
 const DeleteModal = styled.div`
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
   z-index: 1000;
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 15px;
+`;
+
+const mapStyle = {
+  width: "100%",
+  height: "auto",
+  minHeight: "150px",
+};
+
+const MapSection = styled.div`
+  margin-bottom: 20px;
+`;
+const EditButton = styled.div`
+  cursor: pointer;
+  color: #007bff; // 원하는 색상으로 변경
+  font-size: 1rem;
+  margin-bottom: 10px;
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+const DeleteButton = styled.div`
+  cursor: pointer;
+  color: #dc3545; // 원하는 색상으로 변경
+  font-size: 1rem;
+  &:hover {
+    text-decoration: underline;
+  }
 `;

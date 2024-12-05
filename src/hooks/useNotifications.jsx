@@ -14,7 +14,7 @@ const useNotifications = () => {
       return [...prev, newNotification];
     });
   };
-  
+
   // SSE 연결 및 알림 수신
   useEffect(() => {
     const token = Cookies.get("Authorization");
@@ -24,15 +24,15 @@ const useNotifications = () => {
       return;
     }
 
-    const eventSource = new EventSourcePolyfill('http://localhost:8080/api/connect', {
+    const eventSource = new EventSourcePolyfill("http://localhost:8080/api/connect", {
       headers: {
-        "Authorization": `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
       withCredentials: true,
       retry: 5000, // 5초마다 재연결 시도
     });
 
-    eventSource.addEventListener('ping',(event) => {
+    eventSource.addEventListener("ping", (event) => {
       console.log("Ping received", event);
     });
 
@@ -60,53 +60,62 @@ const useNotifications = () => {
     return () => {
       eventSource.close();
     };
-  },[]);
+  }, []);
 
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const response = await fetch('http://localhost:8080/api/notification');
+        const token = Cookies.get("Authorization");
+        const response = await fetch("http://localhost:8080/api/notification", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        
+
         const data = await response.json(); // JSON 파싱
         console.log(data); // 응답 내용 확인
-        setNotifications(data);
+        if (Array.isArray(data)) {
+          setNotifications(data);
+        } else {
+          console.error("Expected array but received:", data);
+          setNotifications([]);
+        }
       } catch (error) {
-        console.error('알림 초기화 오류:', error);
+        console.error("알림 초기화 오류:", error);
         // 추가적인 오류 처리 (예: 404 오류 처리)
       }
-  }
-fetchNotifications();
-},[]);
+    };
+    fetchNotifications();
+  }, []);
 
-const markAsReadOnServer = async (notificationId) => {
-  try {
-    const token = Cookies.get("Authorization");
-    const response = await fetch(`http://localhost:8080/api/notificationType/${notificationId}`, {
-      method: "POST",
-      headers: {
-        "Content-Type":"application/json",
-        ...(token && {Authorization: `Bearer ${token}`}),
-      },
-    });
-    if(!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+  const markAsReadOnServer = async (notificationId) => {
+    try {
+      const token = Cookies.get("Authorization");
+      const response = await fetch(`http://localhost:8080/api/notificationType/${notificationId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      console.log(`Notification ${notificationId} marked as read on Server.`);
+    } catch (error) {
+      console.error("Failed to mark notification as read on server:", error);
     }
-    console.log(`Notification ${notificationId} marked as read on Server.`);
-  } catch (error) {
-    console.error("Failed to mark notification as read on server:", error);
-  }
-};
+  };
 
   // 알림 읽음 처리
-  const markAsRead = async(id) => {
+  const markAsRead = async (id) => {
     setNotifications((prev) =>
       prev.map((notification) =>
-        notification.id === id
-          ? { ...notification, isRead: true, readAt: Date.now() }
-          : notification
+        notification.id === id ? { ...notification, isRead: true, readAt: Date.now() } : notification
       )
     );
     await markAsReadOnServer(id);

@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 
 // React.memo로 감싸서 불필요한 리렌더링을 방지
-const Map = React.memo(({ latitude, longitude }) => {
+const Map = React.memo(({ latitude, longitude, containerStyle }) => {
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
   const center = {
     lat: latitude,
@@ -112,12 +112,5 @@ const Map = React.memo(({ latitude, longitude }) => {
     </LoadScript>
   );
 });
-
-const containerStyle = {
-  maxWidth: "1000px",
-  width: "100%",
-  height: "auto",
-  minHeight: "150px",
-};
 
 export default Map;

@@ -116,7 +116,7 @@ const Map = React.memo(({ latitude, longitude }) => {
 const containerStyle = {
   maxWidth: "1000px",
   width: "100%",
-  height: "auto",
+  height: "100%",
   minHeight: "150px",
 };
 

@@ -61,11 +61,12 @@ const Icon = () => {
 
 
   const handleMypageBtnClick = () => {
-    if(!isLoggedIn){
+    if (!isLoggedIn) {
       alert("로그인 후 이용 가능한 페이지입니다.");
-      navigate("/login");}
-      else {
-    navigate("/mypage");}
+      navigate("/login");
+    } else {
+      navigate("/mypage");
+    }
   };
   const handleSignupBtnClick = () => {
     navigate("/signup");
@@ -75,11 +76,12 @@ const Icon = () => {
   };
 
   const handleChatBtnClick = () => {
-    if(!isLoggedIn){
+    if (!isLoggedIn) {
       alert("로그인 후 이용 가능한 페이지입니다.");
-      navigate("/login");}
-      else {
-    navigate("/portfolio");}
+      navigate("/login");
+    } else {
+      navigate("/chat");
+    }
   };
   const handleLogoutBtnClick = () => {
     Cookies.remove("Authorization");
@@ -154,18 +156,18 @@ const Icon = () => {
           </DropdownItem>
           {isLoggedIn ? (
             <>
-          <DropdownItem onClick={handleLogoutBtnClick}>
-            <LuLogOut /> 로그아웃
-          </DropdownItem>
+              <DropdownItem onClick={handleLogoutBtnClick}>
+                <LuLogOut /> 로그아웃
+              </DropdownItem>
             </>
           ) : (
             <>
-             <DropdownItem onClick={handleLoginBtnClick}>
-            <LuLogIn /> 로그인
-          </DropdownItem>
-          <DropdownItem onClick={handleSignupBtnClick}>
-            <PiUserListBold /> 회원가입
-          </DropdownItem>
+              <DropdownItem onClick={handleLoginBtnClick}>
+                <LuLogIn /> 로그인
+              </DropdownItem>
+              <DropdownItem onClick={handleSignupBtnClick}>
+                <PiUserListBold /> 회원가입
+              </DropdownItem>
             </>
           )}
         </DropdownMenu>

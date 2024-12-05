@@ -17,8 +17,8 @@ const FooterSection = ({
     setModalOpen(false);
   };
   const handleRoomCreate = (roomName) => {
-    handleCreateRoom(roomName); // ChatSidebar로 전달
-    setModalOpen(false); // 모달 닫기
+    handleCreateRoom(roomName);
+    setModalOpen(false);
   };
   return (
     <FooterWrapper>
@@ -44,8 +44,6 @@ const FooterSection = ({
 };
 
 export default FooterSection;
-
-// Styled Components for FooterSection
 
 const FooterWrapper = styled.section`
   min-height: 49px;

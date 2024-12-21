@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import partyPostReducer from "./slice/partyPostSlice";
-import activeIdSlice from "./Slice/activeIdSlice";
+import activeIdSlice from "./slice/activeIdSlice";
 import isNestSlice from "./slice/isNestSlice";
 
 const store = configureStore({

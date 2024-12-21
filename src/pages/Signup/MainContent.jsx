@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import MainInput from "./MainInput";
 import { linkSection } from "./linkSection";
@@ -61,10 +61,14 @@ const FormButton = styled.button`
   justify-content: center;
   align-items: center;
   margin-bottom: 40px;
+  &:disabled {
+    opacity: 0.45;
+  }
 `;
 
 const MainContent = () => {
   const [isTouched, setIsTouched] = useState(false);
+  const [buttonDisabled, setButtonDisabled] = useState(true);
 
   const isEmailNest = useSelector((state) => state.isNest.isEmailNest);
   const isNicknameNest = useSelector((state) => state.isNest.isNicknameNest);
@@ -106,7 +110,6 @@ const MainContent = () => {
       const phoneRequest2 = phone.slice(3, 7);
       const phoneRequest3 = phone.slice(7, phone.length);
       const realPhoneRequest = `${phoneRequest1}-${phoneRequest2}-${phoneRequest3}`;
-      console.log(realPhoneRequest);
       fd.append("phone", realPhoneRequest);
     }
     if (address) {
@@ -157,6 +160,40 @@ const MainContent = () => {
     });
     return obj;
   };
+
+  useEffect(() => {
+    if (
+      email &&
+      !error &&
+      isEmailNest &&
+      password &&
+      !pwError &&
+      !pwChkError &&
+      nickname &&
+      !nicknameError &&
+      isNicknameNest &&
+      phone &&
+      !phoneError &&
+      isPhoneAuth &&
+      address
+    ) {
+      setButtonDisabled(false);
+    }
+  }, [
+    email,
+    error,
+    isEmailNest,
+    password,
+    pwError,
+    pwChkError,
+    nickname,
+    nicknameError,
+    isNicknameNest,
+    phone,
+    phoneError,
+    isPhoneAuth,
+    address,
+  ]);
 
   return (
     <SectionAll>
@@ -255,7 +292,9 @@ const MainContent = () => {
         <FavoriteTeam id={linkSection[5].id}>
           <FavTeam />
         </FavoriteTeam>
-        <FormButton type="submit">회원가입 완료</FormButton>
+        <FormButton type="submit" disabled={buttonDisabled}>
+          회원가입 완료
+        </FormButton>
       </SectionForm>
     </SectionAll>
   );

@@ -5,7 +5,7 @@ import SockJS from "sockjs-client";
 import Cookies from "js-cookie";
 import axios from "axios";
 import ChatHeader from "./ChatHeader";
-import { jwtDecode } from "jwt-decode";
+import jwtDecode from "jwt-decode";
 
 const MainChatComponent = ({ selectedChatId, chats }) => {
   const [message, setMessage] = useState("");
